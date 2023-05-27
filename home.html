@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Home</title>
-</head>
-<script>
+  </head>
+  <script>
     async function updateF() {
       $(document).on("submit", "#form", function (e) {
         $.ajax({
@@ -16,9 +16,8 @@
           success: async function (html) {
             let request = async () => {
               const response = await fetch("http://localhost:8083/link");
-  
+
               const data = await response.json();
-             
             };
             await request();
           },
@@ -30,16 +29,19 @@
       await updateF();
     });
   </script>
-  
-<body>
-  <form action="/employee" method="post" id="form" class="form cf">
-   
+
+  <body>
+    <form action="/employee" method="post" id="form" class="form cf">
       <input type="radio" name="subject" value="English" id="english" />
       <label for="english" class="">English</label>
 
       <input type="radio" name="subject" value="Kids" id="kids" />
-      <label for="kids" class=""
-        title="This course is only for those under the age of 12">English for Kids</label>
+      <label
+        for="kids"
+        class=""
+        title="This course is only for those under the age of 12"
+        >English for Kids</label
+      >
 
       <input type="radio" name="subject" value="German" id="german" />
       <label for="german" class="">German</label>
@@ -52,16 +54,14 @@
 
       <input type="radio" name="subject" value="book" id="book" />
       <label for="book" class="">Books</label>
-    
-  
-        <div id="res"></div>
-        <div class="form-group">
-          <input type="submit" class="" value="Continue" />
-        </div>
-        <button type="submit" class="" onclick="window.location='/creat'">
-          Creat
-        </button>
-     
-  </form>
-</body>
+
+      <div id="res"></div>
+      <div class="form-group">
+        <input type="submit" class="" value="Continue" />
+      </div>
+      <button type="submit" class="" onclick="window.location='/creat'">
+        Creat
+      </button>
+    </form>
+  </body>
 </html>

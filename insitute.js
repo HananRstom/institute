@@ -1,1 +1,0 @@
-var hanan = 9;
