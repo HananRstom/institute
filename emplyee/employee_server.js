@@ -26,16 +26,7 @@ app.post("/employee", function (req, res) {
 
   res.send();
 });
-app.get("/creat", function (req, res) {
-  res.sendFile(__dirname + "./html/creat.html");
-});
+
 app.listen(8083, function (req, res) {
   console.log("server started on port 8083");
-});
-app.get("/link", function (req, res) {
-  var res2 = {
-    selected_subject: selected_subject,
-  };
-  signUp.register("", selected_subject);
-  res.json(res2);
 });
