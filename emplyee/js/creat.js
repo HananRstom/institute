@@ -22,7 +22,7 @@ module.exports = {
       res.send();
     });
 
-    app.get("link1",(req,res)=>{
+    app.get("link1", (req, res) => {
       obj1 = {
         number_student: number_student,
         price: price,
@@ -33,6 +33,6 @@ module.exports = {
         test: test,
       };
       res.send();
-    })
+    });
   },
 };
