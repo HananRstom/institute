@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -12,46 +12,6 @@
 
     <title>forms</title>
   </head>
-  <script>
-    async function welcome() {
-      window.addEventListener("pageshow", function (event) {
-        var historyTraversal =
-          event.persisted ||
-          (typeof window.performance != "undefined" &&
-            window.performance.navigation.type === 2);
-        if (historyTraversal) {
-          // Handle page restore.
-          window.location.reload();
-        }
-      });
-      const response = await fetch("http://localhost:8083/link11");
-
-      const data = await response.json();
-
-      const course = data.course;
-      console.log(course);
-      document.getElementById("div").innerHTML =
-        "To fill out the    " + course + " course form : ";
-    }
-    async function updateF() {
-      $(document).on("submit", "#form1", function (e) {
-        $.ajax({
-          url: $(this).attr("action"),
-          type: $(this).attr("method"),
-          data: $(this).serialize(),
-          success: async function (html) {
-            let request = async () => {};
-            await request();
-          },
-        });
-        e.preventDefault();
-      });
-    }
-    $(document).ready(async function () {
-      await welcome();
-      await updateF();
-    });
-  </script>
 
   <body>
     <form action="form" method="post" id="form1">
@@ -104,4 +64,4 @@
       <input type="submit" value="submit" />
     </form>
   </body>
-</html>
+</html> -->
