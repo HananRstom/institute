@@ -19,6 +19,7 @@ module.exports = {
       number_of_hours = req.body.number_of_hours;
       teacher = req.body.teacher;
       test = req.body.test;
+
       res.send();
     });
 
@@ -32,7 +33,17 @@ module.exports = {
         teacher: teacher,
         test: test,
       };
-      res.send();
+      res.json(obj1);
     });
+ 
+    const options = [
+      { value: 'English', text: 'English' },
+      { value: 'German', text: 'German' },
+      { value: 'Russian', text: 'Russian' }
+    ];
+    app.get('/options', (req, res) => {
+      res.json(options);
+    });
+ 
   },
 };

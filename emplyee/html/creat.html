@@ -36,7 +36,7 @@
         type: $(this).attr("method"),
         data: $(this).serialize(),
         success: async function (html) {
-          let request = async () => {};
+          let request = async () => { };
           await request();
         },
       });
@@ -48,12 +48,26 @@
     await updateF();
   });
 </script>
-
+<script>
+  fetch('/options')
+    .then(response => response.json())
+    .then(data => {
+      const select = document.getElementById('course');
+      data.map(option => {
+        const optionElement = document.createElement('option');
+        optionElement.value = option.value;
+        optionElement.text = option.text;
+        select.appendChild(optionElement);
+      })
+    })
+</script>
 
 <body>
   <form action="/course" method="post" id="form1">
+    
     <label for="course">Choose a course</label>
-    <select name="course" id="course">
+    <select id="course"></select>
+    <!-- <select name="course" id="course">
       <option value=""></option>
       <option value="German">German</option>
       <option value="Frensh">Frensh</option>
@@ -68,7 +82,7 @@
         <option value="pbt1">PBT1 level English</option>
         <option value="pbt2">PBT2 level English</option>
       </optgroup>
-    </select>
+    </select> -->
 
     <div id="div"></div>
     <label for="number">Number of student</label>
@@ -90,31 +104,20 @@
       <option value="4pm">4 Pm</option>
       <option value="5pm">5 Pm</option>
       <option value="6pm">6 Pm</option>
-      <option value="7pm">7 Pm</option>
+
     </select>
     <br /><br />
     <label>Choose working days</label>
 
 
-    <label for="Sonday">Sonday</label>
-    <input type="checkbox" name="days" id="Sonday">
+    <label for="days1">Sunday,Teusday,Thursday</label>
+    <input type="checkbox" name="days" id="days1">
     <br>
-    <label for="Monday">Monday</label>
-    <input type="checkbox" name="days" id="Monday">
+    <label for="days2">Saturday,Monday,Wednesday</label>
+    <input type="checkbox" name="days" id="days2">
     <br>
-    <label for="Teusday">Teusday</label>
-    <input type="checkbox" name="days" id="Teusday">
-    <br>
-    <label for="Wednesday">Wednesday</label>
-    <input type="checkbox" name="days" id="Wednesday">
-    <br>
-    <label for="Thursday">Thursday</label>
-    <input type="checkbox" name="days" id="Thursday">
-    <br>
-    <label for="Saturday">Saturday</label>
-    <input type="checkbox" name="days" id="Saturday">
-    <br>
-    </select>
+
+
     <br /><br />
     <label for="number_of_hours">Number of hours of course</label>
     <input type="number" name="number_of_hours" id="number_of_hours" />

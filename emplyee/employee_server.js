@@ -12,10 +12,9 @@ app.use(cors());
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
-// const forms = require("./js/forms");
+const database = require("./database.js");
 const creat = require("./js/creat");
 creat.creat(app, __dirname);
-// forms.forms(app, __dirname);
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/home.html");
 });
