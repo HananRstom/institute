@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <title>Home</title>
+</head>
+<script>
+  async function updateF() {
+    $(document).on("submit", "#form", function (e) {
+      $.ajax({
+        url: $(this).attr("action"),
+        type: $(this).attr("method"),
+        data: $(this).serialize(),
+        success: async function (html) {
+          let request = async () => { };
+          await request();
+        },
+      });
+      e.preventDefault();
+    });
+  }
+  $(document).ready(async function () {
+    await updateF();
+  });
+</script>
+
+<body>
+  <form action="/employee" method="post" id="form" class="form cf">
+    <button type="button" class="" onclick="window.location='/teacher'">Teacher</button>
+    <button type="button" class="" onclick="window.location='/subjects'">Subjects</button>
+    <button type="button" class="" onclick="window.location='/student'">Students</button>
+    <button type="button" class="" onclick="window.location='/creat'"> Creat </button>
+  </form>
+</body>
+
+</html>
