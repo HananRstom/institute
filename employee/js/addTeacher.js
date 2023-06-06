@@ -10,7 +10,7 @@ module.exports = {
         var Lname;
         var subject;
         var wage;
-        var obj1
+        var obj1;
 
         app.post("/teachInfo", (req, res) => {
             Fname = req.body.f - name;
@@ -25,7 +25,7 @@ module.exports = {
                 Lname: Lname,
                 subject: subject,
                 wage: wage
-            }
+            };
 
             MongoClient.connect(url, async function (err, db) {
                 if (err) throw err;
@@ -35,8 +35,7 @@ module.exports = {
                     if (err) throw err;
                     console.log("add new teacher ");
                 });
-            })
-
-
-        }
-}
+            });
+        });
+    }
+};
