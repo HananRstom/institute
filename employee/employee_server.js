@@ -21,6 +21,7 @@ creat.creat(app, __dirname);
 student.student(app, __dirname);
 teacher.teacher(app,__dirname);
 subjects.subjects(app, __dirname);
+database.database(app,__dirname);
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/home.html");
 });

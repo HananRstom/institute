@@ -7,14 +7,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Teacher</title>
 </head>
+<script>
+
+</script>
 
 <body>
-    <label for="name">Name:</label>
-    <input type="text" id="name" placeholder="Enter name">
-    <button>Search</button>
-    <button>Add</button>
-    <button>Edit</button>
-    <button>Delete</button>
+    <form action="/teacher-info" method="post">
+
+        <label for="name">First name:</label>
+        <input type="text" id="name" name="f-name" placeholder="first name">
+        
+        <label for="mid-name">middle name:</label>
+        <input type="text" id="mid-name" name="m-name" placeholder="mid-name">
+        
+        <label for="l-name">last name:</label>
+        <input type="text" id="l-name"name="l-name" placeholder="last name">
+        <button>Search</button>
+        <br>
+        <button onclick="window.location='/addTeacher'">Add</button>
+        <br>
+        <button>Edit</button>
+        <br>
+        <button>Delete</button>
+
+    </form>
+   
 </body>
 
 </html>
