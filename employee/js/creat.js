@@ -35,15 +35,14 @@ module.exports = {
       };
       res.json(obj1);
     });
- 
+
     const options = [
-      { value: 'English', text: 'English' },
-      { value: 'German', text: 'German' },
-      { value: 'Russian', text: 'Russian' }
+      { value: "English", text: "English" },
+      { value: "German", text: "German" },
+      { value: "Russian", text: "Russian" },
     ];
-    app.get('/options', (req, res) => {
+    app.get("/options", (req, res) => {
       res.json(options);
     });
- 
   },
 };

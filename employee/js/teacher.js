@@ -4,9 +4,6 @@ module.exports = {
       res.sendFile(dic + "/html/teacher.html");
     });
 
-
-    app.post("/techer-info", (req, res) => {
-
-    })
-  }
-}
+    app.post("/techer-info", (req, res) => {});
+  },
+};

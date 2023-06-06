@@ -1,37 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Teacher</title>
-</head>
-<script>
+  </head>
+  <script></script>
 
-</script>
-
-<body>
+  <body>
     <form action="/teacher-info" method="post">
+      <label for="name">First name:</label>
+      <input type="text" id="name" name="f-name" placeholder="first name" />
 
-        <label for="name">First name:</label>
-        <input type="text" id="name" name="f-name" placeholder="first name">
-        
-        <label for="mid-name">middle name:</label>
-        <input type="text" id="mid-name" name="m-name" placeholder="mid-name">
-        
-        <label for="l-name">last name:</label>
-        <input type="text" id="l-name"name="l-name" placeholder="last name">
-        <button>Search</button>
-        <br>
-        <button onclick="window.location='/addTeacher'">Add</button>
-        <br>
-        <button>Edit</button>
-        <br>
-        <button>Delete</button>
+      <label for="mid-name">middle name:</label>
+      <input type="text" id="mid-name" name="m-name" placeholder="mid-name" />
 
+      <label for="l-name">last name:</label>
+      <input type="text" id="l-name" name="l-name" placeholder="last name" />
+      <button>Search</button>
+      <br />
+      <button type="button" onclick="window.location='/addTeacher'">Add</button>
+      <br />
+      <button>Edit</button>
+      <br />
+      <button>Delete</button>
     </form>
-   
-</body>
-
+  </body>
 </html>

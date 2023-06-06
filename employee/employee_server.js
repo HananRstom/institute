@@ -15,13 +15,15 @@ app.use(morgan("dev"));
 const database = require("./database.js");
 const creat = require("./js/creat");
 const teacher = require("./js/teacher.js");
-const student  = require("./js/students.js");
+const student = require("./js/students.js");
 const subjects = require("./js/subjects.js");
+const addTeacher = require("./js/addTeacher.js");
 creat.creat(app, __dirname);
 student.student(app, __dirname);
-teacher.teacher(app,__dirname);
+teacher.teacher(app, __dirname);
 subjects.subjects(app, __dirname);
-database.database(app,__dirname);
+database.database(app, __dirname);
+addTeacher.addTeacher(app, __dirname);
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/home.html");
 });
