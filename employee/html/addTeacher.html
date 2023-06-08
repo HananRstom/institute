@@ -30,19 +30,25 @@
                         const response = await fetch("http://localhost:8083/link1");
 
                         const data = await response.json();
-                        document.getElementById("res").innerHTML =
-                            data.Fname +
-                            "<br/>" +
-                            data.Mname +
-                            "<br/>" +
-                            data.Lname +
-                            "<br/>" +
-                            data.Email +
-                            "<br>"
+                        if (data.check != "") {
+                            document.getElementById("res").innerHTML = data.check;
+                        }
+                        else {
+
+                            document.getElementById("res").innerHTML =
+                                data.Fname +
+                                "<br/>" +
+                                data.Mname +
+                                "<br/>" +
+                                data.Lname +
+                                "<br/>" +
+                                data.Email +
+                                "<br>"
                             data.subject +
-                            "<br/>" +
-                            data.wage;
-                        $("#confirm").show();
+                                "<br/>" +
+                                data.wage;
+                            $("#confirm").show();
+                        }
                     };
 
                     await request();
@@ -97,7 +103,7 @@
         <input type="checkbox" name="subject[]" id="Toefl" value="TOEFL" />
 
         <label for="wage">Hourly wage</label>
-        <input type="text" name="wage" id="wage" placeholder="Hourly wage"required />
+        <input type="text" name="wage" id="wage" placeholder="Hourly wage" required />
         <button type="submit">submit</button>
         <div id="res"></div>
     </form>
