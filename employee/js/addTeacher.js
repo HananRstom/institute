@@ -3,54 +3,67 @@ module.exports = {
     app.get("/addTeacher", function (req, res) {
       res.sendFile(dic + "/html/addTeacher.html");
     });
-    var MongoClient = require("mongodb").MongoClient;
-    var url = "mongodb://localhost:27017/languages";
+
     var Fname;
     var Mname;
     var Lname;
     var subject;
     var wage;
-    var Email="";
+    var Email = "";
     var obj1;
-    var Cemail = "false";
+    var Cemail = false;
     var check;
     let accept_email = ["hotmail", "gmail"];
 
     app.post("/teachInfo", (req, res) => {
-      check="";
+      check = "";
       Fname = req.body.f_name;
       Mname = req.body.m_name;
       Lname = req.body.l_name;
       subject = req.body.subject;
       wage = req.body.wage;
-      Email = req.body, Email;
+      Email = req.body.Email;
       let email = Email.toLowerCase();
       if (email != "") {
         for (let i = 0; i < accept_email.length; i++)
-          if (emaill.search("@" + accept_email[i] + ".com") != -1) {
+          if (email.search("@" + accept_email[i] + ".com") != -1) {
             Cemail = true;
             break;
           }
       }
-      if (Cemail == false ) {
+      if (Cemail == false) {
         check = "Please check the email address entered and try again";
       }
-
-      obj1 = { Fname: Fname, Mname: Mname, Lname: Lname, subject: subject, wage: wage };
+      console.log(email);
+      console.log(Cemail);
+      obj1 = {
+        Fname: Fname,
+        Mname: Mname,
+        Lname: Lname,
+        subject: subject,
+        wage: wage,
+      };
       res.send();
     });
     app.post("/confirm", function (req, res) {
+      const monk = require("monk");
+      const url = "mongodb://localhost:27017/languages";
+      const db = monk(url);
 
+      const collection = db.get("teachers");
 
-      MongoClient.connect(url, async function (err, db) {
-        if (err) throw err;
-        var dbo = db.db("languages");
-
-        await dbo.collection("teachers").insertOne(obj1, function (err, res) {
-          if (err) throw err;
-          console.log("add new teacher ");
+      collection
+        .insert(obj1)
+        .then((doc) => {
+          console.log("Document inserted successfully:", doc);
+        })
+        .catch((err) => {
+          console.error("Error while inserting document:", err);
+        })
+        .then(() => {
+          db.close();
         });
-      });
+
       res.send("Your request has been confirmed");
     });
     app.get("/link1", function (req, res) {
@@ -61,7 +74,7 @@ module.exports = {
         Email: Email,
         subject: subject,
         wage: wage,
-        check:check
+        check: check,
       };
       res.json(object);
     });
