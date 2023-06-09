@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<<<<<<< HEAD
+
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -10,81 +10,63 @@
   <title>Add Teacher</title>
 </head>
 <script>
-  async function updateF() {
-    window.addEventListener("pageshow", function (event) {
-      var historyTraversal =
-        event.persisted ||
-        (typeof window.performance != "undefined" &&
-          window.performance.navigation.type === 2);
-      if (historyTraversal) {
-        // Handle page restore.
-        window.location.reload();
-      }
-    });
-    $(document).on("submit", "#form2", function (e) {
-      $.ajax({
-        url: $(this).attr("action"),
-        type: $(this).attr("method"),
-        data: $(this).serialize(),
-        success: async function (html) {
-          let request = async () => {
-            const response = await fetch("http://localhost:8083/link1");
-
-            const data = await response.json();
-            if (data.check) {
-              document.getElementById("res").innerHTML = data.check;
-            } else {
-              document.getElementById("res").innerHTML =
-                data.Fname +
-                "<br/>" +
-                data.Mname +
-                "<br/>" +
-                data.Lname +
-                "<br/>" +
-                data.Email +
-                "<br>";
-              data.subject + "<br/>" + data.wage;
-              $("#confirm").show();
-            }
-          };
-=======
-              const data = await response.json();
-              if (data.check) {
-                document.getElementById("res").innerHTML = data.check;
-              } else if (!data.testEmail) {
-                document.getElementById("res").innerHTML =
-                  "You are already registered";
-              } else if (data.subject == undefined) {
-                document.getElementById("res").innerHTML =
-                  "At least one subject must be entered";
-              } else {
-                document.getElementById("res").innerHTML =
-                  data.Fname +
-                  "<br/>" +
-                  data.Mname +
-                  "<br/>" +
-                  data.Lname +
-                  "<br/>" +
-                  data.Email +
-                  "<br>" +
-                  data.subject +
-                  "<br/>" +
-                  data.wage;
-                $("#confirm").show();
-              }
-            };
->>>>>>> 5139a7820eb3d9082a51faf0fcbc0dd65271da91
-
-          await request();
-        },
-      });
-      e.preventDefault();
-    });
-  }
-  $(document).ready(async function () {
-    $("#confirm").hide();
-    await updateF();
+async function updateF() {
+  window.addEventListener("pageshow", function (event) {
+    var historyTraversal =
+      event.persisted ||
+      (typeof window.performance != "undefined" &&
+        window.performance.navigation.type === 2);
+    if (historyTraversal) {
+      // Handle page restore.
+      window.location.reload();
+    }
   });
+  $(document).on("submit", "#form2", function (e) {
+    $.ajax({
+      url: $(this).attr("action"),
+      type: $(this).attr("method"),
+      data: $(this).serialize(),
+      success: async function (html) {
+        let request = async () => {
+          const response = await fetch("http://localhost:8083/link1");
+
+          const data = await response.json();
+          if (data.check) {
+            document.getElementById("res").innerHTML = data.check;
+          } else if (!data.testEmail) {
+            document.getElementById("res").innerHTML =
+              "You are already registered";
+          } else if (data.subject == undefined) {
+            document.getElementById("res").innerHTML =
+              "At least one subject must be entered";
+          } else {
+            document.getElementById("res").innerHTML =
+              data.Fname +
+              "<br/>" +
+              data.Mname +
+              "<br/>" +
+              data.Lname +
+              "<br/>" +
+              data.Email +
+              "<br>" +
+              data.subject +
+              "<br/>" +
+              data.wage;
+            $("#confirm").show();
+          }
+        };
+
+        await request();
+      },
+    });
+    e.preventDefault();
+  });
+}
+
+$(document).ready(async function () {
+  $("#confirm").hide();
+  await updateF();
+});
 </script>
 
 <body>
