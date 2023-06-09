@@ -13,7 +13,13 @@ module.exports = {
     var obj1;
     var Cemail = false;
     var check;
+    var testEmail = false;
     let accept_email = ["hotmail", "gmail"];
+    const monk = require("monk");
+    const url = "mongodb://localhost:27017/languages";
+    const db = monk(url);
+
+    const collection = db.get("teachers");
 
     app.post("/teachInfo", (req, res) => {
       check = "";
@@ -21,6 +27,7 @@ module.exports = {
       Mname = req.body.m_name;
       Lname = req.body.l_name;
       subject = req.body.subject;
+
       wage = req.body.wage;
       Email = req.body.Email;
       let email = Email.toLowerCase();
@@ -42,16 +49,20 @@ module.exports = {
         Lname: Lname,
         subject: subject,
         wage: wage,
+        email: Email,
       };
+      collection.find({ email: email }, function (err, docs) {
+        if (err) {
+          console.log(err);
+          return;
+        }
+        testEmail = true;
+        console.log(docs);
+      });
+
       res.send();
     });
     app.post("/confirm", function (req, res) {
-      const monk = require("monk");
-      const url = "mongodb://localhost:27017/languages";
-      const db = monk(url);
-
-      const collection = db.get("teachers");
-
       collection
         .insert(obj1)
         .then((doc) => {
@@ -75,6 +86,7 @@ module.exports = {
         subject: subject,
         wage: wage,
         check: check,
+        testEmail: testEmail,
       };
       res.json(object);
     });

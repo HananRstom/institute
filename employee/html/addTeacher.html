@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 
+<<<<<<< HEAD
 <head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -46,6 +47,33 @@
               $("#confirm").show();
             }
           };
+=======
+              const data = await response.json();
+              if (data.check) {
+                document.getElementById("res").innerHTML = data.check;
+              } else if (!data.testEmail) {
+                document.getElementById("res").innerHTML =
+                  "You are already registered";
+              } else if (data.subject == undefined) {
+                document.getElementById("res").innerHTML =
+                  "At least one subject must be entered";
+              } else {
+                document.getElementById("res").innerHTML =
+                  data.Fname +
+                  "<br/>" +
+                  data.Mname +
+                  "<br/>" +
+                  data.Lname +
+                  "<br/>" +
+                  data.Email +
+                  "<br>" +
+                  data.subject +
+                  "<br/>" +
+                  data.wage;
+                $("#confirm").show();
+              }
+            };
+>>>>>>> 5139a7820eb3d9082a51faf0fcbc0dd65271da91
 
           await request();
         },
