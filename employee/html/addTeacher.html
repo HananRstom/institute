@@ -31,6 +31,12 @@
               const data = await response.json();
               if (data.check) {
                 document.getElementById("res").innerHTML = data.check;
+              } else if (!data.testEmail) {
+                document.getElementById("res").innerHTML =
+                  "You are already registered";
+              } else if (data.subject == undefined) {
+                document.getElementById("res").innerHTML =
+                  "At least one subject must be entered";
               } else {
                 document.getElementById("res").innerHTML =
                   data.Fname +
@@ -40,8 +46,10 @@
                   data.Lname +
                   "<br/>" +
                   data.Email +
-                  "<br>";
-                data.subject + "<br/>" + data.wage;
+                  "<br>" +
+                  data.subject +
+                  "<br/>" +
+                  data.wage;
                 $("#confirm").show();
               }
             };
