@@ -11,9 +11,11 @@ module.exports = {
     var wage;
     var Email = "";
     var obj1;
+
+    var email;
     var Cemail = false;
     var check;
-    var testEmail = false;
+    var testEmail;
     let accept_email = ["hotmail", "gmail"];
     const monk = require("monk");
     const url = "mongodb://localhost:27017/languages";
@@ -21,8 +23,9 @@ module.exports = {
 
     const collection = db.get("teachers");
 
-    app.post("/teachInfo", (req, res) => {
+    app.post("/teachInfo", async (req, res) => {
       check = "";
+      testEmail = false;
       Fname = req.body.f_name;
       Mname = req.body.m_name;
       Lname = req.body.l_name;
@@ -30,7 +33,8 @@ module.exports = {
 
       wage = req.body.wage;
       Email = req.body.Email;
-      let email = Email.toLowerCase();
+      email = Email.toLowerCase();
+
       if (email != "") {
         for (let i = 0; i < accept_email.length; i++)
           if (email.search("@" + accept_email[i] + ".com") != -1) {
@@ -51,14 +55,6 @@ module.exports = {
         wage: wage,
         email: Email,
       };
-      collection.find({ email: email }, function (err, docs) {
-        if (err) {
-          console.log(err);
-          return;
-        }
-        testEmail = true;
-        console.log(docs);
-      });
 
       res.send();
     });
@@ -77,18 +73,40 @@ module.exports = {
 
       res.send("Your request has been confirmed");
     });
-    app.get("/link1", function (req, res) {
-      let object = {
-        Fname: Fname,
-        Mname: Mname,
-        Lname: Lname,
-        Email: Email,
-        subject: subject,
-        wage: wage,
-        check: check,
-        testEmail: testEmail,
-      };
-      res.json(object);
+    app.get("/link1", async function (req, res) {
+      testEmail = false;
+      async function dd() {
+        collection.find({ email: email }, function (err, docs) {
+          console.log(typeof docs);
+          if (err) {
+            console.log(err);
+
+            return;
+          }
+
+          if (Object.keys(docs).length !== 0) {
+            console.log("The object is not empty");
+            testEmail = true;
+          } else {
+            console.log("The object is empty");
+          }
+          console.log("hello");
+
+          console.log(docs);
+          let object = {
+            Fname: Fname,
+            Mname: Mname,
+            Lname: Lname,
+            Email: Email,
+            subject: subject,
+            wage: wage,
+            check: check,
+            testEmail: testEmail,
+          };
+          res.json(object);
+        });
+      }
+      await dd();
     });
   },
 };

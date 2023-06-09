@@ -31,7 +31,7 @@
               const data = await response.json();
               if (data.check) {
                 document.getElementById("res").innerHTML = data.check;
-              } else if (!data.testEmail) {
+              } else if (data.testEmail) {
                 document.getElementById("res").innerHTML =
                   "You are already registered";
               } else if (data.subject == undefined) {
