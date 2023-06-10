@@ -8,9 +8,12 @@ module.exports = {
     var Mname;
     var Lname;
     var Wrong = false;
+    const monk = require("monk");
+    const url = "mongodb://localhost:27017/languages";
+    const db = monk(url);
     var email = ""
     const collection = db.get("teachers");
-    app.post("/techer-info", (req, res) => {
+    app.post("/teacher-info", (req, res) => {
       Fname = req.body.f_name;
       Mname = req.body.m_name;
       Lname = req.body.l_name;

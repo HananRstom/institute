@@ -16,7 +16,7 @@
         data: $(this).serialize(),
         success: async function (html) {
           let request = async () => {
-            const response = await fetch("http://localhost:8080/resFor");
+            const response = await fetch("http://localhost:8083/SearchTeach");
             var book;
             const data = await response.json();
             var s = " ";
