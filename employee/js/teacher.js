@@ -22,7 +22,7 @@ module.exports = {
         Wrong = true;
 
 
-
+      res.send()
     });
 
     app.get("/SearchTeach", async function (req, res) {

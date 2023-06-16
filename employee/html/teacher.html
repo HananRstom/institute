@@ -10,6 +10,7 @@
 <script>
   async function updateF() {
     $(document).on("submit", "#ee", function (e) {
+      
       $.ajax({
         url: $(this).attr("action"),
         type: $(this).attr("method"),
@@ -51,7 +52,10 @@
           }
         }
       });
+    
+    
       e.preventDefault();
+    
     });
   }
 
@@ -69,7 +73,7 @@
 
 
 <body>
-  <form action="/teacher-info" method="post" id="ee">
+  <form action="teacher-info" method="post" id="ee">
     <label for="name">First name:</label>
     <input type="text" id="name" name="f-name" placeholder="first name" />
     <br>
@@ -81,15 +85,15 @@
     <br />
     <label for="Email">Email</label>
     <input type="text" name="Email" id="Email" placeholder="Email" />
-    <input type="submit" value="Search" />
+    <input type="submit" value="Submit" class="form-control btn btn-primary submit px-3" />
     <div id="res"></div>
     <br />
-    <button type="button" onclick="window.location='/addTeacher'">Add</button>
-    <br />
-    <button>Edit</button>
-    <br />
-    <button>Delete</button>
   </form>
+  <button type="button" onclick="window.location='/addTeacher'">Add</button>
+  <br />
+  <button>Edit</button>
+  <br />
+  <button>Delete</button>
 </body>
 
 </html>
