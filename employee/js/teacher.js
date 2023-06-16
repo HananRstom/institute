@@ -8,11 +8,11 @@ module.exports = {
     var Mname;
     var Lname;
     var doc;
+    var email = "";
     var Wrong = false;
     const monk = require("monk");
     const url = "mongodb://localhost:27017/languages";
     const db = monk(url);
-    var email = "";
     const collection = db.get("teachers");
     app.post("/teacher-info", (req, res) => {
       Fname = req.body.f_name;
@@ -20,14 +20,11 @@ module.exports = {
       Lname = req.body.l_name;
       email = req.body.Email;
       if ((Fname == "" || Lname == "") && email == "") Wrong = true;
-      console.log(Wrong + "nnnnnn");
-      console.log(Fname);
+   ;
       res.send();
     });
 
     app.get("/linkk", async function (req, res) {
-      console.log("hanaaaaaaaan");
-      console.log(Wrong + "jhjk");
       async function dd() {
         if (!Wrong) {
           if (email != "") {
@@ -46,6 +43,9 @@ module.exports = {
                 console.log("The object is empty");
               }
               console.log("hello");
+               Info = data.toArray(); 
+              
+              console.log(Info); 
               doc = docs;
             });
           } else if (Lname != "") {
@@ -67,6 +67,9 @@ module.exports = {
                     console.log("The object is empty");
                   }
                   console.log("hello");
+                   Info = data.toArray(); 
+              
+                  console.log(Info); 
                   doc = docs;
                 }
               );
@@ -87,6 +90,9 @@ module.exports = {
                   } else {
                     console.log("The object is empty");
                   }
+                   Info = data.toArray(); 
+              
+                  console.log(Info); 
                   console.log("hello");
                   doc = docs;
                 }
@@ -96,7 +102,7 @@ module.exports = {
         }
 
         let object = {
-          wInfo: doc,
+          Info: Info,
           Wrong: Wrong,
         };
         res.json(object);

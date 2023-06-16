@@ -1,7 +1,18 @@
 module.exports = {
   creat: function (app, dic) {
+    const monk = require("monk");
+    const url = "mongodb://localhost:27017/languages";
+    const db = monk(url);
+    const collection = db.get("students");
+    var cnt;
+
     app.get("/creat", function (req, res) {
       res.sendFile(dic + "/html/creat.html");
+      cnt = collection.count({ selected_subject: "German" }).then((count) => {
+        console.log(`Number of documents with selected_subject "German": ${count}`);
+      }).catch((err) => {
+        console.error(err);
+      });
     });
     var number_student;
     var price;
@@ -11,6 +22,7 @@ module.exports = {
     var teacher;
     var test;
     var obj1;
+
     app.post("/course", function (req, res) {
       number_student = req.body.number_student;
       price = req.body.price;
@@ -35,12 +47,13 @@ module.exports = {
       };
       res.json(obj1);
     });
-
-    const options = [
-      { value: "English", text: "English" },
-      { value: "German", text: "German" },
-      { value: "Russian", text: "Russian" },
-    ];
+    var val;
+    if (cnt>= 10){
+      val="German"
+    }
+      const options = [
+        { value: val, text: val },
+      ];
     app.get("/options", (req, res) => {
       res.json(options);
     });
