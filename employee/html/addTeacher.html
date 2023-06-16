@@ -54,66 +54,88 @@
               }
             };
 
-        await request();
-      },
+            await request();
+          },
+        });
+        e.preventDefault();
+      });
+    }
+
+    $(document).ready(async function () {
+      $("#confirm").hide();
+      await updateF();
     });
-    e.preventDefault();
-  });
-}
+  </script>
 
-$(document).ready(async function () {
-  $("#confirm").hide();
-  await updateF();
-});
-</script>
+  <body>
+    <form action="/teachInfo" method="post" id="form2">
+      <label for="name">First name:</label>
+      <input
+        type="text"
+        id="name"
+        name="f_name"
+        placeholder="first name"
+        required
+      />
 
-<body>
-  <form action="/teachInfo" method="post" id="form2">
-    <label for="name">First name:</label>
-    <input type="text" id="name" name="f_name" placeholder="first name" required />
+      <label for="mid-name">middle name:</label>
+      <input type="text" id="mid-name" name="m_name" placeholder="mid-name" />
 
-    <label for="mid-name">middle name:</label>
-    <input type="text" id="mid-name" name="m_name" placeholder="mid-name" />
+      <label for="l-name">last name:</label>
+      <input
+        type="text"
+        id="l-name"
+        name="l_name"
+        placeholder="last name"
+        required
+      />
+      <br />
+      <label for="Email">Email</label>
+      <input type="text" name="Email" id="Email" placeholder="Email" required />
+      <br />
+      <label for="">The subjects taught :</label>
+      <label for="German">German</label>
+      <input type="checkbox" name="subject[]" id="German" value="German" />
+      <br />
+      <label for="Frensh">Frensh</label>
+      <input type="checkbox" name="subject[]" id="Frensh" value="Frensh" />
+      <br />
+      <label for="Russian">Russian</label>
+      <input type="checkbox" name="subject[]" id="Russian" value="Russian" />
+      <br />
+      <label for="Kids">English for kids</label>
+      <input type="checkbox" name="subject[]" id="Kids" value="Kids" />
+      <br />
+      <label for="Beginner">Beginner level English</label>
+      <input type="checkbox" name="subject[]" id="Beginner" value="Beginner" />
+      <br />
+      <label for="Intermediate">Intermediate level English</label>
+      <input
+        type="checkbox"
+        name="subject[]"
+        id="Intermediate"
+        value="Intermediate"
+      />
+      <br />
+      <label for="Advanced">Advanced level English</label>
+      <input type="checkbox" name="subject[]" id="Advanced" value="Advanced" />
+      <br />
+      <label for="Toefl">TOEFL</label>
+      <input type="checkbox" name="subject[]" id="Toefl" value="TOEFL" />
 
-    <label for="l-name">last name:</label>
-    <input type="text" id="l-name" name="l_name" placeholder="last name" required />
-    <br />
-    <label for="Email">Email</label>
-    <input type="text" name="Email" id="Email" placeholder="Email" required />
-    <br />
-    <label for="">The subjects taught :</label>
-    <label for="German">German</label>
-    <input type="checkbox" name="subject[]" id="German" value="German" />
-    <br />
-    <label for="Frensh">Frensh</label>
-    <input type="checkbox" name="subject[]" id="Frensh" value="Frensh" />
-    <br />
-    <label for="Russian">Russian</label>
-    <input type="checkbox" name="subject[]" id="Russian" value="Russian" />
-    <br />
-    <label for="Kids">English for kids</label>
-    <input type="checkbox" name="subject[]" id="Kids" value="Kids" />
-    <br />
-    <label for="Beginner">Beginner level English</label>
-    <input type="checkbox" name="subject[]" id="Beginner" value="Beginner" />
-    <br />
-    <label for="Intermediate">Intermediate level English</label>
-    <input type="checkbox" name="subject[]" id="Intermediate" value="Intermediate" />
-    <br />
-    <label for="Advanced">Advanced level English</label>
-    <input type="checkbox" name="subject[]" id="Advanced" value="Advanced" />
-    <br />
-    <label for="Toefl">TOEFL</label>
-    <input type="checkbox" name="subject[]" id="Toefl" value="TOEFL" />
-
-    <label for="wage">Hourly wage</label>
-    <input type="text" name="wage" id="wage" placeholder="Hourly wage" required />
-    <button type="submit">submit</button>
-    <div id="res"></div>
-  </form>
-  <form action="/confirm" method="post">
-    <button type="submit" id="confirm">confirm</button>
-  </form>
-</body>
-
+      <label for="wage">Hourly wage</label>
+      <input
+        type="text"
+        name="wage"
+        id="wage"
+        placeholder="Hourly wage"
+        required
+      />
+      <button type="submit">submit</button>
+      <div id="res"></div>
+    </form>
+    <form action="/confirm" method="post">
+      <button type="submit" id="confirm">confirm</button>
+    </form>
+  </body>
 </html>

@@ -11,11 +11,9 @@ module.exports = {
     var wage;
     var Email = "";
     var obj1;
-
     var email;
-    var Cemail = false;
-    var check;
     var testEmail;
+    var Cemail = "false";
     let accept_email = ["hotmail", "gmail"];
     const monk = require("monk");
     const url = "mongodb://localhost:27017/languages";
@@ -34,8 +32,7 @@ module.exports = {
       wage = req.body.wage;
       Email = req.body.Email;
       email = Email.toLowerCase();
-
-      if (email != "") {
+      if (Email != "") {
         for (let i = 0; i < accept_email.length; i++)
           if (email.search("@" + accept_email[i] + ".com") != -1) {
             Cemail = true;
@@ -58,6 +55,7 @@ module.exports = {
 
       res.send();
     });
+
     app.post("/confirm", function (req, res) {
       collection
         .insert(obj1)

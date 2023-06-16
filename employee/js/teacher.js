@@ -7,49 +7,51 @@ module.exports = {
     var Fname;
     var Mname;
     var Lname;
+    var doc;
     var Wrong = false;
     const monk = require("monk");
     const url = "mongodb://localhost:27017/languages";
     const db = monk(url);
-    var email = ""
+    var email = "";
     const collection = db.get("teachers");
     app.post("/teacher-info", (req, res) => {
       Fname = req.body.f_name;
       Mname = req.body.m_name;
       Lname = req.body.l_name;
       email = req.body.Email;
-      if ((Fname == "" || Lname == "") && email == "")
-        Wrong = true;
-
-
-      res.send()
+      if ((Fname == "" || Lname == "") && email == "") Wrong = true;
+      console.log(Wrong + "nnnnnn");
+      console.log(Fname);
+      res.send();
     });
 
-    app.get("/SearchTeach", async function (req, res) {
+    app.get("/linkk", async function (req, res) {
+      console.log("hanaaaaaaaan");
+      console.log(Wrong + "jhjk");
       async function dd() {
         if (!Wrong) {
           if (email != "") {
-            Info = collection.find({ email: email },
-              function (err, docs) {
-                console.log(typeof docs);
-                if (err) {
-                  console.log(err);
+            collection.find({ email: email }, function (err, docs) {
+              console.log(typeof docs);
+              if (err) {
+                console.log(err);
 
-                  return;
-                }
+                return;
+              }
 
-                if (Object.keys(docs).length !== 0) {
-                  console.log("The object is not empty");
-                  testEmail = true;
-                } else {
-                  console.log("The object is empty");
-                }
-                console.log("hello");
-              }).toArray();
-          }
-          else if (Lname != "") {
+              if (Object.keys(docs).length !== 0) {
+                console.log("The object is not empty");
+                testEmail = true;
+              } else {
+                console.log("The object is empty");
+              }
+              console.log("hello");
+              doc = docs;
+            });
+          } else if (Lname != "") {
             if (Mname == "") {
-              Info = collection.find({ Fname: Fname, Lname: Lname },
+              collection.find(
+                { Fname: Fname, Lname: Lname },
                 function (err, docs) {
                   console.log(typeof docs);
                   if (err) {
@@ -65,11 +67,12 @@ module.exports = {
                     console.log("The object is empty");
                   }
                   console.log("hello");
-                }).toArray();
-
-            }
-            else {
-              Info = collection.find({ Fname: Fname, Mname: Mname, Lname: Lname },
+                  doc = docs;
+                }
+              );
+            } else {
+              collection.find(
+                { Fname: Fname, Mname: Mname, Lname: Lname },
                 function (err, docs) {
                   console.log(typeof docs);
                   if (err) {
@@ -85,22 +88,20 @@ module.exports = {
                     console.log("The object is empty");
                   }
                   console.log("hello");
-                }).toArray();
+                  doc = docs;
+                }
+              );
             }
           }
         }
 
         let object = {
-          wInfo: Info,
-          Wrong: Wrong
+          wInfo: doc,
+          Wrong: Wrong,
         };
         res.json(object);
       }
       await dd();
     });
-
-
-
-
   },
 };
