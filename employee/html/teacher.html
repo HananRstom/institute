@@ -35,22 +35,22 @@
                 document.getElementById("res").innerHTML =
                   "You must enter the first name and last name or th email !";
               }
-              if (data.Info != "") {
-                for (let i = 0; i < data.Info.length; i++) {
+              if (data.result.Info != "") {
+                for (let i = 0; i < data.result.Info.length; i++) {
                   s +=
                     " <div>----------------------</div>" +
                     "<span class='sign-span'> Name :</span>" +
-                    data.Info[i].Fname +
+                    data.result.Info[i].Fname +
                     " " +
-                    data.Info[i].Mname +
+                    data.result.Info[i].Mname +
                     " " +
-                    data.Info[i].LName;
-                  "<br>" +
+                    data.result.Info[i].Lname +
+                    "<br>" +
                     "<span class='sign-span'> Email :</span>" +
-                    data.Info[i].email +
+                    data.result.Info[i].email +
                     "<br>" +
                     "<span class='sign-span'> Subject :</span>" +
-                    data.Info[i].subject +
+                    data.result.Info[i].subject +
                     "<br>";
 
                   document.getElementById("res").innerHTML =

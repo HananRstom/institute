@@ -20,7 +20,6 @@ module.exports = {
       Lname = req.body.l_name;
       email = req.body.Email;
       if ((Fname == "" || Lname == "") && email == "") Wrong = true;
-   ;
       res.send();
     });
 
@@ -28,86 +27,59 @@ module.exports = {
       async function dd() {
         if (!Wrong) {
           if (email != "") {
-            collection.find({ email: email }, function (err, docs) {
-              console.log(typeof docs);
-              if (err) {
-                console.log(err);
-
-                return;
-              }
-
-              if (Object.keys(docs).length !== 0) {
-                console.log("The object is not empty");
-                testEmail = true;
-              } else {
-                console.log("The object is empty");
-              }
-              console.log("hello");
-               Info = data.toArray(); 
-              
-              console.log(Info); 
-              doc = docs;
+            return new Promise((resolve, reject) => {
+              collection.find({ email: email }, function (err, docs) {
+                if (err) {
+                  console.log(err);
+                  reject(err);
+                }
+                Info = docs;
+                resolve({ Info, Wrong });
+              });
             });
-          } else if (Lname != "") {
-            if (Mname == "") {
+          } else if (Lname != "" && Fname != "" && Mname != "") {
+            return new Promise((resolve, reject) => {
+              collection.find(
+                { Fname: Fname, Lname: Lname, Mname: Mname },
+                function (err, docs) {
+                  if (err) {
+                    console.log(err);
+                    reject(err);
+                  }
+
+                  Info = docs;
+                  console.log(Info);
+                  resolve({ Info, Wrong });
+                }
+              );
+            });
+          } else if (Lname != "" && Fname != "" && Mname == "") {
+            return new Promise((resolve, reject) => {
               collection.find(
                 { Fname: Fname, Lname: Lname },
                 function (err, docs) {
-                  console.log(typeof docs);
                   if (err) {
                     console.log(err);
-
-                    return;
+                    reject(err);
                   }
 
-                  if (Object.keys(docs).length !== 0) {
-                    console.log("The object is not empty");
-                    testEmail = true;
-                  } else {
-                    console.log("The object is empty");
-                  }
-                  console.log("hello");
-                   Info = data.toArray(); 
-              
-                  console.log(Info); 
-                  doc = docs;
+                  Info = docs;
+                  console.log(Info);
+                  resolve({ Info, Wrong });
                 }
               );
-            } else {
-              collection.find(
-                { Fname: Fname, Mname: Mname, Lname: Lname },
-                function (err, docs) {
-                  console.log(typeof docs);
-                  if (err) {
-                    console.log(err);
-
-                    return;
-                  }
-
-                  if (Object.keys(docs).length !== 0) {
-                    console.log("The object is not empty");
-                    testEmail = true;
-                  } else {
-                    console.log("The object is empty");
-                  }
-                   Info = data.toArray(); 
-              
-                  console.log(Info); 
-                  console.log("hello");
-                  doc = docs;
-                }
-              );
-            }
+            });
           }
         }
-
-        let object = {
-          Info: Info,
-          Wrong: Wrong,
-        };
-        res.json(object);
       }
-      await dd();
+      const result = await dd();
+      console.log(result.Info);
+
+      let object = {
+        result: result,
+        Wrong: Wrong,
+      };
+      res.json(object);
     });
   },
 };
