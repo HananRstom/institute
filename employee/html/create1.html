@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Create1</title>
+</head>
+
+<script>
+    // async function updateF() {
+    //     window.addEventListener("pageshow", function (event) {
+    //         var historyTraversal =
+    //             event.persisted ||
+    //             (typeof window.performance != "undefined" &&
+    //                 window.performance.navigation.type === 2);
+    //         if (historyTraversal) {
+    //             // Handle page restore.
+    //             window.location.reload();
+    //         }
+    //     });
+    //     $(document).on("submit", "#ee", function (e) {
+    //         $.ajax({
+    //             url: $(this).attr("action"),
+    //             type: $(this).attr("method"),
+    //             data: $(this).serialize(),
+    //             success: async function (html) {
+    //                 let request = async () => {
+    //                     const response = await fetch("http://localhost:8083/link1");
+
+    //                     const data = await response.json();
+    //                     var book;
+    //                     var s = " ";
+    //                     if (data.Wrong) {
+    //                         document.getElementById("res").innerHTML =
+    //                             "You must enter the first name and last name or th email !";
+    //                     }
+    //                     if (data.Info != "") {
+    //                         for (let i = 0; i < data.Info.length; i++) {
+    //                             s +=
+    //                                 " <div>----------------------</div>" +
+    //                                 "<span class='sign-span'> Name :</span>" +
+    //                                 data.Info[i].Fname +
+    //                                 " " +
+    //                                 data.Info[i].Mname +
+    //                                 " " +
+    //                                 data.Info[i].LName;
+    //                             "<br>" +
+    //                                 "<span class='sign-span'> Email :</span>" +
+    //                                 data.Info[i].email +
+    //                                 "<br>" +
+    //                                 "<span class='sign-span'> Subject :</span>" +
+    //                                 data.Info[i].subject +
+    //                                 "<br>";
+
+    //                             document.getElementById("res").innerHTML =
+    //                                 " <div class='info-sign'>Your Informaton is :</div>" + s;
+    //                         }
+    //                     } else {
+    //                         alert(
+    //                             "There is no information for the entered data. Check the email or name"
+    //                         );
+    //                     }
+    //                 };
+
+    //                 await request();
+    //             },
+    //         });
+    //         e.preventDefault();
+    //     });
+    // }
+
+    // $(document).ready(async function () {
+    //     $("#confirm").hide();
+    //     await updateF();
+    // });
+
+    fetch("/teachers")
+        .then((response) => response.json())
+        .then((data) => {
+            const select = document.getElementById("teacher");
+            data.map((option) => {
+                const optionElement = document.createElement("option");
+                optionElement.value = option.value;
+                optionElement.text = option.text;
+                select.appendChild(optionElement);
+            });
+        });
+</script>
+
+<body>
+    <form action="Teacher_course" method="post">
+        <label for="number">Number of student</label>
+        <div id="number"></div>
+        <br /><br />
+        <label for="price">price of course</label>
+        <div id="price"></div>
+        <br /><br />
+        <label for="teacher">Teacher's name</label>
+        <select name="teacher" id="teacher"></select>
+        <button type="submit">Continue</button>
+
+
+
+
+
+    </form>
+</body>
+
+</html>
