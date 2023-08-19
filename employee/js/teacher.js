@@ -7,7 +7,7 @@ module.exports = {
     var Fname;
     var Mname;
     var Lname;
-    var doc;
+
     var email = "";
     var Wrong = false;
     const monk = require("monk");
@@ -73,7 +73,7 @@ module.exports = {
         }
       }
       const result = await dd();
-      console.log(result.Info);
+      // console.log(result.Info);
 
       let object = {
         result: result,
