@@ -14,7 +14,7 @@ app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 const database = require("./database.js");
-const creat = require("./js/creat");
+const creat = require("./js/create");
 const teacher = require("./js/teacher.js");
 const student = require("./js/students.js");
 const subjects = require("./js/subjects.js");
