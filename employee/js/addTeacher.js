@@ -18,7 +18,7 @@ module.exports = {
     const monk = require("monk");
     const url = "mongodb://localhost:27017/languages";
     const db = monk(url);
-
+    const work = [];
     const collection = db.get("teachers");
 
     app.post("/teachInfo", async (req, res) => {
@@ -51,6 +51,7 @@ module.exports = {
         subject: subject,
         wage: wage,
         email: Email,
+        work: work,
       };
 
       res.send();

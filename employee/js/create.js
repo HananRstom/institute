@@ -4,74 +4,21 @@ module.exports = {
     const url = "mongodb://localhost:27017/languages";
     const db = monk(url);
     const collection = db.get("students");
-    const collteacher = db.get("teacher");
+    const collteacher = db.get("teachers");
     var subjCnt = [];
-    var teacherName = [];
     var selected_subject = ["German", "Frensh", "Russian", "Kids"];
-    var selected_level = ["Beginner", "Intermediate", "Advanced", "ibt1", "ibt2", "pbt1", "pbt2",];
+    var selected_level = [
+      "Beginner",
+      "Intermediate",
+      "Advanced",
+      "ibt1",
+      "ibt2",
+      "pbt1",
+      "pbt2",
+    ];
     var cnt;
     app.get("/creat", function (req, res) {
       res.sendFile(dic + "/html/create.html");
-
-    });
-    //
-    var number_student;
-    var price;
-    var times;
-    var days;
-    var number_of_hours;
-    var teacher;
-    var test;
-    var obj1;
-    var subject;
-    var rowIndex;
-
-    app.post("/course", async function (req, res) {
-      subject = req.body.course;
-      //choose teacher
-      async function findTeacher() {
-        return new Promise((resolve, reject) => {
-          collteacher.find(
-            { subject: subject },
-            function (err, docs) {
-              if (err) {
-                console.log(err);
-                reject(err);
-              }
-              Info = docs;
-              resolve({ Info });
-            }
-          );
-        });
-      }
-      const result = await findTeacher();
-
-      const teachers = [];
-      for (let i = 0; i < result.Info.length; i++) {
-        teachers.push({
-          value: result.Info[i].email,
-          text: result.Info[i].email,
-        });
-      }
-
-      app.get("/teachers", (req, res) => {
-        res.json(teachers);
-      });
-
-      res.sendFile(dic + "/HTML/create1.html");
-    });
-    //مانو مهم
-    app.get("link1", (req, res) => {
-      obj1 = {
-        number_student: subjCnt[rowIndex][0],
-        price: price,
-        times: times,
-        days: days,
-        number_of_hours: number_of_hours,
-        teacher: teacher,
-        test: test,
-      };
-      res.json(obj1);
     });
     //checking the number of students in each course
     const options = [];
@@ -124,11 +71,80 @@ module.exports = {
       if (parseInt(subjCnt[j][0]) >= 1) {
         options.push({ value: subjCnt[j][1], text: subjCnt[j][1] });
       }
-      console.log(subjCnt[j][1]);
     }
     app.get("/options", (req, res) => {
       res.json(options);
     });
-  },
 
+    //
+    var number_student;
+    var subject;
+    var obj1;
+
+    app.post("/course", async function (req, res) {
+      var testsub = false;
+      subject = req.body.course;
+      for (let i = 0; i < selected_level.length; i++) {
+        if (subject != selected_level[i]) {
+          testsub = true;
+        }
+      }
+      console.log(testsub);
+      if (testsub) {
+        obj1 = { selected_subject: subject };
+      } else {
+        obj1 = { selected_subject: "English", selected_level: subject };
+      }
+      async function dd() {
+        return new Promise((resolve, reject) => {
+          collection.count(obj1, function (err, docs) {
+            if (err) {
+              console.log(err);
+              reject(err);
+            }
+            Info = docs;
+            resolve({ Info });
+          });
+        });
+      }
+      const result1 = await dd();
+      number_student = result1.Info;
+      //choose teacher
+      async function findTeacher() {
+        return new Promise((resolve, reject) => {
+          collteacher.find(
+            { subject: { $in: [subject] } },
+            function (err, docs) {
+              if (err) {
+                console.log(err);
+                reject(err);
+              }
+              Info = docs;
+              resolve({ Info });
+            }
+          );
+        });
+      }
+      const result = await findTeacher();
+      console.log(result.Info);
+      const teachers = [];
+      for (let i = 0; i < result.Info.length; i++) {
+        teachers.push({
+          value: result.Info[i].email,
+          text: result.Info[i].email,
+        });
+      }
+
+      obj3 = {
+        teachers: teachers,
+        number_student: number_student,
+      };
+
+      app.get("/teachers", (req, res) => {
+        res.json(obj3);
+      });
+
+      res.sendFile(dic + "/HTML/create1.html");
+    });
+  },
 };
