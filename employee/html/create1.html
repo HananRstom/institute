@@ -7,7 +7,89 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <title>Create1</title>
   </head>
+  <script>
+    async function updateF() {
+      window.addEventListener("pageshow", function (event) {
+        var historyTraversal =
+          event.persisted ||
+          (typeof window.performance != "undefined" &&
+            window.performance.navigation.type === 2);
+        if (historyTraversal) {
+          // Handle page restore.
+          window.location.reload();
+        }
+      });
+      $(document).on("submit", "#ee", function (e) {
+        $.ajax({
+          url: $(this).attr("action"),
+          type: $(this).attr("method"),
+          data: $(this).serialize(),
+          success: async function (html) {
+            let request = async () => {
+              const response = await fetch("http://localhost:8083/create_data");
 
+              const data = await response.json();
+
+              s =
+                data.resultTeachers[0].Fname +
+                " " +
+                data.resultTeachers[0].Mname +
+                " " +
+                data.resultTeachers[0].Lname +
+                "<br>" +
+                "<span class='sign-span'> Email :</span>" +
+                data.resultTeachers[0].email +
+                "<br>" +
+                "<span class='sign-span'> Subject :</span>" +
+                data.resultTeachers[0].subject +
+                "<br>" +
+                "<span class='sign-span'> day :</span>" +
+                data.resultTeachers[0].work[0][0] +
+                "<span class='sign-span'> hour :</span>" +
+                data.resultTeachers[0].work[0][1] +
+                "<span class='sign-span'> class :</span>" +
+                data.resultTeachers[0].work[0][2];
+
+              document.getElementById("work").innerHTML =
+                " <div class='info-sign'>Your Informaton is :</div>" + s;
+
+              m1 =
+                "day" +
+                data.class1[0].busy[0][0] +
+                "hour" +
+                data.class1[0].busy[0][1];
+              m2 =
+                "day" +
+                data.class2[0].busy[0][0] +
+                "hour" +
+                data.class2[0].busy[0][1];
+
+              m3 =
+                "day" +
+                data.class3[0].busy[0][0] +
+                "hour" +
+                data.class3[0].busy[0][1];
+
+              document.getElementById("class1").innerHTML =
+                " <div class='info-sign'>Your Informaton is :</div>" + m1;
+              document.getElementById("class2").innerHTML =
+                " <div class='info-sign'>Your Informaton is :</div>" + m2;
+              document.getElementById("class3").innerHTML =
+                " <div class='info-sign'>Your Informaton is :</div>" + m3;
+            };
+
+            await request();
+          },
+        });
+        e.preventDefault();
+      });
+    }
+
+    $(document).ready(async function () {
+      $("#confirm").hide();
+      await updateF();
+    });
+  </script>
   <script>
     fetch("/teachers")
       .then((response) => response.json())
@@ -32,6 +114,35 @@
       <label for="teacher">Teacher's name</label>
       <select name="teacher" id="teacher"></select>
       <button type="submit">Continue</button>
+      <div id="work"></div>
+      <input type="radio" id="class1" name="class" value="1" />
+      <label for="class1">class1</label>
+      <div id="class1"></div>
+      <input type="radio" id="class2" name="class" value="2" />
+      <label for="class2">class2</label>
+      <div id="class2"></div>
+      <input type="radio" id="class3" name="class" value="3" />
+      <label for="class3">class3</label>
+      <div id="class3"></div>
+
+      <label>Choose working days</label>
+
+      <label for="days1">Sunday,Teusday,Thursday</label>
+      <input
+        type="radio"
+        name="days"
+        id="days1"
+        value="Sunday,Teusday,Thursday"
+      />
+      <br />
+      <label for="days2">Saturday,Monday,Wednesday</label>
+      <input
+        type="radio"
+        name="days"
+        id="days2"
+        value="Saturday,Monday,Wednesday"
+      />
+      <br />
     </form>
   </body>
 </html>

@@ -1,3 +1,5 @@
+const { isEmpty } = require("lodash");
+
 module.exports = {
   addTeacher: function (app, dic) {
     app.get("/addTeacher", function (req, res) {
@@ -18,7 +20,7 @@ module.exports = {
     const monk = require("monk");
     const url = "mongodb://localhost:27017/languages";
     const db = monk(url);
-    const work = [];
+    const work = [[" ", " ", " "]];
     const collection = db.get("teachers");
 
     app.post("/teachInfo", async (req, res) => {
@@ -74,38 +76,39 @@ module.exports = {
     });
     app.get("/link1", async function (req, res) {
       testEmail = false;
-      async function dd() {
-        collection.find({ email: email }, function (err, docs) {
-          console.log(typeof docs);
-          if (err) {
-            console.log(err);
 
-            return;
-          }
-
-          if (Object.keys(docs).length !== 0) {
-            console.log("The object is not empty");
-            testEmail = true;
-          } else {
-            console.log("The object is empty");
-          }
-          console.log("hello");
-
-          console.log(docs);
-          let object = {
-            Fname: Fname,
-            Mname: Mname,
-            Lname: Lname,
-            Email: Email,
-            subject: subject,
-            wage: wage,
-            check: check,
-            testEmail: testEmail,
-          };
-          res.json(object);
+      async function findTeacher() {
+        return new Promise((resolve, reject) => {
+          collection.find({ email: email }, function (err, docs) {
+            if (err) {
+              console.log(err);
+              reject(err);
+            }
+            Info = docs;
+            resolve({ Info });
+          });
         });
       }
-      await dd();
+
+      const result2 = await findTeacher();
+      var result4 = result2.Info;
+      if (!isEmpty(result4)) {
+        testEmail = true;
+      }
+      console.log(testEmail + "hhhhhhhhhhh");
+      console.log(result4);
+
+      let object = {
+        Fname: Fname,
+        Mname: Mname,
+        Lname: Lname,
+        Email: Email,
+        subject: subject,
+        wage: wage,
+        check: check,
+        testEmail: testEmail,
+      };
+      res.json(object);
     });
   },
 };
