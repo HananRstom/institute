@@ -151,8 +151,11 @@ module.exports = {
     });
     /////work-teacher
     var email;
+    var Class_Num;
+    var AvailableHoure=[];
     app.post("/Teacher_course", async (req, res) => {
       email = req.body.teacher;
+      Class_Num = req.body.class;
 
       res.send();
     });
@@ -214,15 +217,47 @@ module.exports = {
       }
       const classes3 = await bussy3();
       var class3 = classes3.Info;
-      console.log(class1 + class2 + "iiiii");
+      ////Busy hours (class)
+      async function bussyHours() {
+        return new Promise((resolve, reject) => {
+          collclass.find({ number: Class_Num }, function (err, docs) {
+            if (err) {
+              console.log(err);
+              reject(err);
+            }
+            Info = docs;
+            resolve({ Info });
+          });
+        });
+      }
+      const classes = await bussyHours();
+      var v = classes.Info;
+    var  BussyClass = v.busy.forEach(row => {
+        const thirdColumnElement = row[1];
+      })
+      ////Busy hours (teacher)
+    var  Hour_teacher =resultTeachers.work.forEach(row => {
+        const thirdColumnElement = row[1];
+      })
+      for (let i = 8; i <= 18; i++) {
+        if(Hour_teacher!=i&&BussyClass!=i)
+        AvailableHoure.push(i)
 
+      }
       var obj4 = {
         resultTeachers: resultTeachers,
         class1: class1,
         class2: class2,
         class3: class3,
+        AvailableHoure:AvailableHoure
       };
       res.json(obj4);
     });
+
+
+
+
+
+
   },
 };
