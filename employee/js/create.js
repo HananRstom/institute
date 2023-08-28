@@ -152,10 +152,12 @@ module.exports = {
     /////work-teacher
     var email;
     var Class_Num;
-    var AvailableHoure=[];
+    var days;
+    var AvailableHoure = [];
     app.post("/Teacher_course", async (req, res) => {
       email = req.body.teacher;
       Class_Num = req.body.class;
+      days = req.body.days;
 
       res.send();
     });
@@ -220,7 +222,7 @@ module.exports = {
       ////Busy hours (class)
       async function bussyHours() {
         return new Promise((resolve, reject) => {
-          collclass.find({ number: Class_Num }, function (err, docs) {
+          collclass.find({ number: Class_Num, busy: { $in: [days] } }, function (err, docs) {
             if (err) {
               console.log(err);
               reject(err);
@@ -232,16 +234,16 @@ module.exports = {
       }
       const classes = await bussyHours();
       var v = classes.Info;
-    var  BussyClass = v.busy.forEach(row => {
+      var BussyClass = v.busy.forEach(row => {
         const thirdColumnElement = row[1];
       })
       ////Busy hours (teacher)
-    var  Hour_teacher =resultTeachers.work.forEach(row => {
+      var Hour_teacher = resultTeachers.work.forEach(row => {
         const thirdColumnElement = row[1];
       })
       for (let i = 8; i <= 18; i++) {
-        if(Hour_teacher!=i&&BussyClass!=i)
-        AvailableHoure.push(i)
+        if (Hour_teacher[i] != i && BussyClass[i] != i)
+          AvailableHoure.push(i)
 
       }
       var obj4 = {
@@ -249,7 +251,7 @@ module.exports = {
         class1: class1,
         class2: class2,
         class3: class3,
-        AvailableHoure:AvailableHoure
+        AvailableHoure: AvailableHoure
       };
       res.json(obj4);
     });
