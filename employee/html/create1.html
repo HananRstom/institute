@@ -1,148 +1,170 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <title>Create1</title>
-  </head>
-  <script>
-    async function updateF() {
-      window.addEventListener("pageshow", function (event) {
-        var historyTraversal =
-          event.persisted ||
-          (typeof window.performance != "undefined" &&
-            window.performance.navigation.type === 2);
-        if (historyTraversal) {
-          // Handle page restore.
-          window.location.reload();
-        }
-      });
-      $(document).on("submit", "#ee", function (e) {
-        $.ajax({
-          url: $(this).attr("action"),
-          type: $(this).attr("method"),
-          data: $(this).serialize(),
-          success: async function (html) {
-            let request = async () => {
-              const response = await fetch("http://localhost:8083/create_data");
 
-              const data = await response.json();
-
-              s =
-                data.resultTeachers[0].Fname +
-                " " +
-                data.resultTeachers[0].Mname +
-                " " +
-                data.resultTeachers[0].Lname +
-                "<br>" +
-                "<span class='sign-span'> Email :</span>" +
-                data.resultTeachers[0].email +
-                "<br>" +
-                "<span class='sign-span'> Subject :</span>" +
-                data.resultTeachers[0].subject +
-                "<br>" +
-                "<span class='sign-span'> day :</span>" +
-                data.resultTeachers[0].work[0][0] +
-                "<span class='sign-span'> hour :</span>" +
-                data.resultTeachers[0].work[0][1] +
-                "<span class='sign-span'> class :</span>" +
-                data.resultTeachers[0].work[0][2];
-
-              document.getElementById("work").innerHTML =
-                " <div class='info-sign'>Your Informaton is :</div>" + s;
-
-              m1 =
-                "day" +
-                data.class1[0].busy[0][0] +
-                "hour" +
-                data.class1[0].busy[0][1];
-              m2 =
-                "day" +
-                data.class2[0].busy[0][0] +
-                "hour" +
-                data.class2[0].busy[0][1];
-
-              m3 =
-                "day" +
-                data.class3[0].busy[0][0] +
-                "hour" +
-                data.class3[0].busy[0][1];
-
-              document.getElementById("class1").innerHTML =
-                " <div class='info-sign'>Your Informaton is :</div>" + m1;
-              document.getElementById("class2").innerHTML =
-                " <div class='info-sign'>Your Informaton is :</div>" + m2;
-              document.getElementById("class3").innerHTML =
-                " <div class='info-sign'>Your Informaton is :</div>" + m3;
-            };
-
-            await request();
-          },
-        });
-        e.preventDefault();
-      });
-    }
-
-    $(document).ready(async function () {
-      $("#confirm").hide();
-      await updateF();
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <title>Create1</title>
+</head>
+<script>
+  async function updateF() {
+    window.addEventListener("pageshow", function (event) {
+      var historyTraversal =
+        event.persisted ||
+        (typeof window.performance != "undefined" &&
+          window.performance.navigation.type === 2);
+      if (historyTraversal) {
+        // Handle page restore.
+        window.location.reload();
+      }
     });
-  </script>
-  <script>
-    fetch("/teachers")
-      .then((response) => response.json())
-      .then((data) => {
-        const select = document.getElementById("teacher");
-        data.teachers.map((option) => {
-          const optionElement = document.createElement("option");
-          optionElement.value = option.value;
-          optionElement.text = option.text;
-          select.appendChild(optionElement);
-        });
-        document.getElementById("number").innerHTML = data.number_student;
+    $(document).on("submit", "#ee", function (e) {
+      $.ajax({
+        url: $(this).attr("action"),
+        type: $(this).attr("method"),
+        data: $(this).serialize(),
+        success: async function (html) {
+          let request = async () => {
+            const response = await fetch("http://localhost:8083/create_data");
+
+            const data = await response.json();
+
+            s =
+              data.resultTeachers[0].Fname +
+              " " +
+              data.resultTeachers[0].Mname +
+              " " +
+              data.resultTeachers[0].Lname +
+              "<br>" +
+              "<span class='sign-span'> Email :</span>" +
+              data.resultTeachers[0].email +
+              "<br>" +
+              "<span class='sign-span'> Subject :</span>" +
+              data.resultTeachers[0].subject +
+              "<br>" +
+              "<span class='sign-span'> day :</span>" +
+              data.resultTeachers[0].work[0][0] +
+              "<span class='sign-span'> hour :</span>" +
+              data.resultTeachers[0].work[0][1] +
+              "<span class='sign-span'> class :</span>" +
+              data.resultTeachers[0].work[0][2];
+
+            document.getElementById("work").innerHTML =
+              " <div class='info-sign'>Your Informaton is :</div>" + s;
+
+            m1 =
+              "day : " +
+              data.class1[0].busy[0][0] +
+              "hour : " +
+              data.class1[0].busy[0][1];
+            m2 =
+              "day : " +
+              data.class2[0].busy[0][0] +
+              "hour : " +
+              data.class2[0].busy[0][1];
+
+            m3 =
+              "day : " +
+              data.class3[0].busy[0][0] +
+              "hour : " +
+              data.class3[0].busy[0][1];
+
+            document.getElementById("classOne").innerHTML =
+              " <div class='info-sign'>class:</div>" + m1;
+            document.getElementById("classTwo").innerHTML =
+              " <div class='info-sign'>class :</div>" + m2;
+            document.getElementById("classThree").innerHTML =
+              " <div class='info-sign'>class :</div>" + m3;
+          };
+          $("#hide").show();
+          $("#Continue1").hide()
+          $("#Continue2").show()
+          await request();
+        },
       });
-  </script>
+      e.preventDefault();
+    });
+  }
+  async function updateA() {
+    $(document).on("submit", "#Two", function (e) {
+      $.ajax({
+        url: $(this).attr("action"),
+        type: $(this).attr("method"),
+        data: $(this).serialize(),
+        success: async function (html) {
+          let request = async () => {
+            const response = await fetch("http://localhost:8083/Time_data");
+            const data = await response.json();
+          };
+          await request();
+        },
+      });
+      e.preventDefault();
+    });
+  }
 
-  <body>
-    <form action="Teacher_course" method="post" id="ee">
-      <label for="number">Number of student</label>
-      <div id="number"></div>
-      <br /><br />
 
-      <label for="teacher">Teacher's name</label>
-      <select name="teacher" id="teacher"></select>
-      <button type="submit">Continue</button>
-      <div id="work"></div>
+  $(document).ready(async function () {
+    $("#Continue2").hide()
+    $("#hide").hide();
+    await updateF();
+    await updateA();
+  });
+</script>
+<script>
+  fetch("/teachers")
+    .then((response) => response.json())
+    .then((data) => {
+      const select = document.getElementById("teacher");
+      data.teachers.map((option) => {
+        const optionElement = document.createElement("option");
+        optionElement.value = option.value;
+        optionElement.text = option.text;
+        select.appendChild(optionElement);
+      });
+      document.getElementById("number").innerHTML = data.number_student;
+    });
+</script>
+
+<body>
+  <form action="Teacher_course" method="post" id="ee">
+    <label for="number">Number of student</label>
+    <div id="number"></div>
+    <br /><br />
+
+    <label for="teacher">Teacher's name</label>
+    <select name="teacher" id="teacher"></select>
+
+    <div id="work"></div>
+
+    <button type="submit" id="Continue1">Continue</button>
+  </form>
+  <form action="Free_hour" method="post" id="Two">
+    <div id="hide">
       <input type="radio" id="class1" name="class" value="1" />
       <label for="class1">class1</label>
-      <div id="class1"></div>
+      <div id="classOne"></div>
       <input type="radio" id="class2" name="class" value="2" />
       <label for="class2">class2</label>
-      <div id="class2"></div>
+      <div id="classTwo"></div>
       <input type="radio" id="class3" name="class" value="3" />
       <label for="class3">class3</label>
-      <div id="class3"></div>
+      <div id="classThree"></div>
 
       <label>Choose working days</label>
 
       <label for="days1">Sunday,Teusday,Thursday</label>
-      <input
-        type="radio"
-        name="days"
-        id="days1"
-        value="Sunday,Teusday,Thursday"
-      />
+      <input type="radio" name="days" id="days1" value="Sunday,Teusday,Thursday" />
       <br />
       <label for="days2">Saturday,Monday,Wednesday</label>
-      <input
-        type="radio"
-        name="days"
-        id="days2"
-        value="Saturday,Monday,Wednesday"
-      />
+      <input type="radio" name="days" id="days2" value="Saturday,Monday,Wednesday" />
       <br />
-    </form>
-  </body>
+    </div>
+
+    <button type="submit" id="Continue2">Continue</button>
+  </form>
+</body>
+
 </html>

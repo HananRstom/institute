@@ -3,7 +3,7 @@ const { result } = require("lodash");
 module.exports = {
   creat: async function (app, dic) {
     const monk = require("monk");
-    const url = "mongodb://localhost:27017/languages";
+    const url = "mongodb://0.0.0.0:27017/languages";
     const db = monk(url);
     const collection = db.get("students");
     const collteacher = db.get("teachers");
@@ -86,13 +86,14 @@ module.exports = {
 
     app.post("/course", async function (req, res) {
       var testsub = false;
+      //choose teacher
       subject = req.body.course;
       for (let i = 0; i < selected_level.length; i++) {
         if (subject != selected_level[i]) {
           testsub = true;
         }
       }
-      console.log(testsub);
+
       if (testsub) {
         obj1 = { selected_subject: subject };
       } else {
@@ -112,7 +113,6 @@ module.exports = {
       }
       const result1 = await dd();
       number_student = result1.Info;
-      //choose teacher
       async function findTeacher() {
         return new Promise((resolve, reject) => {
           collteacher.find(
@@ -129,7 +129,7 @@ module.exports = {
         });
       }
       const result = await findTeacher();
-      console.log(result.Info);
+
       const teachers = [];
       for (let i = 0; i < result.Info.length; i++) {
         teachers.push({
@@ -137,7 +137,7 @@ module.exports = {
           text: result.Info[i].email,
         });
       }
-
+      ///fill out the select for teacher and send the number of student
       obj3 = {
         teachers: teachers,
         number_student: number_student,
@@ -156,12 +156,17 @@ module.exports = {
     var AvailableHoure = [];
     app.post("/Teacher_course", async (req, res) => {
       email = req.body.teacher;
-      Class_Num = req.body.class;
-      days = req.body.days;
-
       res.send();
     });
+    app.post("/Free_hour", async (req, res) => {
+      Class_Num = req.body.class;
+      console.log(Class_Num + "hi")
+      days = req.body.days;
+
+      res.send()
+    })
     app.get("/create_data", async function (req, res) {
+      ///send the info about teacher and classes
       async function findwork() {
         return new Promise((resolve, reject) => {
           collteacher.find({ email: email }, function (err, docs) {
@@ -219,7 +224,34 @@ module.exports = {
       }
       const classes3 = await bussy3();
       var class3 = classes3.Info;
+      var obj4 = {
+        resultTeachers: resultTeachers,
+        class1: class1,
+        class2: class2,
+        class3: class3,
+      };
+      res.json(obj4);
+    });
+    app.get("/Time_data", async (req, res) => {
+      //check what hours will be free
+
+      async function findwork() {
+        return new Promise((resolve, reject) => {
+          collteacher.find({ email: email }, function (err, docs) {
+            if (err) {
+              console.log(err);
+              reject(err);
+            }
+            Info = docs;
+            resolve({ Info });
+          });
+        });
+      }
+      const workTeacher = await findwork();
+      var resultTeachers = workTeacher.Info;
       ////Busy hours (class)
+      console.log("class num " + Class_Num)
+
       async function bussyHours() {
         return new Promise((resolve, reject) => {
           collclass.find({ number: Class_Num, busy: { $in: [days] } }, function (err, docs) {
@@ -234,30 +266,28 @@ module.exports = {
       }
       const classes = await bussyHours();
       var v = classes.Info;
-      var BussyClass = v.busy.forEach(row => {
-        const thirdColumnElement = row[1];
-      })
+      console.log(v + "vv")
+      var BussyClass = v.busy
+      console.log(BussyClass + "bbbbb")
+
       ////Busy hours (teacher)
-      var Hour_teacher = resultTeachers.work.forEach(row => {
-        const thirdColumnElement = row[1];
-      })
-      for (let i = 8; i <= 18; i++) {
-        if (Hour_teacher[i] != i && BussyClass[i] != i)
-          AvailableHoure.push(i)
+      // var Hour_teacher = resultTeachers.work[0][0]
 
-      }
-      var obj4 = {
-        resultTeachers: resultTeachers,
-        class1: class1,
-        class2: class2,
-        class3: class3,
+      // .forEach(row => {
+      //   const thirdColumnElement = row[1];
+      // })
+      // for (let i = 8; i <= 18; i++) {
+      //   if (Hour_teacher[i] != i && BussyClass[i] != i)
+      //     AvailableHoure.push(i)
+
+      // }
+      var obj2;
+      obj2 = {
         AvailableHoure: AvailableHoure
-      };
-      res.json(obj4);
-    });
+      }
+      res.json(obj2)
 
-
-
+    })
 
 
 

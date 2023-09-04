@@ -18,11 +18,11 @@ module.exports = {
     var Cemail = "false";
     let accept_email = ["hotmail", "gmail"];
     const monk = require("monk");
-    const url = "mongodb://localhost:27017/languages";
+    const url = "mongodb://0.0.0.0:27017/languages";
     const db = monk(url);
     const work = [[" ", " ", " "]];
     const collection = db.get("teachers");
-
+ 
     app.post("/teachInfo", async (req, res) => {
       check = "";
       testEmail = false;
