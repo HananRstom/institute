@@ -1,4 +1,4 @@
-const { result } = require("lodash");
+const { result, isEmpty, set } = require("lodash");
 
 module.exports = {
   creat: async function (app, dic) {
@@ -20,6 +20,16 @@ module.exports = {
       "pbt2",
     ];
     var cnt;
+    var email;
+    var Class_Num;
+    var days;
+    var emptyHour;
+    var number_student;
+    var subject;
+    var obj1;
+    var obj2;
+    var obj3;
+    var obj4;
     app.get("/creat", function (req, res) {
       res.sendFile(dic + "/html/create.html");
     });
@@ -80,9 +90,7 @@ module.exports = {
     });
 
     //
-    var number_student;
-    var subject;
-    var obj1;
+   
 
     app.post("/course", async function (req, res) {
       var testsub = false;
@@ -150,17 +158,14 @@ module.exports = {
       res.sendFile(dic + "/html/create1.html");
     });
     /////work-teacher
-    var email;
-    var Class_Num;
-    var days;
-    var AvailableHoure = [];
+ 
     app.post("/Teacher_course", async (req, res) => {
       email = req.body.teacher;
       res.send();
     });
     app.post("/Free_hour", async (req, res) => {
       Class_Num = req.body.class;
-      console.log(Class_Num + "hi")
+
       days = req.body.days;
 
       res.send()
@@ -233,11 +238,13 @@ module.exports = {
       res.json(obj4);
     });
     app.get("/Time_data", async (req, res) => {
+      var AvailableHoure = [];
       //check what hours will be free
 
+      ////Busy hours (teacher)
       async function findwork() {
         return new Promise((resolve, reject) => {
-          collteacher.find({ email: email }, function (err, docs) {
+          collteacher.find({ email: email, work: { $in: [days] } }, function (err, docs) {
             if (err) {
               console.log(err);
               reject(err);
@@ -247,14 +254,25 @@ module.exports = {
           });
         });
       }
+      var Hour_teacher = []
       const workTeacher = await findwork();
       var resultTeachers = workTeacher.Info;
+      if (!isEmpty(resultTeachers)) {
+        var T;
+        resultTeachers.forEach(e => {
+          T = e.work;
+        });
+        T.forEach(e => {
+          Hour_teacher = e[1]
+        });
+      }
+
       ////Busy hours (class)
-      console.log("class num " + Class_Num)
+
 
       async function bussyHours() {
         return new Promise((resolve, reject) => {
-          collclass.find({ number: Class_Num, busy: { $in: [days] } }, function (err, docs) {
+          collclass.find({ number: parseInt(Class_Num), busy: { $in: [days] } }, function (err, docs) {
             if (err) {
               console.log(err);
               reject(err);
@@ -264,31 +282,49 @@ module.exports = {
           });
         });
       }
+      var BussyClass = []
       const classes = await bussyHours();
       var v = classes.Info;
-      console.log(v + "vv")
-      var BussyClass = v.busy
-      console.log(BussyClass + "bbbbb")
+      if (!isEmpty(v)) {
+        var b;
+        v.forEach(e => {
+          b = e.busy;
 
-      ////Busy hours (teacher)
-      // var Hour_teacher = resultTeachers.work[0][0]
+        });
+        b.forEach(e => {
+          BussyClass = e[1]
+        });
 
-      // .forEach(row => {
-      //   const thirdColumnElement = row[1];
-      // })
-      // for (let i = 8; i <= 18; i++) {
-      //   if (Hour_teacher[i] != i && BussyClass[i] != i)
-      //     AvailableHoure.push(i)
+      }
 
-      // }
-      var obj2;
+      for (let i = 8; i <= 18; i++) {
+        if (Hour_teacher[i] != i && BussyClass[i] != i)
+          AvailableHoure.push(i)
+      }
+      
+      
+
       obj2 = {
         AvailableHoure: AvailableHoure
       }
       res.json(obj2)
 
     })
-
+    
+    app.post("/hour",(req,res)=>{
+      emptyHour=req.body.hours;
+     res.send();
+    })
+   app.get("/AllData",(req,res)=>{
+    obj4={
+      subject:subject,
+      email:email,
+      Class_Num:Class_Num,
+      days:days,
+      emptyHour:emptyHour,
+    }
+    res.json(obj4)
+   })
 
 
   },

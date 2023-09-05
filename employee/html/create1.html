@@ -87,6 +87,7 @@
       e.preventDefault();
     });
   }
+ 
   async function updateA() {
     $(document).on("submit", "#Two", function (e) {
       $.ajax({
@@ -97,6 +98,17 @@
           let request = async () => {
             const response = await fetch("http://localhost:8083/Time_data");
             const data = await response.json();
+
+            const select = document.getElementById("Hours");
+            data.AvailableHoure.map((option) => {
+              const optionElement = document.createElement("option");
+              optionElement.value = option;
+              optionElement.text = option;
+              select.appendChild(optionElement);
+            })
+            $("#Hours").show()
+            $("#Continue2").hide()
+            $("#Continue3").show()
           };
           await request();
         },
@@ -104,16 +116,45 @@
       e.preventDefault();
     });
   }
-
-
+ 
+  async function updateB() {
+    $(document).on("submit", "#three", function (e) {
+      $.ajax({
+        url: $(this).attr("action"),
+        type: $(this).attr("method"),
+        data: $(this).serialize(),
+        success: async function (html) {
+          let request = async () => {
+            const response = await fetch("http://localhost:8083/AllData");
+            const data = await response.json();
+            var m;
+              m="subject: "+data.subject+"</br>"+
+              "Teacher email: "+data.email+"</br>"+
+              "days: "+data.days+"</br>"+
+              "hour: "+data.emptyHour+"</br>"+
+              "class number: "+data. Class_Num+"</br>";
+              document.getElementById("info").innerHTML=m
+           
+          };
+          await request();
+        },
+      });
+      e.preventDefault();
+    });
+  }
+ 
   $(document).ready(async function () {
+    $("#Continue3").hide()
     $("#Continue2").hide()
     $("#hide").hide();
+    $("#Hours").hide()
     await updateF();
     await updateA();
+    await updateB();
   });
 </script>
 <script>
+
   fetch("/teachers")
     .then((response) => response.json())
     .then((data) => {
@@ -164,6 +205,13 @@
     </div>
 
     <button type="submit" id="Continue2">Continue</button>
+  </form>
+  <form action="/hour" method="post" id="three">
+    <select name="hours" id="Hours">
+    </select>
+    <div id="info"></div>
+    <button type="submit" id="Continue3">Continue</button>
+
   </form>
 </body>
 
