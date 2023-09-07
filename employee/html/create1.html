@@ -39,7 +39,7 @@
                 "<span class='sign-span'> hour :</span>" +
                 data.resultTeachers[0].work[i][1] +
                 "<span class='sign-span'> class :</span>" +
-                data.resultTeachers[0].work[i][2]+"<br>";
+                data.resultTeachers[0].work[i][2] + "<br>";
 
             }
             document.getElementById("work").innerHTML =
@@ -67,14 +67,14 @@
                 "days : " +
                 data.class2[0].busy[i][0] +
                 "hour : " +
-                data.class2[0].busy[i][1]+"<br>";
+                data.class2[0].busy[i][1] + "<br>";
             }
             for (var i = 0; i < data.class3[0].busy.length; i++) {
               m3 +=
                 "days : " +
                 data.class3[0].busy[i][0] +
                 "hour : " +
-                data.class3[0].busy[i][1]+"<br>";
+                data.class3[0].busy[i][1] + "<br>";
             }
 
             document.getElementById("classOne").innerHTML =
@@ -204,7 +204,7 @@
       <div id="classThree"></div>
 
       <label>Choose working days</label>
-
+      <br>
       <label for="days1">Sunday,Teusday,Thursday</label>
       <input type="radio" name="days" id="days1" value="Sunday,Teusday,Thursday" />
       <br />

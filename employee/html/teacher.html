@@ -29,7 +29,6 @@
               const response = await fetch("http://localhost:8083/linkk");
 
               const data = await response.json();
-              var book;
               var s = " ";
               if (data.Wrong) {
                 document.getElementById("res").innerHTML =
@@ -71,7 +70,7 @@
     }
 
     $(document).ready(async function () {
-      $("#confirm").hide();
+     
       await updateF();
     });
   </script>
@@ -95,7 +94,7 @@
     </form>
     <button type="button" onclick="window.location='/addTeacher'">Add</button>
     <br />
-    <button>Edit</button>
+    <button onclick="window.location='/editTeacher'">Edit</button>
     <br />
     <button>Delete</button>
   </body>

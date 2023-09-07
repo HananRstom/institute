@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Edit</title>
+</head>
+<script>
+    async function updateF() {
+        window.addEventListener("pageshow", function (event) {
+            var historyTraversal =
+                event.persisted ||
+                (typeof window.performance != "undefined" &&
+                    window.performance.navigation.type === 2);
+            if (historyTraversal) {
+                // Handle page restore.
+                window.location.reload();
+            }
+        });
+        $(document).on("submit", "#ee", function (e) {
+            $.ajax({
+                url: $(this).attr("action"),
+                type: $(this).attr("method"),
+                data: $(this).serialize(),
+                success: async function (html) {
+                    let request = async () => {
+                        const response = await fetch("http://localhost:8083/linkE");
+
+                        const data = await response.json();
+                        var s = " ";
+                        if (data.Wrong) {
+                            document.getElementById("res").innerHTML =
+                                "You must enter the first name and last name or th email !";
+                        }
+                        if (data.result.Info != "") {
+                            $("#ee").hide()
+                            $("#form2").show()
+                            for (let i = 0; i < data.result.Info.length; i++) {
+                                s +=
+                                    " <div>----------------------</div>" +
+                                    "<span class='sign-span'> Name :</span>" +
+                                    data.result.Info[i].Fname +
+                                    " " +
+                                    data.result.Info[i].Mname +
+                                    " " +
+                                    data.result.Info[i].Lname +
+                                    "<br>" +
+                                    "<span class='sign-span'> Email :</span>" +
+                                    data.result.Info[i].email +
+                                    "<br>" +
+                                    "<span class='sign-span'> Subject :</span>" +
+                                    data.result.Info[i].subject +
+                                    "<br>";
+
+                                document.getElementById("res").innerHTML =
+                                    " <div class='info-sign'>Your Informaton is :</div>" + s;
+                            }
+                        } else {
+                            alert(
+                                "There is no information for the entered data. Check the email or name"
+                            );
+                        }
+                    };
+
+                    await request();
+                },
+            });
+            e.preventDefault();
+        });
+    }
+
+    $(document).ready(async function () {
+        $("#form2").hide()
+        await updateF();
+    });
+</script>
+<script>
+    async function updateF() {
+        window.addEventListener("pageshow", function (event) {
+            var historyTraversal =
+                event.persisted ||
+                (typeof window.performance != "undefined" &&
+                    window.performance.navigation.type === 2);
+            if (historyTraversal) {
+                // Handle page restore.
+                window.location.reload();
+            }
+        });
+        $(document).on("submit", "#form2", function (e) {
+            $.ajax({
+                url: $(this).attr("action"),
+                type: $(this).attr("method"),
+                data: $(this).serialize(),
+                success: async function (html) {
+                    let request = async () => {
+                        const response = await fetch("http://localhost:8083/link1");
+
+                        const data = await response.json();
+                        if (data.check) {
+                            document.getElementById("res").innerHTML = data.check;
+                        } else if (data.testEmail) {
+                            document.getElementById("res").innerHTML =
+                                "You are already registered";
+                        } else if (data.subject == undefined) {
+                            document.getElementById("res").innerHTML =
+                                "At least one subject must be entered";
+                        } else {
+                            document.getElementById("res").innerHTML =
+                                data.Fname +
+                                "<br/>" +
+                                data.Mname +
+                                "<br/>" +
+                                data.Lname +
+                                "<br/>" +
+                                data.Email +
+                                "<br>" +
+                                data.subject +
+                                "<br/>" +
+                                data.wage;
+                            $("#confirm").show();
+                        }
+                    };
+
+                    await request();
+                },
+            });
+            e.preventDefault();
+        });
+    }
+
+    $(document).ready(async function () {
+        $("#confirm").hide();
+        await updateF();
+    });
+</script>
+
+
+<body>
+    <form action="teacher-inf" method="post" id="ee">
+        <label for="name">First name:</label>
+        <input type="text" id="name" name="f_name" placeholder="first name" />
+        <br />
+        <label for="mid-name">middle name:</label>
+        <input type="text" id="mid-name" name="m_name" placeholder="mid-name" />
+        <br />
+        <label for="l-name">last name:</label>
+        <input type="text" id="l-name" name="l_name" placeholder="last name" />
+        <br />
+        <label for="Email">Email</label>
+        <input type="text" name="Email" id="Email" placeholder="Email" />
+        <input type="submit" value="Search" />
+    </form>
+    <div id="res"></div>
+    <form action="/teachEdit" method="post" id="form2">
+        <label for="name">First name:</label>
+        <input type="text" id="name" name="f_name" placeholder="first name" required />
+
+        <label for="mid-name">middle name:</label>
+        <input type="text" id="mid-name" name="m_name" placeholder="mid-name" />
+
+        <label for="l-name">last name:</label>
+        <input type="text" id="l-name" name="l_name" placeholder="last name" required />
+        <br />
+        <label for="Email">Email</label>
+        <input type="text" name="Email" id="Email" placeholder="Email" required />
+        <br />
+        <label for="">The subjects taught :</label>
+        <label for="German">German</label>
+        <input type="checkbox" name="subject[]" id="German" value="German" />
+        <br />
+        <label for="Frensh">Frensh</label>
+        <input type="checkbox" name="subject[]" id="Frensh" value="Frensh" />
+        <br />
+        <label for="Russian">Russian</label>
+        <input type="checkbox" name="subject[]" id="Russian" value="Russian" />
+        <br />
+        <label for="Kids">English for kids</label>
+        <input type="checkbox" name="subject[]" id="Kids" value="Kids" />
+        <br />
+        <label for="Beginner">Beginner level English</label>
+        <input type="checkbox" name="subject[]" id="Beginner" value="Beginner" />
+        <br />
+        <label for="Intermediate">Intermediate level English</label>
+        <input type="checkbox" name="subject[]" id="Intermediate" value="Intermediate" />
+        <br />
+        <label for="Advanced">Advanced level English</label>
+        <input type="checkbox" name="subject[]" id="Advanced" value="Advanced" />
+        <br />
+        <label for="Toefl">TOEFL</label>
+        <input type="checkbox" name="subject[]" id="Toefl" value="TOEFL" />
+
+        <label for="wage">Hourly wage</label>
+        <input type="text" name="wage" id="wage" placeholder="Hourly wage" required />
+        <button type="submit">submit</button>
+        <div id="res"></div>
+    </form>
+    <form action="/confirmE" method="post">
+        <button type="submit" id="confirm">confirm</button>
+    </form>
+    <br />
+</body>
+
+</html>

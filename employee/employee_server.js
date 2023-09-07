@@ -19,12 +19,14 @@ const teacher = require("./js/teacher.js");
 const student = require("./js/students.js");
 const subjects = require("./js/subjects.js");
 const addTeacher = require("./js/addTeacher.js");
+const editTeacher = require("./js/editTeacher.js");
 creat.creat(app, __dirname);
 student.student(app, __dirname);
 teacher.teacher(app, __dirname);
 subjects.subjects(app, __dirname);
 database.database(app, __dirname);
 addTeacher.addTeacher(app, __dirname);
+editTeacher.editTeacher(app, __dirname);
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/home.html");
 });
