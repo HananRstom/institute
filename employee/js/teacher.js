@@ -1,3 +1,4 @@
+const { isEmpty} = require("lodash");
 module.exports = {
   teacher: function (app, dic) {
     app.get("/teacher", function (req, res) {
@@ -11,10 +12,14 @@ module.exports = {
     var email = "";
     var Wrong = false;
     const monk = require("monk");
-    const url = "mongodb://localhost:27017/languages";
+    const url = "mongodb://0.0.0.0:27017/languages";
     const db = monk(url);
     const collection = db.get("teachers");
     app.post("/teacher-info", (req, res) => {
+      Fname = "";
+      Mname = "";
+      Lname = "";
+      email = "";
       Fname = req.body.f_name;
       Mname = req.body.m_name;
       Lname = req.body.l_name;

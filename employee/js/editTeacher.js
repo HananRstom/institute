@@ -4,7 +4,7 @@ module.exports = {
         res.sendFile(dic + "/html/editTeacher.html");
       });
       const monk = require("monk");
-      const url = "mongodb://localhost:27017/languages";
+      const url = "mongodb://0.0.0.0:27017/languages";
       const db = monk(url);
       const collection = db.get("teachers");
       var Fname;
