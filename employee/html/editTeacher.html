@@ -30,11 +30,15 @@
 
                         const data = await response.json();
                         var s = " ";
-                        if (data.Wrong) {
+
+                        if (data.emp) {
+                            alert(
+                                "There is no information for the entered data. "
+                            );
                             document.getElementById("res").innerHTML =
-                                "You must enter the first name and last name or th email !";
+                                "There is no information for the entered data."
                         }
-                        if (data.result.Info != "") {
+                        else {
                             $("#ee").hide()
                             $("#form2").show()
                             for (let i = 0; i < data.result.Info.length; i++) {
@@ -57,10 +61,6 @@
                                 document.getElementById("res").innerHTML =
                                     " <div class='info-sign'>Your Informaton is :</div>" + s;
                             }
-                        } else {
-                            alert(
-                                "There is no information for the entered data. Check the email or name"
-                            );
                         }
                     };
 
@@ -70,14 +70,7 @@
             e.preventDefault();
         });
     }
-
-    $(document).ready(async function () {
-        $("#form2").hide()
-        await updateF();
-    });
-</script>
-<script>
-    async function updateF() {
+    async function updateA() {
         window.addEventListener("pageshow", function (event) {
             var historyTraversal =
                 event.persisted ||
@@ -95,32 +88,24 @@
                 data: $(this).serialize(),
                 success: async function (html) {
                     let request = async () => {
-                        const response = await fetch("http://localhost:8083/link1");
+                        const response = await fetch("http://localhost:8083/linkE");
 
                         const data = await response.json();
-                        if (data.check) {
-                            document.getElementById("res").innerHTML = data.check;
-                        } else if (data.testEmail) {
-                            document.getElementById("res").innerHTML =
-                                "You are already registered";
-                        } else if (data.subject == undefined) {
-                            document.getElementById("res").innerHTML =
-                                "At least one subject must be entered";
-                        } else {
-                            document.getElementById("res").innerHTML =
-                                data.Fname +
-                                "<br/>" +
-                                data.Mname +
-                                "<br/>" +
-                                data.Lname +
-                                "<br/>" +
-                                data.Email +
-                                "<br>" +
-                                data.subject +
-                                "<br/>" +
-                                data.wage;
-                            $("#confirm").show();
-                        }
+
+                        document.getElementById("conf").innerHTML =
+                            data.obj1.Fname1 +
+                            "<br/>" +
+                            data.obj1.Mname1 +
+                            "<br/>" +
+                            data.obj1.Lname1 +
+                            "<br/>" +
+                            data.obj1.Email1 +
+                            "<br>" +
+                            data.obj1.subject1 +
+                            "<br/>" +
+                            data.obj1.wage1;
+                        $("#confirm").show();
+
                     };
 
                     await request();
@@ -129,42 +114,33 @@
             e.preventDefault();
         });
     }
-
     $(document).ready(async function () {
-        $("#confirm").hide();
+        $("#form2").hide()
+        $("#confirm").hide()
         await updateF();
+        await updateA()
     });
 </script>
 
-
 <body>
     <form action="teacher-inf" method="post" id="ee">
-        <label for="name">First name:</label>
-        <input type="text" id="name" name="f_name" placeholder="first name" />
-        <br />
-        <label for="mid-name">middle name:</label>
-        <input type="text" id="mid-name" name="m_name" placeholder="mid-name" />
-        <br />
-        <label for="l-name">last name:</label>
-        <input type="text" id="l-name" name="l_name" placeholder="last name" />
-        <br />
-        <label for="Email">Email</label>
-        <input type="text" name="Email" id="Email" placeholder="Email" />
+        <label for="id">ID: </label>
+        <input type="number" name="ID" placeholder="ID.." id="id">
         <input type="submit" value="Search" />
     </form>
     <div id="res"></div>
     <form action="/teachEdit" method="post" id="form2">
         <label for="name">First name:</label>
-        <input type="text" id="name" name="f_name" placeholder="first name" required />
+        <input type="text" id="name" name="f_name" placeholder="first name"  />
 
         <label for="mid-name">middle name:</label>
         <input type="text" id="mid-name" name="m_name" placeholder="mid-name" />
 
         <label for="l-name">last name:</label>
-        <input type="text" id="l-name" name="l_name" placeholder="last name" required />
+        <input type="text" id="l-name" name="l_name" placeholder="last name"  />
         <br />
         <label for="Email">Email</label>
-        <input type="text" name="Email" id="Email" placeholder="Email" required />
+        <input type="text" name="Email" id="Email" placeholder="Email"  />
         <br />
         <label for="">The subjects taught :</label>
         <label for="German">German</label>
@@ -192,9 +168,9 @@
         <input type="checkbox" name="subject[]" id="Toefl" value="TOEFL" />
 
         <label for="wage">Hourly wage</label>
-        <input type="text" name="wage" id="wage" placeholder="Hourly wage" required />
+        <input type="text" name="wage" id="wage" placeholder="Hourly wage"  />
         <button type="submit">submit</button>
-        <div id="res"></div>
+        <div id="conf"></div>
     </form>
     <form action="/confirmE" method="post">
         <button type="submit" id="confirm">confirm</button>

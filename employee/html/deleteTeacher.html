@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Delete Teacher</title>
+</head>
+<script>
+    async function updateF() {
+        window.addEventListener("pageshow", function (event) {
+            var historyTraversal =
+                event.persisted ||
+                (typeof window.performance != "undefined" &&
+                    window.performance.navigation.type === 2);
+            if (historyTraversal) {
+                // Handle page restore.
+                window.location.reload();
+            }
+        });
+        $(document).on("submit", "#del", function (e) {
+            $.ajax({
+                url: $(this).attr("action"),
+                type: $(this).attr("method"),
+                data: $(this).serialize(),
+                success: async function (html) {
+                    let request = async () => {
+                        const response = await fetch("http://localhost:8083/linkD");
+
+                        const data = await response.json();
+                        var s = " ";
+
+                        if (data.emp) {
+                            alert(
+                                "There is no information for the entered data. "
+                            );
+                            document.getElementById("res").innerHTML =
+                                "There is no information for the entered data."
+                        }
+                        else {
+                            $("#confirm").show()
+                            for (let i = 0; i < data.result.Info.length; i++) {
+                                s +=
+                                    " <div>----------------------</div>" +
+                                    "<span class='sign-span'> Name :</span>" +
+                                    data.result.Info[i].Fname +
+                                    " " +
+                                    data.result.Info[i].Mname +
+                                    " " +
+                                    data.result.Info[i].Lname +
+                                    "<br>" +
+                                    "<span class='sign-span'> Email :</span>" +
+                                    data.result.Info[i].email +
+                                    "<br>" +
+                                    "<span class='sign-span'> Subject :</span>" +
+                                    data.result.Info[i].subject +
+                                    "<br>";
+
+                                document.getElementById("res").innerHTML =
+                                    " <div class='info-sign'>Your Informaton is :</div>" + s;
+                            }
+                        }
+                    };
+
+                    await request();
+                },
+            });
+            e.preventDefault();
+        });
+    }
+    $(document).ready(async function () {
+
+        $("#confirm").hide()
+        await updateF();
+
+    });
+</script>
+
+<body>
+    <form action="/delete" method="post" id="del">
+        <label for="id">ID: </label>
+        <input type="number" id="id" name="id">
+        <div id="res"></div>
+        <input type="submit" id="submit" value="submit">
+    </form>
+    <form action="/confirmD" method="post">
+        <button type="submit" id="confirm">Confirm</button>
+    </form>
+</body>
+
+</html>

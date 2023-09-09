@@ -1,4 +1,4 @@
-const { isEmpty} = require("lodash");
+const { isEmpty } = require("lodash");
 module.exports = {
   teacher: function (app, dic) {
     app.get("/teacher", function (req, res) {
@@ -8,7 +8,7 @@ module.exports = {
     var Fname;
     var Mname;
     var Lname;
-    var doc;
+    var emp = false;
     var email = "";
     var Wrong = false;
     const monk = require("monk");
@@ -76,14 +76,18 @@ module.exports = {
         }
       }
       const result = await dd();
-      if (! isEmpty(result)) {
-        
+      if (!isEmpty(result.Info)) {
+        console.log("hi")
         console.log(result.Info);
+      }
+      else {
+        emp = true;
       }
 
       let object = {
         result: result,
         Wrong: Wrong,
+        emp: emp
       };
       res.json(object);
     });

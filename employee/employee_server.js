@@ -20,6 +20,7 @@ const student = require("./js/students.js");
 const subjects = require("./js/subjects.js");
 const addTeacher = require("./js/addTeacher.js");
 const editTeacher = require("./js/editTeacher.js");
+const deleteTeacher = require("./js/deleteTeacher.js");
 creat.creat(app, __dirname);
 student.student(app, __dirname);
 teacher.teacher(app, __dirname);
@@ -27,6 +28,7 @@ subjects.subjects(app, __dirname);
 database.database(app, __dirname);
 addTeacher.addTeacher(app, __dirname);
 editTeacher.editTeacher(app, __dirname);
+deleteTeacher.deleteTeacher(app,__dirname)
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/home.html");
 });

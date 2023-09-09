@@ -1,101 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <title>Teacher</title>
-  </head>
-  <script>
-    async function updateF() {
-      window.addEventListener("pageshow", function (event) {
-        var historyTraversal =
-          event.persisted ||
-          (typeof window.performance != "undefined" &&
-            window.performance.navigation.type === 2);
-        if (historyTraversal) {
-          // Handle page restore.
-          window.location.reload();
-        }
-      });
-      $(document).on("submit", "#ee", function (e) {
-        $.ajax({
-          url: $(this).attr("action"),
-          type: $(this).attr("method"),
-          data: $(this).serialize(),
-          success: async function (html) {
-            let request = async () => {
-              const response = await fetch("http://localhost:8083/linkk");
 
-              const data = await response.json();
-              var s = " ";
-              if (data.Wrong) {
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <title>Teacher</title>
+</head>
+<script>
+  async function updateF() {
+    window.addEventListener("pageshow", function (event) {
+      var historyTraversal =
+        event.persisted ||
+        (typeof window.performance != "undefined" &&
+          window.performance.navigation.type === 2);
+      if (historyTraversal) {
+        // Handle page restore.
+        window.location.reload();
+      }
+    });
+    $(document).on("submit", "#ee", function (e) {
+      $.ajax({
+        url: $(this).attr("action"),
+        type: $(this).attr("method"),
+        data: $(this).serialize(),
+        success: async function (html) {
+          let request = async () => {
+            const response = await fetch("http://localhost:8083/linkk");
+
+            const data = await response.json();
+            var s = " ";
+
+            if (data.Wrong) {
+              document.getElementById("res").innerHTML =
+                "You must enter the first name and last name or th email !";
+            }
+            else if (data.emp) {
+              alert(
+                "There is no information for the entered data. Check the email or name"
+              );
+              document.getElementById("res").innerHTML = "There is no information for the entered data. Check the email or name"
+            }
+            else {
+
+              for (let i = 0; i < data.result.Info.length; i++) {
+                s +=
+                  " <div>----------------------</div>" +
+                  "<span class='sign-span'> Name :</span>" +
+                  data.result.Info[i].Fname +
+                  " " +
+                  data.result.Info[i].Mname +
+                  " " +
+                  data.result.Info[i].Lname +
+                  "<br>" +
+                  "<span class='sign-span'> Email :</span>" +
+                  data.result.Info[i].email +
+                  "<br>" +
+                  "<span class='sign-span'> Subject :</span>" +
+                  data.result.Info[i].subject +
+                  "<br>";
+
                 document.getElementById("res").innerHTML =
-                  "You must enter the first name and last name or th email !";
-              }
-              if (data.result.Info != "") {
-                for (let i = 0; i < data.result.Info.length; i++) {
-                  s +=
-                    " <div>----------------------</div>" +
-                    "<span class='sign-span'> Name :</span>" +
-                    data.result.Info[i].Fname +
-                    " " +
-                    data.result.Info[i].Mname +
-                    " " +
-                    data.result.Info[i].Lname +
-                    "<br>" +
-                    "<span class='sign-span'> Email :</span>" +
-                    data.result.Info[i].email +
-                    "<br>" +
-                    "<span class='sign-span'> Subject :</span>" +
-                    data.result.Info[i].subject +
-                    "<br>";
+                  " <div class='info-sign'>Your Informaton is :</div>" + s;
 
-                  document.getElementById("res").innerHTML =
-                    " <div class='info-sign'>Your Informaton is :</div>" + s;
-                }
-              } else {
-                alert(
-                  "There is no information for the entered data. Check the email or name"
-                );
               }
             };
+          }
 
-            await request();
-          },
-        });
-        e.preventDefault();
+          await request();
+        },
       });
-    }
-
-    $(document).ready(async function () {
-     
-      await updateF();
+      e.preventDefault();
     });
-  </script>
+  }
 
-  <body>
-    <form action="teacher-info" method="post" id="ee">
-      <label for="name">First name:</label>
-      <input type="text" id="name" name="f_name" placeholder="first name" />
-      <br />
-      <label for="mid-name">middle name:</label>
-      <input type="text" id="mid-name" name="m_name" placeholder="mid-name" />
-      <br />
-      <label for="l-name">last name:</label>
-      <input type="text" id="l-name" name="l_name" placeholder="last name" />
-      <br />
-      <label for="Email">Email</label>
-      <input type="text" name="Email" id="Email" placeholder="Email" />
-      <input type="submit" value="Search" />
-      <div id="res"></div>
-      <br />
-    </form>
-    <button type="button" onclick="window.location='/addTeacher'">Add</button>
+  $(document).ready(async function () {
+
+    await updateF();
+  });
+</script>
+
+<body>
+  <form action="teacher-info" method="post" id="ee">
+    <label for="name">First name:</label>
+    <input type="text" id="name" name="f_name" placeholder="first name" />
     <br />
-    <button onclick="window.location='/editTeacher'">Edit</button>
+    <label for="mid-name">middle name:</label>
+    <input type="text" id="mid-name" name="m_name" placeholder="mid-name" />
     <br />
-    <button>Delete</button>
-  </body>
+    <label for="l-name">last name:</label>
+    <input type="text" id="l-name" name="l_name" placeholder="last name" />
+    <br />
+    <label for="Email">Email</label>
+    <input type="text" name="Email" id="Email" placeholder="Email" />
+    <input type="submit" value="Search" />
+    <div id="res"></div>
+    <br />
+  </form>
+  <button type="button" onclick="window.location='/addTeacher'">Add</button>
+  <br />
+  <button onclick="window.location='/editTeacher'">Edit</button>
+  <br />
+  <button onclick="window.location='/deleteTeacher'">Delete</button>
+</body>
+
 </html>
