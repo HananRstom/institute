@@ -30,7 +30,7 @@
             const response = await fetch("http://localhost:8083/link1");
 
             const data = await response.json();
-            if (data.check != "") {
+            if (data.check !== "") {
               document.getElementById("res").innerHTML = data.check;
             } else if (data.testEmail) {
               document.getElementById("res").innerHTML =
@@ -51,7 +51,7 @@
                 data.subject +
                 "<br/>" +
                 data.wage
-              +"<br/>" + " ID :" + data.id[0].count
+                + "<br/>" + " ID :" + data.id[0].count
               $("#confirm").show();
             }
           };
@@ -72,13 +72,13 @@
 <body>
   <form action="/teachInfo" method="post" id="form2">
     <label for="name">First name:</label>
-    <input type="text" id="name" name="f_name" placeholder="first name"  />
+    <input type="text" id="name" name="f_name" placeholder="first name" required />
 
     <label for="mid-name">middle name:</label>
     <input type="text" id="mid-name" name="m_name" placeholder="mid-name" />
 
     <label for="l-name">last name:</label>
-    <input type="text" id="l-name" name="l_name" placeholder="last name"  />
+    <input type="text" id="l-name" name="l_name" placeholder="last name" required />
     <br />
     <label for="Email">Email</label>
     <input type="text" name="Email" id="Email" placeholder="Email" required />

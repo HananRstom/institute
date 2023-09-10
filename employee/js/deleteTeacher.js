@@ -17,10 +17,15 @@ module.exports = {
             res.send();
         })
         app.post("/confirmD", (req, res) => {
-            collection.delete({ID:parseInt(id)})
-
-            res.send("")
-        })
+            collection.remove({ ID: parseInt(id) }, (err, result) => {
+                if (err) {
+                    console.log(err);
+                    res.status(500).send(err);
+                } else {
+                    res.send("");
+                }
+            });
+        });
         app.get("/linkD", async function (req, res) {
             async function dd() {
                 return new Promise((resolve, reject) => {

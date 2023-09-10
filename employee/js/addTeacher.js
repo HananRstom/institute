@@ -39,16 +39,19 @@ module.exports = {
       
       cnt.update({ I: 3 }, { $inc: { count: 1 } });
       if (Email != "") {
-        for (let i = 0; i < accept_email.length; i++)
-        {
-         
-          if (email.search("@" + accept_email[i] + ".com") == -1) {
-           check="Please check the email address entered and try again";
+        let isValidEmail = false;
+        for (let i = 0; i < accept_email.length; i++) {
+          if (email.includes("@" + accept_email[i] + ".com")) {
+            isValidEmail = true;
             break;
-          }}
+          }
+        }
+        
+        if (!isValidEmail) {
+          check = "Please check the email address entered and try again";
+        }
       }
      
-      console.log(check+"ttttttt")
       obj1 = {
         Fname: Fname,
         Mname: Mname,
