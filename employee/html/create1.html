@@ -114,7 +114,7 @@
             })
             $("#Hours").show()
             $("#Two").hide()
-            $("#Continue3").show()
+            $("#three").show()
           };
           await request();
         },
@@ -138,10 +138,12 @@
               "Teacher email: " + data.email + "</br>" +
               "days: " + data.days + "</br>" +
               "hour: " + data.emptyHour + "</br>" +
-              "class number: " + data.Class_Num + "</br>";
+              "class number: " + data.Class_Num + "</br>"+ 
+              "start day: "+data.subj.StartDay+ "</br>"+ "End day: "+data.subj.EndDay+ "</br>"+ "the price: "+data.subj.Price+ "</br>"
+              ;
             document.getElementById("info").innerHTML = m
             $("#three").hide()
-            $("conf").show()
+            $("#conf").show()
 
           };
           await request();
@@ -152,7 +154,7 @@
   }
 
   $(document).ready(async function () {
-    $("#Continue3").hide()
+    $("#three").hide()
     $("#Continue2").hide()
     $("#hide").hide();
     $("#Hours").hide()
@@ -216,8 +218,11 @@
     <button type="submit" id="Continue2">Continue</button>
   </form>
   <form action="/hour" method="post" id="three">
-    <select name="hours" id="Hours">
+    <select name="hours" id="Hours" required>
     </select>
+    <input type="number" name="Sday" id="" placeholder="Start Day" min="1" max="31" required>
+    <input type="number" name="Smonth" id="" placeholder="Month" min="1" max="12" required>
+    <input type="number" name="Price" id="" placeholder="Price">
     <button type="submit" id="Continue3">Continue</button>
 
   </form>
