@@ -126,6 +126,7 @@ module.exports = {
       const result1 = await dd();
       number_student = result1.Info;
       async function findTeacher() {
+        if(subject == "German" || subject == "Frensh" || subject == "Russian" || subject == "Kids")
         return new Promise((resolve, reject) => {
           collteacher.find(
             { subject: { $in: [subject] } },
@@ -139,6 +140,22 @@ module.exports = {
             }
           );
         });
+        else 
+        {
+          return new Promise((resolve, reject) => {
+            collteacher.find(
+              { subject: { $in: ["TOEFL"] } },
+              function (err, docs) {
+                if (err) {
+                  console.log(err);
+                  reject(err);
+                }
+                Info = docs;
+                resolve({ Info });
+              }
+            );
+          });
+        }
       }
       const result = await findTeacher();
 
@@ -347,7 +364,7 @@ module.exports = {
         Class_Num: Class_Num,
         days: days,
         emptyHour: emptyHour,
-        subj:subj,
+        subj: subj,
       };
 
       res.json(obj4);
@@ -373,7 +390,20 @@ module.exports = {
       var newSubarray = [days, emptyHour, Class_Num];
       mydocument[0].work.push(newSubarray);
       collteacher.update(myquery, { $push: { work: newSubarray } });
-
+      if (subject == "German" || subject == "Frensh" || subject == "Russian" || subject == "Kids")
+        collection.update({ selected_subject: subject }, {
+          $set: {
+            price: parseInt(price),
+            Paid_amount: 0, Last_payment: 0
+          }
+        });
+      else
+        collection.update({ selected_level: subject }, {
+          $set: {
+            price: parseInt(price),
+            Paid_amount: 0, Last_payment: 0
+          }
+        });
       var ClassQuery = { number: parseInt(Class_Num) };
       var docClass;
       async function updateClass() {
