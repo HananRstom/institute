@@ -1,5 +1,5 @@
 const { isEmpty } = require("lodash");
-
+var moment = require("moment");
 module.exports = {
   student: function (app, dic) {
     app.get("/student", function (req, res) {
@@ -8,6 +8,7 @@ module.exports = {
     const monk = require("monk");
     const url = "mongodb://0.0.0.0:27017/languages";
     const db = monk(url);
+    var paymentDate = moment().format("YYYY-MM-DD");
     var email;
     var id;
     var test;
@@ -69,12 +70,12 @@ module.exports = {
       if (email != "") {
         collStudent.update(
           { email: email },
-          { $set: { Paid_amount: pay, Last_payment: payment } }
+          { $set: { Paid_amount: pay, Last_payment: payment,paymentDate:paymentDate } }
         );
       } else {
         collStudent.update(
           { student_id: parseInt(id) },
-          { $set: { Paid_amount: pay, Last_payment: payment } }
+          { $set: { Paid_amount: pay, Last_payment: payment,paymentDate:paymentDate } }
         );
       }
       res.send("");
@@ -113,34 +114,20 @@ module.exports = {
 
       var result = await findStudent();
       data = result.Info;
-      var subject = data[0].selected_subject;
-      console.log(subject);
-      async function findSubj() {
-        return new Promise((resolve, reject) => {
-          collSubj.find({ SubjectName: subject }, function (err, docs) {
-            if (err) {
-              console.log(err);
-              reject(err);
-            }
-            Info = docs;
-            resolve({ Info });
-          });
-        });
-      }
-      var result1 = await findSubj();
-      var dataSubj = result1.Info;
-      console.log(dataSubj);
+     
+ 
       if (isEmpty(data)) {
         error = true;
       }
-      rest = dataSubj[dataSubj.length - 1].Price - data[0].Paid_amount;
+      if(data[0]?.price){
+      rest = data[0].price - data[0].Paid_amount;
+      }
       var check=rest-parseInt(payment);
       obj = {
         error: error,
         data: data,
         test: test,
         payment: payment,
-        dataSubj: dataSubj,
         rest: rest,
         check:check
       };

@@ -1,5 +1,5 @@
 const { result, isEmpty, set, toArray } = require("lodash");
-const { time, count } = require("console");
+
 module.exports = {
   creat: async function (app, dic) {
     const monk = require("monk");
@@ -8,7 +8,7 @@ module.exports = {
     const collection = db.get("students");
     const collteacher = db.get("teachers");
     const collclass = db.get("class");
-    const collSubject = db.get('subjects');
+    const collSubject = db.get("subjects");
     var subjCnt = [];
     var selected_subject = ["German", "Frensh", "Russian", "Kids"];
     var selected_level = [
@@ -20,6 +20,7 @@ module.exports = {
       "pbt1",
       "pbt2",
     ];
+   
     var cnt;
     var email;
     var Class_Num;
@@ -44,7 +45,10 @@ module.exports = {
       async function dd() {
         return new Promise((resolve, reject) => {
           collection.count(
-            { selected_subject: selected_subject[i] },
+            {
+              selected_subject: selected_subject[i],
+              price: { $exists: 0},
+            },
             function (err, docs) {
               if (err) {
                 console.log(err);
@@ -65,7 +69,11 @@ module.exports = {
       async function nn() {
         return new Promise((resolve, reject) => {
           collection.count(
-            { selected_subject: "English", selected_level: selected_level[i] },
+            {
+              selected_subject: "English",
+              selected_level: selected_level[i],
+              price: { $exists: 0 },
+            },
             function (err, docs) {
               if (err) {
                 console.log(err);
@@ -126,22 +134,29 @@ module.exports = {
       const result1 = await dd();
       number_student = result1.Info;
       async function findTeacher() {
-        if(subject == "German" || subject == "Frensh" || subject == "Russian" || subject == "Kids")
-        return new Promise((resolve, reject) => {
-          collteacher.find(
-            { subject: { $in: [subject] } },
-            function (err, docs) {
-              if (err) {
-                console.log(err);
-                reject(err);
+        if (
+          subject == "German" ||
+          subject == "Frensh" ||
+          subject == "Russian" ||
+          subject == "Kids" ||
+          subject == "Beginner" ||
+          subject == "Intermediate" ||
+          subject == "Advanced"
+        )
+          return new Promise((resolve, reject) => {
+            collteacher.find(
+              { subject: { $in: [subject] } },
+              function (err, docs) {
+                if (err) {
+                  console.log(err);
+                  reject(err);
+                }
+                Info = docs;
+                resolve({ Info });
               }
-              Info = docs;
-              resolve({ Info });
-            }
-          );
-        });
-        else 
-        {
+            );
+          });
+        else {
           return new Promise((resolve, reject) => {
             collteacher.find(
               { subject: { $in: ["TOEFL"] } },
@@ -332,9 +347,7 @@ module.exports = {
       }
       console.log(Hour_teacher[0] + "  " + BussyClass[0]);
       for (let i = 8, j = 0; j <= 11, i <= 18; j++, i++) {
-        if (Hour_teacher[j] != i && BussyClass[j] != i)
-          AvailableHoure.push(i);
-
+        if (Hour_teacher[j] != i && BussyClass[j] != i) AvailableHoure.push(i);
       }
 
       obj2 = {
@@ -351,10 +364,19 @@ module.exports = {
       Time = Sday + "/" + SMonth;
       if (SMonth != 12 || SMonth != 11)
         EndTime = Sday + "/" + (parseInt(SMonth) + 2);
-      else if (SMonth == 11)
-        EndTime = Sday + "/" + "1";
-      else if (SMonth == 12)
-        EndTime = Sday + "/" + "2";
+      else if (SMonth == 11) EndTime = Sday + "/" + "1";
+      else if (SMonth == 12) EndTime = Sday + "/" + "2";
+      subj = {
+        SubjectName: subject,
+        Teacher: email,
+        StartDay: Time,
+        EndDay: EndTime,
+        Hour: emptyHour,
+        Days: days,
+        Class: Class_Num,
+        Price: price,
+      };
+
       res.send();
     });
     app.get("/AllData", (req, res) => {
@@ -372,68 +394,83 @@ module.exports = {
 
     app.post("/confCreate", async (req, res) => {
       var myquery = { email: email };
-      var mydocument;
-      async function updateTeacher() {
-        return new Promise((resolve, reject) => {
-          collteacher.find(myquery, function (err, docs) {
-            if (err) {
-              console.log(err);
-              reject(err);
-            }
-            Info = docs;
-            resolve({ Info });
-          });
-        });
-      }
-      const T = await updateTeacher();
-      mydocument = T.Info;
-      var newSubarray = [days, emptyHour, Class_Num];
-      mydocument[0].work.push(newSubarray);
-      collteacher.update(myquery, { $push: { work: newSubarray } });
-      if (subject == "German" || subject == "Frensh" || subject == "Russian" || subject == "Kids")
-        collection.update({ selected_subject: subject }, {
-          $set: {
-            price: parseInt(price),
-            Paid_amount: 0, Last_payment: 0
+      // استعلم عن المستندات المطابقة لـ myquery وقم بإضافة newSubarray إلى work
+      collteacher.update(
+        myquery,
+        { $push: { work: newSubarray } },
+        function (err, result) {
+          if (err) {
+            console.error("ُerror", err);
+          } else {
+            console.log("updete data", result);
           }
-        });
-      else
-        collection.update({ selected_level: subject }, {
-          $set: {
-            price: parseInt(price),
-            Paid_amount: 0, Last_payment: 0
-          }
-        });
-      var ClassQuery = { number: parseInt(Class_Num) };
-      var docClass;
-      async function updateClass() {
-        return new Promise((resolve, reject) => {
-          collclass.find(ClassQuery, function (err, docs) {
-            if (err) {
-              console.log(err);
-              reject(err);
-            }
-            Info = docs;
-            resolve({ Info });
-          });
-        });
-      }
-      subj = {
-        SubjectName: subject,
-        Teacher: email,
-        StartDay: Time,
-        EndDay: EndTime,
-        Hour: emptyHour,
-        Days: days,
-        Class: Class_Num,
-        Price: price,
+        }
+      );
 
-      }
+      var newSubarray = [days, emptyHour, Class_Num];
+
+      var ClassQuery = { number: parseInt(Class_Num) };
 
       collSubject.insert(subj);
       var subClass = [days, emptyHour];
-      // docClass[0].busy.push(subClass);
-      // collclass.update(ClassQuery, { $push: { busy: subClass } });
+      await collclass.update(
+        ClassQuery,
+        { $push: { busy: subClass } },
+        function (err, result) {
+          if (err) {
+            console.error("ُerror class", err);
+          } else {
+            console.log("updete class data", result);
+          }
+        }
+      );
+      try {
+        if (
+          subject == "German" ||
+          subject == "Frensh" ||
+          subject == "Russian" ||
+          subject == "Kids"
+        ) {
+          await collection.update(
+            { selected_subject: subject },
+            {
+              $set: {
+                price: parseInt(price),
+                Paid_amount: 0,
+                Last_payment: 0,
+              },
+            },{ multi: true },
+            function (err, result) {
+              if (err) {
+                console.error("ُerror student", err);
+              } else {
+                console.log("updete student data", result);
+              }
+            }
+          );
+          console.log("oooooooooooooooo");
+        } else {
+          await collection.update(
+            { selected_level: subject },
+            {
+              $set: {
+                price: parseInt(price),
+                Paid_amount: 0,
+                Last_payment: 0,
+              },
+            },{ multi: true },
+            function (err, result) {
+              if (err) {
+                console.error("ُerror student", err);
+              } else {
+                console.log("updete student data", result);
+              }
+            }
+          );
+        }
+      } catch (error) {
+        console.error("error", error);
+      }
       res.send("Upadte data successfuly");
     });
   },
