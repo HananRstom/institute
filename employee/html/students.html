@@ -1,56 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <title>Students</title>
-  </head>
-  <script>
-    async function updateA() {
-      $(document).on("submit", "#S", function (e) {
-        $.ajax({
-          url: $(this).attr("action"),
-          type: $(this).attr("method"),
-          data: $(this).serialize(),
-          success: async function (html) {
-            let request = async () => {
-              const response = await fetch("http://localhost:8083/studentData");
-              const data = await response.json();
-              var s
-              if (!data.test) {
-                document.getElementById("res").innerHTML =
-                  "Enter your email or your id";
-              } else if (data.error) {
-                document.getElementById("res").innerHTML =
-                  "cannot find data for the entered email or id";
-              } else {
-                s= "student name: " +
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <title>Students</title>
+</head>
+<script>
+  async function updateA() {
+    $(document).on("submit", "#S", function (e) {
+      $.ajax({
+        url: $(this).attr("action"),
+        type: $(this).attr("method"),
+        data: $(this).serialize(),
+        success: async function (html) {
+          let request = async () => {
+            const response = await fetch("http://localhost:8083/studentData");
+            const data = await response.json();
+            var s
+            if (!data.test) {
+              document.getElementById("res").innerHTML =
+                "Enter your email or your id";
+            } else if (data.error) {
+              document.getElementById("res").innerHTML =
+                "cannot find data for the entered email or id";
+            } else {
+              s = "student name: " +
                 data.data[0].name +
                 "<br>" +
-                  "student email: " +
-                  data.data[0].email +
-                  "<br>" +
-                  "student telephone: " +
-                  data.data[0].tel +
-                  "<br>" +
-                  "registration time: " +
-                  data.data[0].created +
-                  "<br> student id: " +
-                  data.data[0].student_id +
-                  "<br>" +
-                  "selected subject: " +
-                  data.data[0].selected_subject +
-                  "<br>" +
-                  "selected level: " +
-                  data.data[0].selected_level +
-                  "<br>" +
-                  "book: " +
-                  data.data[0].flag ;
-                  if(data.data[0]?.price)
-                  {
-                  s+=  "<br>" +
+                "student email: " +
+                data.data[0].email +
+                "<br>" +
+                "student telephone: " +
+                data.data[0].tel +
+                "<br>" +
+                "registration time: " +
+                data.data[0].created +
+                "<br> student id: " +
+                data.data[0].student_id +
+                "<br>" +
+                "selected subject: " +
+                data.data[0].selected_subject +
+                "<br>" +
+                "selected level: " +
+                data.data[0].selected_level +
+                "<br>" +
+                "book: " +
+                data.data[0].flag;
+              if (data.data[0]?.price) {
+                s += "<br>" +
                   "Paid amount: " +
                   data.data[0].Paid_amount +
                   "<br>" +
@@ -61,76 +61,90 @@
                   "</br>" +
                   "the rest of the money is: " +
                   data.rest;
-                }
-                else {
-                  s+="The course has not opened yet"
-                }
-                document.getElementById("res").innerHTML =s
-                
               }
-            };
-            await request();
-          },
-        });
-        e.preventDefault();
-      });
-    }
-    async function updateB() {
-      $(document).on("submit", "#payment", function (e) {
-        $.ajax({
-          url: $(this).attr("action"),
-          type: $(this).attr("method"),
-          data: $(this).serialize(),
-          success: async function (html) {
-            let request = async () => {
-              const response = await fetch("http://localhost:8083/studentData");
-              const data = await response.json();
-              var s=  "The amount you entered is: " + data.payment;
-              if (data.check < 0){
-                document.getElementById("res1").innerHTML ="the Amount you entered is bigger than the rest mount"
+              else {
+                s += "The course has not opened yet"
               }
-                
-                
-            };
-            await request();
-          },
-        });
-        e.preventDefault();
-      });
-    }
+              document.getElementById("res").innerHTML = s
 
-    $(document).ready(async function () {
-      await updateA();
-      await updateB();
+            }
+          };
+          await request();
+        },
+      });
+      e.preventDefault();
     });
-  </script>
+  }
+  async function updateB() {
+    $(document).on("submit", "#payment", function (e) {
+      $.ajax({
+        url: $(this).attr("action"),
+        type: $(this).attr("method"),
+        data: $(this).serialize(),
+        success: async function (html) {
+          let request = async () => {
+            const response = await fetch("http://localhost:8083/studentData");
+            const data = await response.json();
+            var s = "The amount you entered is: " + data.payment;
+            if (data.check < 0) {
+              document.getElementById("res1").innerHTML = "the Amount you entered is bigger than the rest mount"
+            }
 
-  <body>
-    <form action="/student" method="post" id="S">
-      <label for="email">Email:</label>
-      <input type="text" id="Email" name="email" placeholder="Enter Email" />
-      <label for="StudentID">Sutdent ID:</label>
-      <input
-        type="text"
-        id="StudentID"
-        name="StudentID"
-        placeholder="Enter ID"
-      />
 
-      <button type="submit" id="search">Search</button>
+          };
+          await request();
+        },
+      });
+      e.preventDefault();
+    });
+  }
 
-      <div id="res"></div>
-    </form>
-    <form action="/payment" method="post" id="payment">
-      <input type="number" name="payment" id="pay" />
-      <input type="submit" value="Submit" />
-      <div id="res1"></div>
-    </form>
-    <form action="/confStudent" method="post" id="">
-      <input type="submit" value="Confirm" />
-    </form>
-    <button>Add</button>
-    <button>Edit</button>
-    <button>Delete</button>
-  </body>
+  $(document).ready(async function () {
+    await updateA();
+    await updateB();
+  });
+</script>
+
+<body>
+  <form action="/student" method="post" id="S">
+    <label for="email">Email:</label>
+    <input type="text" id="Email" name="email" placeholder="Enter Email" />
+    <label for="StudentID">Sutdent ID:</label>
+    <input type="text" id="StudentID" name="StudentID" placeholder="Enter ID" />
+
+    <button type="submit" id="search">Search</button>
+
+    <div id="res"></div>
+  </form>
+  <form action="/payment" method="post" id="payment">
+    <input type="number" name="payment" id="pay" />
+    <input type="submit" value="Submit" />
+    <div id="res1"></div>
+  </form>
+  <form action="/confStudent" method="post" id="">
+    <input type="submit" value="Confirm" />
+  </form>
+  <form action="" method="post">
+    <select name="" id="">
+      <option value="German">German</option>
+      <option value="Frensh">Frensh</option>
+      <option value="Russian">Russian</option>
+      <option value="Kids">Kids</option>
+      <option value="Beginner">Beginner</option>
+      <option value="Intermediate">Intermediate</option>
+      <option value="Advanced">Advanced</option>
+      <option value="ibt1">ibt1</option>
+      <option value="ibt2">ibt2</option>
+      <option value="pbt1">pbt1</option>
+      <option value="pbt2">pbt2</option>
+    </select>
+    <p>Course ID</p>
+    <input type="text" name="CourseID">
+
+  </form>
+  <button onclick="window.location.href='http://localhost:8080'">Add</button>
+  <button onclick="window.location.href='http://localhost:8080/edit'">Edit</button>
+  <button onclick="window.location.href='http://localhost:8080/delete1'">Delete</button>
+</body>
+
 </html>

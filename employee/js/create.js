@@ -1,5 +1,5 @@
 const { result, isEmpty, set, toArray } = require("lodash");
-
+var moment = require("moment");
 module.exports = {
   creat: async function (app, dic) {
     const monk = require("monk");
@@ -10,6 +10,7 @@ module.exports = {
     const collclass = db.get("class");
     const collSubject = db.get("subjects");
     var subjCnt = [];
+    var Year = moment().format("YYYY");
     var selected_subject = ["German", "Frensh", "Russian", "Kids"];
     var selected_level = [
       "Beginner",
@@ -20,7 +21,7 @@ module.exports = {
       "pbt1",
       "pbt2",
     ];
-   
+
     var cnt;
     var email;
     var Class_Num;
@@ -47,7 +48,7 @@ module.exports = {
           collection.count(
             {
               selected_subject: selected_subject[i],
-              price: { $exists: 0},
+              price: { $exists: 0 },
             },
             function (err, docs) {
               if (err) {
@@ -361,11 +362,11 @@ module.exports = {
       var Sday = req.body.Sday;
       var SMonth = req.body.Smonth;
       price = req.body.Price;
-      Time = Sday + "/" + SMonth;
-      if (SMonth != 12 || SMonth != 11)
-        EndTime = Sday + "/" + (parseInt(SMonth) + 2);
-      else if (SMonth == 11) EndTime = Sday + "/" + "1";
-      else if (SMonth == 12) EndTime = Sday + "/" + "2";
+      Time = Sday + "/" + SMonth + "/" + Year;
+      if (parseInt(SMonth) != 12 && parseInt(SMonth) !== 11)
+        EndTime = Sday + "/" + (parseInt(SMonth) + 2) + "/" + Year;
+      else if (parseInt(SMonth) == 11) EndTime = Sday + "/" + "1" + "/" + (parseInt(Year) + 1);
+      else if (parseInt(SMonth) == 12) EndTime = Sday + "/" + "2" + "/" + (parseInt(Year) + 1);
       subj = {
         SubjectName: subject,
         Teacher: email,
@@ -394,7 +395,6 @@ module.exports = {
 
     app.post("/confCreate", async (req, res) => {
       var myquery = { email: email };
-      // استعلم عن المستندات المطابقة لـ myquery وقم بإضافة newSubarray إلى work
       collteacher.update(
         myquery,
         { $push: { work: newSubarray } },
@@ -432,14 +432,16 @@ module.exports = {
           subject == "Kids"
         ) {
           await collection.update(
-            { selected_subject: subject },
+            { selected_subject: subject, price: { $exists: 0 } },
             {
               $set: {
                 price: parseInt(price),
                 Paid_amount: 0,
                 Last_payment: 0,
+                StartDay: Time,
+                EndDay: EndTime,
               },
-            },{ multi: true },
+            }, { multi: true },
             function (err, result) {
               if (err) {
                 console.error("ُerror student", err);
@@ -448,17 +450,18 @@ module.exports = {
               }
             }
           );
-          console.log("oooooooooooooooo");
         } else {
           await collection.update(
-            { selected_level: subject },
+            { selected_level: subject, price: { $exists: 0 }, },
             {
               $set: {
                 price: parseInt(price),
                 Paid_amount: 0,
                 Last_payment: 0,
+                StartDay: Time,
+                EndDay: EndTime,
               },
-            },{ multi: true },
+            }, { multi: true},
             function (err, result) {
               if (err) {
                 console.error("ُerror student", err);
