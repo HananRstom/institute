@@ -49,6 +49,9 @@
                 "<br>" +
                 "book: " +
                 data.data[0].flag;
+              if (data.data[0]?.paymentDate)
+                s += "<br>" + "paymentDate :" +
+                  data.data[0].paymentDate
               if (data.data[0]?.price) {
                 s += "<br>" +
                   "Paid amount: " +
@@ -87,8 +90,10 @@
             const data = await response.json();
             var s = "The amount you entered is: " + data.payment;
             if (data.check < 0) {
-              document.getElementById("res1").innerHTML = "the Amount you entered is bigger than the rest mount"
+              document.getElementById("res1").innerHTML = "It is more than we require"
             }
+            else document.getElementById("res1").innerHTML = "The rest of money :" + data.check;
+
 
 
           };
@@ -124,24 +129,7 @@
   <form action="/confStudent" method="post" id="">
     <input type="submit" value="Confirm" />
   </form>
-  <form action="" method="post">
-    <select name="" id="">
-      <option value="German">German</option>
-      <option value="Frensh">Frensh</option>
-      <option value="Russian">Russian</option>
-      <option value="Kids">Kids</option>
-      <option value="Beginner">Beginner</option>
-      <option value="Intermediate">Intermediate</option>
-      <option value="Advanced">Advanced</option>
-      <option value="ibt1">ibt1</option>
-      <option value="ibt2">ibt2</option>
-      <option value="pbt1">pbt1</option>
-      <option value="pbt2">pbt2</option>
-    </select>
-    <p>Course ID</p>
-    <input type="text" name="CourseID">
-
-  </form>
+  <button onclick="window.location='/SearchS'">Search about many student</button>
   <button onclick="window.location.href='http://localhost:8080'">Add</button>
   <button onclick="window.location.href='http://localhost:8080/edit'">Edit</button>
   <button onclick="window.location.href='http://localhost:8080/delete1'">Delete</button>

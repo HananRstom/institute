@@ -2,6 +2,9 @@ const { result, isEmpty, set, toArray } = require("lodash");
 var moment = require("moment");
 module.exports = {
   creat: async function (app, dic) {
+    app.get("/creat", function (req, res) {
+      res.sendFile(dic + "/html/create.html");
+    });
     const monk = require("monk");
     const url = "mongodb://0.0.0.0:27017/languages";
     const db = monk(url);
@@ -9,6 +12,7 @@ module.exports = {
     const collteacher = db.get("teachers");
     const collclass = db.get("class");
     const collSubject = db.get("subjects");
+    const count = db.get("counters")
     var subjCnt = [];
     var Year = moment().format("YYYY");
     var selected_subject = ["German", "Frensh", "Russian", "Kids"];
@@ -37,9 +41,7 @@ module.exports = {
     var EndTime = " ";
     var price;
     var subj;
-    app.get("/creat", function (req, res) {
-      res.sendFile(dic + "/html/create.html");
-    });
+    var id;
     //checking the number of students in each course
     const options = [];
     for (let i = 0; i < selected_subject.length; i++) {
@@ -274,6 +276,7 @@ module.exports = {
       };
       res.json(obj4);
     });
+
     app.get("/Time_data", async (req, res) => {
       var AvailableHoure = [];
       //check what hours will be free
@@ -357,16 +360,34 @@ module.exports = {
       res.json(obj2);
     });
 
-    app.post("/hour", (req, res) => {
+    app.post("/hour", async (req, res) => {
       emptyHour = req.body.hours;
       var Sday = req.body.Sday;
       var SMonth = req.body.Smonth;
       price = req.body.Price;
-      Time = Sday + "/" + SMonth + "/" + Year;
+      Time = Year + "-" + SMonth + "-" + Sday;
       if (parseInt(SMonth) != 12 && parseInt(SMonth) !== 11)
-        EndTime = Sday + "/" + (parseInt(SMonth) + 2) + "/" + Year;
-      else if (parseInt(SMonth) == 11) EndTime = Sday + "/" + "1" + "/" + (parseInt(Year) + 1);
-      else if (parseInt(SMonth) == 12) EndTime = Sday + "/" + "2" + "/" + (parseInt(Year) + 1);
+        EndTime = Year + "-" + (parseInt(SMonth) + 2) + "-" + Sday;
+      else if (parseInt(SMonth) == 11) EndTime = (parseInt(Year) + 1) + "-" + "1" + "-" + Sday;
+      else if (parseInt(SMonth) == 12) EndTime = (parseInt(Year) + 1) + "-2-" + Sday;
+      //for Course ID
+      count.update({ I: 4 }, { $inc: { count: 1 } });
+      //create ID for each course
+      async function ID() {
+        return new Promise((resolve, reject) => {
+          count.find({ I: 4 }, function (err, docs) {
+            if (err) {
+              console.log(err);
+              reject(err);
+            }
+            Info = docs;
+            resolve({ Info });
+          });
+        });
+      }
+
+      const I = await ID();
+      id = I.Info[0].count;
       subj = {
         SubjectName: subject,
         Teacher: email,
@@ -376,11 +397,13 @@ module.exports = {
         Days: days,
         Class: Class_Num,
         Price: price,
+        courseNumb: id
       };
 
       res.send();
     });
     app.get("/AllData", (req, res) => {
+
       obj4 = {
         subject: subject,
         email: email,
@@ -388,6 +411,7 @@ module.exports = {
         days: days,
         emptyHour: emptyHour,
         subj: subj,
+        id: id
       };
 
       res.json(obj4);
@@ -424,56 +448,56 @@ module.exports = {
           }
         }
       );
-      try {
-        if (
-          subject == "German" ||
-          subject == "Frensh" ||
-          subject == "Russian" ||
-          subject == "Kids"
-        ) {
-          await collection.update(
-            { selected_subject: subject, price: { $exists: 0 } },
-            {
-              $set: {
-                price: parseInt(price),
-                Paid_amount: 0,
-                Last_payment: 0,
-                StartDay: Time,
-                EndDay: EndTime,
-              },
-            }, { multi: true },
-            function (err, result) {
-              if (err) {
-                console.error("ُerror student", err);
-              } else {
-                console.log("updete student data", result);
-              }
+
+      if (
+        subject == "German" ||
+        subject == "Frensh" ||
+        subject == "Russian" ||
+        subject == "Kids"
+      ) {
+        await collection.update(
+          { selected_subject: subject, price: { $exists: 0 } },
+          {
+            $set: {
+              price: parseInt(price),
+              Paid_amount: 0,
+              Last_payment: 0,
+              StartDay: Time,
+              EndDay: EndTime,
+              courseNumb: id
+            },
+          }, { multi: true },
+          function (err, result) {
+            if (err) {
+              console.error("ُerror student", err);
+            } else {
+              console.log("updete student data", result);
             }
-          );
-        } else {
-          await collection.update(
-            { selected_level: subject, price: { $exists: 0 }, },
-            {
-              $set: {
-                price: parseInt(price),
-                Paid_amount: 0,
-                Last_payment: 0,
-                StartDay: Time,
-                EndDay: EndTime,
-              },
-            }, { multi: true},
-            function (err, result) {
-              if (err) {
-                console.error("ُerror student", err);
-              } else {
-                console.log("updete student data", result);
-              }
+          }
+        );
+      } else {
+        await collection.update(
+          { selected_level: subject, price: { $exists: 0 }, },
+          {
+            $set: {
+              price: parseInt(price),
+              Paid_amount: 0,
+              Last_payment: 0,
+              StartDay: Time,
+              EndDay: EndTime,
+              courseNumb: id
+            },
+          }, { multi: true },
+          function (err, result) {
+            if (err) {
+              console.error("ُerror student", err);
+            } else {
+              console.log("updete student data", result);
             }
-          );
-        }
-      } catch (error) {
-        console.error("error", error);
+          }
+        );
       }
+
       res.send("Upadte data successfuly");
     });
   },
