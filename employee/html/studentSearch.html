@@ -8,22 +8,26 @@
     <title>Student Search</title>
 </head>
 <script>
+
+
     fetch("/options")
         .then((response) => response.json())
         .then((data) => {
             const button = document.getElementById("course");
             const options = data;
 
-            options.forEach((option) => {
+            options.forEach((option, index) => {
                 const radioContainer = document.createElement("div");
 
                 const radioButton = document.createElement("input");
                 radioButton.type = "radio";
                 radioButton.name = "course";
+                radioButton.id = index;
                 radioButton.value = option.courseNumb;
 
                 const label = document.createElement("label");
                 label.textContent = `${option.SubjectName} - number : ${option.courseNumb}`;
+                label.htmlFor = index
                 const div = document.createElement("div");
                 div.textContent = `Days :${option.Days}--
                  Class : ${option.Class}--
@@ -34,37 +38,55 @@
                 radioContainer.appendChild(div);
                 button.appendChild(radioContainer);
             });
+        }).catch(error => {
+            console.error("Error", error);
         });
+
 </script>
 <script>
+
     async function updateA() {
-        document.on("submit", "#sub", function (e) {
+        $(document).on("submit", "#sub", function (e) {
             $.ajax({
                 url: $(this).attr("action"),
                 type: $(this).attr("method"),
                 data: $(this).serialize(),
                 success: async function (html) {
                     let request = async () => {
-                        let response = await fetch("http://localhost:8083/StudentSInfo")
-                        let data = response.json()
-                        $("#data").text(
+                        let response = await fetch("http://localhost:8083/StudentSInfo");
+                        let data = await response.json();
 
-                        )
-                    }
-                    await request()
+                        let s = '';
+                        data.forEach((info) => {
+                            if ((info.price - info.Paid_amount) > 0)
+                                s += "<br>" + "Name: " + info.name +
+                                    "<br>" + "Email: " + info.email +
+                                    "<br> ID: " + info.student_id +
+                                    (info?.paymentDate ? "<br> Last payment date: " + info.paymentDate : "<br> No payments have been made yet") +
+                                    "<br>" + "Rest of money: " + (info.price - info.Paid_amount) + "<br>" +
+                                    "--------------------------";
+                        });
+
+                        $("#data").html(s);
+                    };
+                    await request();
                 }
-            })
+            });
 
-            e.preventDefault()
-        })
+            e.preventDefault();
+        });
     }
+
+    $(document).ready(async function () {
+        await updateA();
+    });
 </script>
 
 <body>
     <form action="NumCourse" method="post" id="sub">
         <div id="course">
         </div>
-        <input type="submit" value="">
+        <input type="submit" value="Search">
         <div id="data"></div>
     </form>
 </body>
