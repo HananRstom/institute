@@ -2,9 +2,6 @@ const { result, isEmpty, set, toArray } = require("lodash");
 var moment = require("moment");
 module.exports = {
   creat: async function (app, dic) {
-    app.get("/creat", function (req, res) {
-      res.sendFile(dic + "/html/create.html");
-    });
     const monk = require("monk");
     const url = "mongodb://0.0.0.0:27017/languages";
     const db = monk(url);
@@ -12,11 +9,11 @@ module.exports = {
     const collteacher = db.get("teachers");
     const collclass = db.get("class");
     const collSubject = db.get("subjects");
-    const count = db.get("counters")
-    var subjCnt = [];
-    var Year = moment().format("YYYY");
-    var selected_subject = ["German", "Frensh", "Russian", "Kids"];
-    var selected_level = [
+    const count = db.get("counters");
+    let subjCnt = [];
+    let Year = moment().format("YYYY");
+    let selected_subject = ["German", "Frensh", "Russian", "Kids"];
+    let selected_level = [
       "Beginner",
       "Intermediate",
       "Advanced",
@@ -26,87 +23,71 @@ module.exports = {
       "pbt2",
     ];
 
-    var cnt;
-    var email;
-    var Class_Num;
-    var days;
-    var emptyHour;
-    var number_student;
-    var subject;
-    var obj1;
-    var obj2;
-    var obj3;
-    var obj4;
-    var Time = " ";
-    var EndTime = " ";
-    var price;
-    var subj;
-    var id;
-    //checking the number of students in each course
+    let cnt;
+    let email;
+    let Class_Num;
+    let days;
+    let emptyHour;
+    let number_student;
+    let subject;
+    let obj1;
+    let obj2;
+    let obj3;
+    let obj4;
+    let Time = " ";
+    let EndTime = " ";
+    let price;
+    let subj;
+    let id;
     const options = [];
-    for (let i = 0; i < selected_subject.length; i++) {
-      async function dd() {
+
+    app.get("/creat", async function (req, res) {
+
+      // checking the number of students in each course
+      for (let i = 0; i < selected_subject.length; i++) {
+        const result = await getData(selected_subject[i]);
+        cnt = result.Info;
+        subjCnt.push([cnt, selected_subject[i]]);
+      }
+
+      for (let i = 0; i < selected_level.length; i++) {
+        const result = await getData("English", selected_level[i]);
+        cnt = result.Info;
+        subjCnt.push([cnt, selected_level[i]]);
+      }
+
+      // Fill out the select for courses
+      for (let j = 0; j < subjCnt.length; j++) {
+        if (parseInt(subjCnt[j][0]) >= 1) {
+          options.push({ value: subjCnt[j][1], text: subjCnt[j][1] });
+        }
+      }
+
+      async function getData(subject, level) {
         return new Promise((resolve, reject) => {
           collection.count(
             {
-              selected_subject: selected_subject[i],
-              price: { $exists: 0 },
+              selected_subject: subject,
+              selected_level: level,
             },
             function (err, docs) {
               if (err) {
                 console.log(err);
                 reject(err);
               }
-              Info = docs;
-              resolve({ Info });
+              resolve({ Info: docs });
             }
           );
         });
       }
-      const result = await dd();
-      cnt = result.Info;
-      subjCnt.push([cnt, selected_subject[i]]);
-    }
-    /////////////////
-    for (let i = 0; i < selected_level.length; i++) {
-      async function nn() {
-        return new Promise((resolve, reject) => {
-          collection.count(
-            {
-              selected_subject: "English",
-              selected_level: selected_level[i],
-              price: { $exists: 0 },
-            },
-            function (err, docs) {
-              if (err) {
-                console.log(err);
-                reject(err);
-              }
-              Info = docs;
-              resolve({ Info });
-            }
-          );
-        });
-      }
-      const result = await nn();
 
-      cnt = result.Info;
+      res.sendFile(dic + "/html/create.html");
 
-      subjCnt.push([cnt, selected_level[i]]);
-    }
-
-    //fill out the selecte for coures
-    for (let j = 0; j < subjCnt.length; j++) {
-      if (parseInt(subjCnt[j][0]) >= 1) {
-        options.push({ value: subjCnt[j][1], text: subjCnt[j][1] });
-      }
-    }
-    app.get("/options", (req, res) => {
-      res.json(options);
     });
+    app.get("/options",(req,res)=>{
 
-    //
-
+      res.json(options);
+    })
     app.post("/course", async function (req, res) {
       var testsub = false;
       //choose teacher
@@ -368,8 +349,10 @@ module.exports = {
       Time = Year + "-" + SMonth + "-" + Sday;
       if (parseInt(SMonth) != 12 && parseInt(SMonth) !== 11)
         EndTime = Year + "-" + (parseInt(SMonth) + 2) + "-" + Sday;
-      else if (parseInt(SMonth) == 11) EndTime = (parseInt(Year) + 1) + "-" + "1" + "-" + Sday;
-      else if (parseInt(SMonth) == 12) EndTime = (parseInt(Year) + 1) + "-2-" + Sday;
+      else if (parseInt(SMonth) == 11)
+        EndTime = parseInt(Year) + 1 + "-" + "1" + "-" + Sday;
+      else if (parseInt(SMonth) == 12)
+        EndTime = parseInt(Year) + 1 + "-2-" + Sday;
       //for Course ID
       count.update({ I: 4 }, { $inc: { count: 1 } });
       //create ID for each course
@@ -397,13 +380,12 @@ module.exports = {
         Days: days,
         Class: Class_Num,
         Price: price,
-        courseNumb: id
+        courseNumb: id,
       };
 
       res.send();
     });
     app.get("/AllData", (req, res) => {
-
       obj4 = {
         subject: subject,
         email: email,
@@ -411,7 +393,7 @@ module.exports = {
         days: days,
         emptyHour: emptyHour,
         subj: subj,
-        id: id
+        id: id,
       };
 
       res.json(obj4);
@@ -464,9 +446,10 @@ module.exports = {
               Last_payment: 0,
               StartDay: Time,
               EndDay: EndTime,
-              courseNumb: id
+              courseNumb: id,
             },
-          }, { multi: true },
+          },
+          { multi: true },
           function (err, result) {
             if (err) {
               console.error("ُerror student", err);
@@ -477,7 +460,7 @@ module.exports = {
         );
       } else {
         await collection.update(
-          { selected_level: subject, price: { $exists: 0 }, },
+          { selected_level: subject, price: { $exists: 0 } },
           {
             $set: {
               price: parseInt(price),
@@ -485,9 +468,10 @@ module.exports = {
               Last_payment: 0,
               StartDay: Time,
               EndDay: EndTime,
-              courseNumb: id
+              courseNumb: id,
             },
-          }, { multi: true },
+          },
+          { multi: true },
           function (err, result) {
             if (err) {
               console.error("ُerror student", err);

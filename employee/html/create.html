@@ -12,6 +12,7 @@
     fetch("/options")
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         const select = document.getElementById("course");
         data.map((option) => {
           const optionElement = document.createElement("option");
