@@ -7,23 +7,45 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <title>Creat</title>
   </head>
-
   <script>
-    fetch("/options")
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        const select = document.getElementById("course");
-        data.map((option) => {
-          const optionElement = document.createElement("option");
-          optionElement.value = option.value;
-          optionElement.text = option.text;
-          select.appendChild(optionElement);
+    async function updateB() {
+      $(document).on("submit", "#limit", function (e) {
+        $.ajax({
+          url: $(this).attr("action"),
+          type: $(this).attr("method"),
+          data: $(this).serialize(),
+          success: async function (html) {
+            let request = async () => {
+              fetch("/options")
+                .then((response) => response.json())
+                .then((data) => {
+                  console.log(data);
+                  const select = document.getElementById("course");
+                  data.map((option) => {
+                    const optionElement = document.createElement("option");
+                    optionElement.value = option.value;
+                    optionElement.text = option.text;
+                    select.appendChild(optionElement);
+                  });
+                });
+            };
+            await request();
+          },
         });
+        e.preventDefault();
       });
-  </script>
+    }
 
+    $(document).ready(async function () {
+      await updateB();
+    });
+  </script>
   <body>
+    <form action="/min-max" method="post" id="limit">
+      <input type="number" name="min" id="" />
+      <input type="number" name="max" />
+      <input type="submit" value="submit" />
+    </form>
     <form action="/course" method="post" id="form1">
       <label for="course">Choose a course</label>
       <select id="course" name="course"></select>

@@ -22,6 +22,24 @@ module.exports = {
       "pbt1",
       "pbt2",
     ];
+    async function getData(subject, level) {
+      return new Promise((resolve, reject) => {
+        collection.count(
+          {
+            selected_subject: subject,
+            selected_level: level,
+            price: { $exists: 0 },
+          },
+          function (err, docs) {
+            if (err) {
+              console.log(err);
+              reject(err);
+            }
+            resolve({ Info: docs });
+          }
+        );
+      });
+    }
 
     let cnt;
     let email;
@@ -39,15 +57,18 @@ module.exports = {
     let price;
     let subj;
     let id;
-    const options = [];
-
-    app.get("/creat", async function (req, res) {
-
+    let options = [];
+    let max;
+    let min;
+    app.post("/min-max", async function (req, res) {
+      max = parseInt(req.body.max);
+      min = parseInt(req.body.min);
       // checking the number of students in each course
       for (let i = 0; i < selected_subject.length; i++) {
-        const result = await getData(selected_subject[i]);
+        const result = await getData(selected_subject[i], "");
         cnt = result.Info;
         subjCnt.push([cnt, selected_subject[i]]);
+        console.log(subjCnt[i][0] + subjCnt[i][1]);
       }
 
       for (let i = 0; i < selected_level.length; i++) {
@@ -58,65 +79,35 @@ module.exports = {
 
       // Fill out the select for courses
       for (let j = 0; j < subjCnt.length; j++) {
-        if (parseInt(subjCnt[j][0]) >= 1) {
+        if (parseInt(subjCnt[j][0]) >= min) {
           options.push({ value: subjCnt[j][1], text: subjCnt[j][1] });
         }
       }
-
-      async function getData(subject, level) {
-        return new Promise((resolve, reject) => {
-          collection.count(
-            {
-              selected_subject: subject,
-              selected_level: level,
-            },
-            function (err, docs) {
-              if (err) {
-                console.log(err);
-                reject(err);
-              }
-              resolve({ Info: docs });
-            }
-          );
-        });
-      }
-
-      res.sendFile(dic + "/html/create.html");
-
+      res.send();
     });
-    app.get("/options",(req,res)=>{
-
+    app.get("/creat", async function (req, res) {
+      res.sendFile(dic + "/html/create.html");
+    });
+    app.get("/options", (req, res) => {
       res.json(options);
-    })
+    });
     app.post("/course", async function (req, res) {
-      var testsub = false;
+      let result1;
       //choose teacher
       subject = req.body.course;
-      for (let i = 0; i < selected_level.length; i++) {
-        if (subject != selected_level[i]) {
-          testsub = true;
-        }
-      }
-
-      if (testsub) {
-        obj1 = { selected_subject: subject };
-      } else {
-        obj1 = { selected_subject: "English", selected_level: subject };
-      }
-      async function dd() {
-        return new Promise((resolve, reject) => {
-          collection.count(obj1, function (err, docs) {
-            if (err) {
-              console.log(err);
-              reject(err);
-            }
-            Info = docs;
-            resolve({ Info });
-          });
-        });
-      }
-      const result1 = await dd();
+      if (
+        subject == "Beginner" ||
+        subject == "Intermediate" ||
+        subject == "Advanced" ||
+        subject == "ibt1" ||
+        subject == "ibt2" ||
+        subject == "pbt1" ||
+        subject == "pbt2"
+      )
+        result1 = await getData("English", subject);
+      else result1 = await getData(subject, "");
       number_student = result1.Info;
+      console.log(number_student);
       async function findTeacher() {
         if (
           subject == "German" ||
@@ -381,6 +372,7 @@ module.exports = {
         Class: Class_Num,
         Price: price,
         courseNumb: id,
+        Number_student: number_student,
       };
 
       res.send();
@@ -437,49 +429,51 @@ module.exports = {
         subject == "Russian" ||
         subject == "Kids"
       ) {
-        await collection.update(
-          { selected_subject: subject, price: { $exists: 0 } },
-          {
-            $set: {
-              price: parseInt(price),
-              Paid_amount: 0,
-              Last_payment: 0,
-              StartDay: Time,
-              EndDay: EndTime,
-              courseNumb: id,
+        for (let i = 0; i < max; i++) {
+          await collection.update(
+            { selected_subject: subject, price: { $exists: 0 } },
+            {
+              $set: {
+                price: parseInt(price),
+                Paid_amount: 0,
+                Last_payment: 0,
+                StartDay: Time,
+                EndDay: EndTime,
+                courseNumb: id,
+              },
             },
-          },
-          { multi: true },
-          function (err, result) {
-            if (err) {
-              console.error("ُerror student", err);
-            } else {
-              console.log("updete student data", result);
+            function (err, result) {
+              if (err) {
+                console.error("ُerror student", err);
+              } else {
+                console.log("updete student data", result);
+              }
             }
-          }
-        );
+          );
+        }
       } else {
-        await collection.update(
-          { selected_level: subject, price: { $exists: 0 } },
-          {
-            $set: {
-              price: parseInt(price),
-              Paid_amount: 0,
-              Last_payment: 0,
-              StartDay: Time,
-              EndDay: EndTime,
-              courseNumb: id,
+        for (let i = 0; i < max; i++) {
+          await collection.update(
+            { selected_level: subject, price: { $exists: 0 } },
+            {
+              $set: {
+                price: parseInt(price),
+                Paid_amount: 0,
+                Last_payment: 0,
+                StartDay: Time,
+                EndDay: EndTime,
+                courseNumb: id,
+              },
             },
-          },
-          { multi: true },
-          function (err, result) {
-            if (err) {
-              console.error("ُerror student", err);
-            } else {
-              console.log("updete student data", result);
+            function (err, result) {
+              if (err) {
+                console.error("ُerror student", err);
+              } else {
+                console.log("updete student data", result);
+              }
             }
-          }
-        );
+          );
+        }
       }
 
       res.send("Upadte data successfuly");
