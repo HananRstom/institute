@@ -1,118 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <title>Subjects</title>
-  </head>
-  <script>
-    async function updateB() {
-      $(document).on("submit", "#form", function (e) {
-        $.ajax({
-          url: $(this).attr("action"),
-          type: $(this).attr("method"),
-          data: $(this).serialize(),
-          success: async function (html) {
-            let request = async () => {
-              const response = await fetch("http://localhost:8083/subject");
-              const data = await response.json();
-              let subject = data.info;
-              let teacher = data.Teacher;
-              let s = "";
-              let t = "";
-              if (subject.length == 0) {
-                s = "No course has opened yet";
-              } 
-              if(teacher.length==0){
-                t="there are no teachers for this subject yet"
-              }
-              subject.forEach((element) => {
-                s +=
-                  "Subject : " +
-                  element.SubjectName +
-                  "  course number:" +
-                  element.courseNumb +
-                  "<br>" +
-                  "teacher: " +
-                  element.Teacher +
-                  "<br>" +
-                  "start day: " +
-                  element.StartDay +
-                  "<br>" +
-                  "End Day: " +
-                  element.EndDay +
-                  "<br>" +
-                  "Hour: " +
-                  element.Hour +
-                  "<br>" +
-                  "Days: " +
-                  element.Days +
-                  "<br>" +
-                  "class: " +
-                  element.Class +
-                  "<br>" +
-                  "price: " +
-                  element.Price +
-                  "<br>" +
-                  "Number of student" +
-                  element.Number_student +
-                  "<br>" +
-                  "-------------------------";
-              });
-              teacher.forEach((e) => {
-                t +=
-                  "teacher name: " +
-                  e.Fname +
-                  " " +
-                  e.Mname +
-                  " " +
-                  e.Lname +
-                  "<br>" +
-                  "email: " +
-                  e.email +
-                  "<br>" +
-                  "hourly wage: " +
-                  e.wage +
-                  "<br>" +
-                  "-------------------------";
-              });
-              $("#div").html(s);
-              $("#Teach").html(t);
-            };
-            await request();
-          },
-        });
-        e.preventDefault();
-      });
-    }
 
-    $(document).ready(async function () {
-      await updateB();
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <title>Subjects</title>
+</head>
+<script>
+  async function updateB() {
+    $(document).on("submit", "#form", function (e) {
+      $.ajax({
+        url: $(this).attr("action"),
+        type: $(this).attr("method"),
+        data: $(this).serialize(),
+        success: async function (html) {
+          let request = async () => {
+            const response = await fetch("http://localhost:8083/subject");
+            const data = await response.json();
+            let subject = data.info;
+            let teacher = data.Teacher;
+            let s = "";
+            let t = "";
+            if (subject.length == 0) {
+              s = "No course has opened yet";
+            }
+            if (teacher.length == 0) {
+              t = "there are no teachers for this subject yet"
+            }
+            subject.forEach((element) => {
+              s +=
+                "<br>" +
+                "Subject : " +
+                element.SubjectName +
+                "  course number:" +
+                element.courseNumb +
+                "<br>" +
+                "teacher: " +
+                element.Teacher +
+                "<br>" +
+                "start day: " +
+                element.StartDay +
+                "<br>" +
+                "End Day: " +
+                element.EndDay +
+                "<br>" +
+                "Hour: " +
+                element.Hour +
+                "<br>" +
+                "Days: " +
+                element.Days +
+                "<br>" +
+                "class: " +
+                element.Class +
+                "<br>" +
+                "price: " +
+                element.Price +
+                "<br>" +
+                "Number of student" +
+                element.Number_student +
+                "<br>" +
+                "-------------------------";
+            });
+            teacher.forEach((e) => {
+              t +=
+                "teacher name: " +
+                e.Fname +
+                " " +
+                e.Mname +
+                " " +
+                e.Lname +
+                "<br>" +
+                "email: " +
+                e.email +
+                "<br>" +
+                "hourly wage: " +
+                e.wage +
+                "<br>" +
+                "-------------------------";
+            });
+            $("#div").html(s);
+            $("#Teach").html(t);
+          };
+          await request();
+        },
+      });
+      e.preventDefault();
     });
-  </script>
-  <body>
-    <form action="/subject" method="post" id="form">
-      <select name="course" id="course">
-        <option value=""></option>
-        <option value="German">German</option>
-        <option value="Frensh">Frensh</option>
-        <option value="Russian">Russian</option>
-        <optgroup>
-          <option value="Kids">English for kids</option>
-          <option value="Beginner">Beginner level English</option>
-          <option value="Intermediate">Beginner level English</option>
-          <option value="Advanced">Advanced level English</option>
-          <option value="ibt1">IBT1 level English</option>
-          <option value="ibt2">IBT2 level English</option>
-          <option value="pbt1">PBT1 level English</option>
-          <option value="pbt2">PBT2 level English</option>
-        </optgroup>
-      </select>
-      <input type="submit" value="submit" />
-      <div id="div"></div>
-      <div id="Teach"></div>
-    </form>
-  </body>
+  }
+
+  $(document).ready(async function () {
+    await updateB();
+  });
+</script>
+
+<body>
+  <form action="/subject" method="post" id="form">
+    <select name="course" id="course">
+      <option value=""></option>
+      <option value="German">German</option>
+      <option value="Frensh">Frensh</option>
+      <option value="Russian">Russian</option>
+      <optgroup>
+        <option value="Kids">English for kids</option>
+        <option value="Beginner">Beginner level English</option>
+        <option value="Intermediate">Beginner level English</option>
+        <option value="Advanced">Advanced level English</option>
+        <option value="ibt1">IBT1 level English</option>
+        <option value="ibt2">IBT2 level English</option>
+        <option value="pbt1">PBT1 level English</option>
+        <option value="pbt2">PBT2 level English</option>
+      </optgroup>
+    </select>
+    <input type="submit" value="submit" />
+    <input type="button" value="edit" onclick="window.location='/editSubject'">
+    <div id="div"></div>
+    <div id="Teach"></div>
+
+  </form>
+</body>
+
 </html>

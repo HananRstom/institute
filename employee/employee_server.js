@@ -22,6 +22,7 @@ const addTeacher = require("./js/addTeacher.js");
 const editTeacher = require("./js/editTeacher.js");
 const deleteTeacher = require("./js/deleteTeacher.js");
 const studentSearch = require("./js/studentSearch.js");
+const editSubject = require("./js/edit_subject.js")
 creat.creat(app, __dirname);
 student.student(app, __dirname);
 teacher.teacher(app, __dirname);
@@ -29,15 +30,13 @@ subjects.subjects(app, __dirname);
 database.database(app, __dirname);
 addTeacher.addTeacher(app, __dirname);
 editTeacher.editTeacher(app, __dirname);
-deleteTeacher.deleteTeacher(app,__dirname)
-studentSearch.studentSearch(app,__dirname)
+deleteTeacher.deleteTeacher(app, __dirname)
+studentSearch.studentSearch(app, __dirname)
+editSubject.editSubject(app, __dirname)
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/home.html");
 });
-var selected_subject = "";
 app.post("/employee", function (req, res) {
-  selected_subject = "";
-  if (req.body.subject) selected_subject = req.body.subject;
 
   res.send();
 });

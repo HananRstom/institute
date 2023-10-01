@@ -54,7 +54,7 @@ module.exports = {
             let dataS = result.Info;
             res.json(dataS)
         })
-        app.get("/options", (req, res) => {
+        app.get("/CourseOptions", (req, res) => {
             res.json(data);
         });
 

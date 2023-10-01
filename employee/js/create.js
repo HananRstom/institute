@@ -61,6 +61,8 @@ module.exports = {
     let max;
     let min;
     app.post("/min-max", async function (req, res) {
+      min = 0;
+      max = 100;
       max = parseInt(req.body.max);
       min = parseInt(req.body.min);
       // checking the number of students in each course
@@ -68,7 +70,6 @@ module.exports = {
         const result = await getData(selected_subject[i], "");
         cnt = result.Info;
         subjCnt.push([cnt, selected_subject[i]]);
-        console.log(subjCnt[i][0] + subjCnt[i][1]);
       }
 
       for (let i = 0; i < selected_level.length; i++) {
@@ -107,7 +108,6 @@ module.exports = {
         result1 = await getData("English", subject);
       else result1 = await getData(subject, "");
       number_student = result1.Info;
-      console.log(number_student);
       async function findTeacher() {
         if (
           subject == "German" ||
@@ -362,6 +362,12 @@ module.exports = {
 
       const I = await ID();
       id = I.Info[0].count;
+      let num;
+      if (max > number_student)
+        num = number_student;
+      else
+        num = max;
+
       subj = {
         SubjectName: subject,
         Teacher: email,
@@ -372,7 +378,7 @@ module.exports = {
         Class: Class_Num,
         Price: price,
         courseNumb: id,
-        Number_student: number_student,
+        Number_student: num,
       };
 
       res.send();
@@ -392,6 +398,13 @@ module.exports = {
     });
 
     app.post("/confCreate", async (req, res) => {
+      
+      var newSubarray = [days, emptyHour, Class_Num];
+      
+      var ClassQuery = { number: parseInt(Class_Num) };
+      
+      collSubject.insert(subj);
+      var subClass = [days, emptyHour];
       var myquery = { email: email };
       collteacher.update(
         myquery,
@@ -404,13 +417,6 @@ module.exports = {
           }
         }
       );
-
-      var newSubarray = [days, emptyHour, Class_Num];
-
-      var ClassQuery = { number: parseInt(Class_Num) };
-
-      collSubject.insert(subj);
-      var subClass = [days, emptyHour];
       await collclass.update(
         ClassQuery,
         { $push: { busy: subClass } },
@@ -421,30 +427,30 @@ module.exports = {
             console.log("updete class data", result);
           }
         }
-      );
-
-      if (
-        subject == "German" ||
-        subject == "Frensh" ||
-        subject == "Russian" ||
-        subject == "Kids"
-      ) {
-        for (let i = 0; i < max; i++) {
-          await collection.update(
-            { selected_subject: subject, price: { $exists: 0 } },
-            {
-              $set: {
-                price: parseInt(price),
-                Paid_amount: 0,
-                Last_payment: 0,
-                StartDay: Time,
-                EndDay: EndTime,
-                courseNumb: id,
-              },
-            },
-            function (err, result) {
-              if (err) {
-                console.error("ُerror student", err);
+        );
+        
+        if (
+          subject == "German" ||
+          subject == "Frensh" ||
+          subject == "Russian" ||
+          subject == "Kids"
+          ) {
+            for (let i = 0; i < max; i++) {
+              await collection.update(
+                { selected_subject: subject, price: { $exists: 0 } },
+                {
+                  $set: {
+                    price: parseInt(price),
+                    Paid_amount: 0,
+                    Last_payment: 0,
+                    StartDay: Time,
+                    EndDay: EndTime,
+                    courseNumb: id,
+                  },
+                },
+                function (err, result) {
+                  if (err) {
+                    console.error("ُerror student", err);
               } else {
                 console.log("updete student data", result);
               }
