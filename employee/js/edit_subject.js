@@ -8,6 +8,7 @@ module.exports = {
     const collSubject = db.get("subjects");
     const collteacher = db.get("teachers");
     const collclass = db.get("class");
+    const collStudent = db.get("students");
     let data;
     let course;
     let sday, smonth, syear;
@@ -17,10 +18,14 @@ module.exports = {
     let price;
     let editClass;
     let obj;
+    let subjName;
+    let error;
+    let oldPrice;
     let chooseStart = false;
     let chooseEnd = false;
     app.get("/editSubject", async function (req, res) {
       res.sendFile(dic + "/html/edit_subject.html");
+
       async function nn() {
         return new Promise((resolve, reject) => {
           collSubject.find({}, function (err, docs) {
@@ -45,7 +50,19 @@ module.exports = {
     let Stime;
     let ETime;
     app.post("/edit_Subject", async (req, res) => {
-      course, price, editClass, sday, smonth, eday, syear, emonth, eyear, days, hour = '';
+      error = false;
+      course,
+        price,
+        editClass,
+        sday,
+        smonth,
+        eday,
+        syear,
+        emonth,
+        eyear,
+        days,
+        (hour = "");
+
       course = parseInt(req.body.course);
       chooseStart = false;
       chooseEnd = false;
@@ -61,6 +78,9 @@ module.exports = {
       hour = req.body.hour;
       Stime = syear + "-" + smonth + "-" + sday;
       ETime = eday + "-" + emonth + "-" + eday;
+      if (hour != "" && (editClass != "" || days != "")) error = true;
+      if (editClass != "" && (hour != "" || days != "")) error = true;
+      if (days != "" && (editClass != "" || hour != "")) error = true;
       if (
         (sday == "" && smonth == "" && syear == "") ||
         (sday != "" && smonth != "" && syear != "")
@@ -71,12 +91,15 @@ module.exports = {
         (eday != "" && emonth != "" && eyear != "")
       )
         chooseEnd = true;
-      console.log(days)
+      console.log(days);
+
       res.send();
     });
 
     app.post("/confirmS", async (req, res) => {
       let targetValue = [];
+      let targetTeacher = [];
+
       async function nn() {
         return new Promise((resolve, reject) => {
           collSubject.find({ courseNumb: course }, function (err, docs) {
@@ -95,20 +118,85 @@ module.exports = {
       let Email = result.Info[0].Teacher;
       targetValue[0] = result.Info[0].Days;
       targetValue[1] = result.Info[0].Hour;
+      targetTeacher[0] = result.Info[0].Days;
+      targetTeacher[1] = result.Info[0].Hour;
+      targetTeacher[2] = result.Info[0].Class;
+      subjName = result.Info[0].SubjectName;
+      oldPrice = result.Info[0].Price;
+      console.log(subjName+"ooooooooooo")
+      console.log(oldPrice+"ttttt")
 
       if (price != "") {
         collSubject.update({ courseNumb: course }, { $set: { Price: price } });
+        if (
+          subjName == "Russian" ||
+          subjName == "Frensh" ||
+          subjName == "German" ||
+          subjName == "Kids"
+        ) {
+          collStudent.update(
+            { selected_subject: subjName, price: parseInt(oldPrice )},
+            { $set: { price: price } }
+          );
+        } else {
+          collStudent.update(
+            { selected_level: subjName },
+            { $set: { price: price } }
+          );
+        }
       }
       if (editClass != "") {
         collSubject.update(
           { courseNumb: course },
           { $set: { Class: editClass } }
         );
-        let rowIndex = -1;
-        let columnIndex = -1;
-
+        let Row = -1;
         // استرجاع المصفوفة من قاعدة البيانات
-        collclass.findOne({ number: Class })
+        collteacher
+          .findOne({ email: Email })
+          .then((document) => {
+            if (document && document.work && Array.isArray(document.work)) {
+              const busyArray = document.work;
+
+              // الحصول على مؤشر السطر
+              for (let row = 0; row < busyArray.length; row++) {
+                const rowArray = busyArray[row];
+                const targetRow = JSON.stringify(targetTeacher);
+
+                if (JSON.stringify(rowArray) === targetRow) {
+                  Row = row;
+                  break;
+                }
+              }
+
+              console.log("Row Index T:", Row);
+
+              // حذف السطر بأكمله من المصفوفة
+              if (Row >= 0) {
+                busyArray[Row].splice(2, 1, editClass);
+
+                // حفظ التغييرات في قاعدة البيانات
+                return collteacher.update(
+                  { email: Email },
+                  { $set: { work: busyArray } }
+                );
+              } else {
+                console.log("The row is invalid");
+              }
+            } else {
+              console.log("Document not found or invalid busy array");
+            }
+          })
+          .then(() => {
+            console.log("Update class in teacher");
+          })
+          .catch((error) => {
+            console.error("Error while deleting row:", error);
+          });
+        let rowIndex = -1;
+
+        collclass
+          .findOne({ number: Class })
           .then((document) => {
             if (document && document.busy && Array.isArray(document.busy)) {
               const busyArray = document.busy;
@@ -131,19 +219,22 @@ module.exports = {
                 busyArray.splice(rowIndex, 1);
 
                 // حفظ التغييرات في قاعدة البيانات
-                return collclass.update({ number: Class }, { $set: { busy: busyArray } });
+                return collclass.update(
+                  { number: Class },
+                  { $set: { busy: busyArray } }
+                );
               } else {
-                console.log('The row is invalid');
+                console.log("The row is invalid");
               }
             } else {
-              console.log('Document not found or invalid busy array');
+              console.log("Document not found or invalid busy array");
             }
           })
           .then(() => {
-            console.log('Deleted row successfully');
+            console.log("Deleted row successfully");
           })
           .catch((error) => {
-            console.error('Error while deleting row:', error);
+            console.error("Error while deleting row:", error);
           });
         collclass.update(
           { number: parseInt(editClass) },
@@ -157,12 +248,165 @@ module.exports = {
           }
         );
       }
+
       if (days) {
         collSubject.update({ courseNumb: course }, { $set: { Days: days } });
+        let Row = -1;
+        collteacher
+          .findOne({ email: Email })
+          .then((document) => {
+            if (document && document.work && Array.isArray(document.work)) {
+              const busyArray = document.work;
+
+              for (let row = 0; row < busyArray.length; row++) {
+                const rowArray = busyArray[row];
+                const targetRow = JSON.stringify(targetTeacher);
+
+                if (JSON.stringify(rowArray) === targetRow) {
+                  Row = row;
+                  break;
+                }
+              }
+
+              console.log("Row Index TD:", Row);
+
+              if (Row >= 0) {
+                busyArray[Row].splice(0, 1, days);
+                return collteacher.update(
+                  { email: Email },
+                  { $set: { work: busyArray } }
+                );
+              } else {
+                console.log("The row is invalid");
+              }
+            } else {
+              console.log("Document not found or invalid busy array");
+            }
+          })
+          .then(() => {
+            console.log("Update days in teacher");
+          })
+          .catch((error) => {
+            console.error("Error while deleting row:", error);
+          });
+        let rowIndex = -1;
+        collclass
+          .findOne({ number: Class })
+          .then((document) => {
+            if (document && document.busy && Array.isArray(document.busy)) {
+              const busyArray = document.busy;
+
+              for (let row = 0; row < busyArray.length; row++) {
+                const rowArray = busyArray[row];
+                const targetRow = JSON.stringify(targetValue);
+
+                if (JSON.stringify(rowArray) === targetRow) {
+                  rowIndex = row;
+                  break;
+                }
+              }
+
+              console.log("rowIndex Index CD:", rowIndex);
+
+              if (rowIndex >= 0) {
+                busyArray[rowIndex].splice(0, 1, days);
+                return collclass.update(
+                  { number: Class },
+                  { $set: { busy: busyArray } }
+                );
+              } else {
+                console.log("The row is invalid");
+              }
+            } else {
+              console.log("Document not found or invalid busy array");
+            }
+          })
+          .then(() => {
+            console.log("Update days in Class");
+          })
+          .catch((error) => {
+            console.error("Error while deleting row:", error);
+          });
       }
 
       if (hour != "") {
         collSubject.update({ courseNumb: course }, { $set: { Hour: hour } });
+        let Row = -1;
+        collteacher
+          .findOne({ email: Email })
+          .then((document) => {
+            if (document && document.work && Array.isArray(document.work)) {
+              const busyArray = document.work;
+
+              for (let row = 0; row < busyArray.length; row++) {
+                const rowArray = busyArray[row];
+                const targetRow = JSON.stringify(targetTeacher);
+
+                if (JSON.stringify(rowArray) === targetRow) {
+                  Row = row;
+                  break;
+                }
+              }
+
+              console.log("Row Index TH:", Row);
+
+              if (Row >= 0) {
+                busyArray[Row].splice(1, 1, hour);
+                return collteacher.update(
+                  { email: Email },
+                  { $set: { work: busyArray } }
+                );
+              } else {
+                console.log("The row is invalid");
+              }
+            } else {
+              console.log("Document not found or invalid busy array");
+            }
+          })
+          .then(() => {
+            console.log("Update houre in teacher");
+          })
+          .catch((error) => {
+            console.error("Error while deleting row:", error);
+          });
+        let rowIndex = -1;
+        collclass
+          .findOne({ number: Class })
+          .then((document) => {
+            if (document && document.busy && Array.isArray(document.busy)) {
+              const busyArray = document.busy;
+
+              for (let row = 0; row < busyArray.length; row++) {
+                const rowArray = busyArray[row];
+                const targetRow = JSON.stringify(targetValue);
+
+                if (JSON.stringify(rowArray) === targetRow) {
+                  rowIndex = row;
+                  break;
+                }
+              }
+
+              console.log("rowIndex Index CH:", rowIndex);
+
+              if (rowIndex >= 0) {
+                busyArray[rowIndex].splice(1, 1, hour);
+                return collclass.update(
+                  { number: Class },
+                  { $set: { busy: busyArray } }
+                );
+              } else {
+                console.log("The row is invalid");
+              }
+            } else {
+              console.log("Document not found or invalid busy array");
+            }
+          })
+          .then(() => {
+            console.log("Update houre in Class");
+          })
+          .catch((error) => {
+            console.error("Error while deleting row:", error);
+          });
       }
 
       if (sday != "") {
@@ -182,8 +426,9 @@ module.exports = {
         Course: course,
         chooseEnd: chooseEnd,
         chooseStart: chooseStart,
-      }
-      res.json(obj)
-    })
+        error: error,
+      };
+      res.json(obj);
+    });
   },
 };

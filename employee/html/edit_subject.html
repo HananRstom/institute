@@ -60,15 +60,17 @@
               if (data.Course == null) {
                 alert("You must choose course")
                 $("#div").text("You must choose course ");
-              } else if (data.chooseStart && data.chooseEnd) {
+              } else if (data.error) {
+                $("#div").text("you can't modify more than one field (days or hour or calss)");
+              } else if (data.chooseStar) {
+                $("#errorS").text(" All field must be modified");
+              } else if(!data.chooseEnd) {
+                $("#errorE").text(" All field must be modified");
+              }else if (data.chooseStart && data.chooseEnd) {
                 $("#confirm").show(0.4);
                 $("#div").text("");
                 $("#errorS").text("");
                 $("#errorE").text("");
-              } else if (!data.chooseStar) {
-                $("#errorS").text(" All field must be modified");
-              } else {
-                $("#errorE").text(" All field must be modified");
               }
             };
             await request();
