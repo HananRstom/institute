@@ -123,27 +123,13 @@ module.exports = {
       targetTeacher[2] = result.Info[0].Class;
       subjName = result.Info[0].SubjectName;
       oldPrice = result.Info[0].Price;
-      console.log(subjName+"ooooooooooo")
-      console.log(oldPrice+"ttttt")
+      console.log(subjName + "ooooooooooo");
+      console.log(oldPrice + "ttttt");
 
       if (price != "") {
         collSubject.update({ courseNumb: course }, { $set: { Price: price } });
-        if (
-          subjName == "Russian" ||
-          subjName == "Frensh" ||
-          subjName == "German" ||
-          subjName == "Kids"
-        ) {
-          collStudent.update(
-            { selected_subject: subjName, price: parseInt(oldPrice )},
-            { $set: { price: price } }
-          );
-        } else {
-          collStudent.update(
-            { selected_level: subjName },
-            { $set: { price: price } }
-          );
-        }
+
+        collStudent.update({ courseNumb: course }, { $set: { price: price } });
       }
       if (editClass != "") {
         collSubject.update(
