@@ -25,14 +25,18 @@
 
             if (data.error) {
               $("#div").text("Invalid ID");
-              $("#ch").hide();
+              $("#option").hide();
             } else {
-              $("#ch").show();
+              $("#option").show();
               $("#div").text("");
+              $("#info").html(
+                "Name : " + data.result[0].name + "<br>" +
+                "Email : " + data.result[0].email + "<br>"
+              )
               console.log(data.result[0].books);
               let length = data.result[0].books.length;
               let checkboxesContainer = $("#ch");
-              checkboxesContainer.empty(); 
+              checkboxesContainer.empty();
               for (let i = 0; i < length; i++) {
                 let checkbox = $("<input>", {
                   type: "checkbox",
@@ -70,6 +74,7 @@
     <input type="submit" value="submit" />
   </form>
   <form action="/delConf" method="post" id="option">
+    <div id="info"></div>
     <div id="ch"></div>
     <input type="submit" value="confirm" id="conf" />
   </form>
