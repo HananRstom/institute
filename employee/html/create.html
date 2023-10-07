@@ -1,58 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <title>Creat</title>
-  </head>
-  <script>
-    async function updateB() {
-      $(document).on("submit", "#limit", function (e) {
-        $.ajax({
-          url: $(this).attr("action"),
-          type: $(this).attr("method"),
-          data: $(this).serialize(),
-          success: async function (html) {
-            let request = async () => {
-              fetch("/options")
-                .then((response) => response.json())
-                .then((data) => {
-                  console.log(data);
-                  const select = document.getElementById("course");
-                  data.map((option) => {
-                    const optionElement = document.createElement("option");
-                    optionElement.value = option.value;
-                    optionElement.text = option.text;
-                    select.appendChild(optionElement);
-                  });
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <title>Creat</title>
+</head>
+<script>
+  async function updateB() {
+    $(document).on("submit", "#limit", function (e) {
+      $.ajax({
+        url: $(this).attr("action"),
+        type: $(this).attr("method"),
+        data: $(this).serialize(),
+        success: async function (html) {
+          let request = async () => {
+            fetch("/options")
+              .then((response) => response.json())
+              .then((data) => {
+                console.log(data);
+                $("#course").empty();
+                $.each(data, function (index, option) {
+                  $("<option>")
+                    .val(option.value)
+                    .text(option.text)
+                    .appendTo("#course");
                 });
-            };
-            await request();
-          },
-        });
-        e.preventDefault();
+              });
+          };
+          await request();
+        },
       });
-    }
-
-    $(document).ready(async function () {
-      await updateB();
+      e.preventDefault();
     });
-  </script>
-  <body>
-    <form action="/min-max" method="post" id="limit">
-      <input type="number" name="min" id="" />
-      <input type="number" name="max" />
-      <input type="submit" value="submit" />
-    </form>
-    <form action="/course" method="post" id="form1">
-      <label for="course">Choose a course</label>
-      <select id="course" name="course"></select>
+  }
 
-      <div id="div"></div>
+  $(document).ready(async function () {
+    await updateB();
+  });
+</script>
 
-      <input type="submit" value="Continue" />
-    </form>
-  </body>
+<body>
+  <form action="/min-max" method="post" id="limit">
+    <input type="number" name="min" id="" />
+    <input type="number" name="max" />
+    <input type="submit" value="submit" />
+  </form>
+  <form action="/course" method="post" id="form1">
+    <label for="course">Choose a course</label>
+    <select id="course" name="course"></select>
+
+    <div id="div"></div>
+
+    <input type="submit" value="Continue" />
+  </form>
+</body>
+
 </html>

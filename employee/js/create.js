@@ -62,7 +62,9 @@ module.exports = {
     let min;
     app.post("/min-max", async function (req, res) {
       min = 0;
-      max = 100;
+      max = 40;
+      subjCnt = []
+      options = []
       max = parseInt(req.body.max);
       min = parseInt(req.body.min);
       // checking the number of students in each course
@@ -250,16 +252,20 @@ module.exports = {
     });
 
     app.get("/Time_data", async (req, res) => {
-      var AvailableHoure = [];
+      let AvailableHoure = [];
       //check what hours will be free
-
+      let Hour_teacher = [];
+      let BussyClass = [];
+      for (let i = 8; i < 19; i++) {
+        Hour_teacher[i] = 1;
+        BussyClass[i] = 1;
+      }
       ////Busy hours (teacher)
       async function findwork() {
         return new Promise((resolve, reject) => {
           collteacher.find(
             {
               email: email,
-              work: { $elemMatch: { $elemMatch: { $eq: days } } },
             },
             function (err, docs) {
               if (err) {
@@ -273,21 +279,18 @@ module.exports = {
         });
       }
 
-      var Hour_teacher = [];
       const workTeacher = await findwork();
-      var resultTeachers = workTeacher.Info;
-      console.log(workTeacher.Info);
+      var resultTeachers = workTeacher.Info[0].work;
       if (!isEmpty(resultTeachers)) {
-        var T = [];
-        T = resultTeachers.map((e) => console.log(typeof e.work));
-        let arr = Object.entries(T);
-        console.log(arr);
-        arr.forEach((e, i) => {
-          Hour_teacher.push(e[i][1]);
-          console.log(i);
-        });
+        for (let i = 0; i < resultTeachers.length; i++) {
+          if (resultTeachers[i][0] == days) {
+
+            let j = parseInt(resultTeachers[i][1])
+            Hour_teacher[j] = 0;
+          }
+        }
       }
-      console.log(Hour_teacher);
+      console.log(Hour_teacher)
       ////Busy hours (class)
 
       async function bussyHours() {
@@ -295,7 +298,6 @@ module.exports = {
           collclass.find(
             {
               number: parseInt(Class_Num),
-              busy: { $elemMatch: { $elemMatch: { $eq: days } } },
             },
             function (err, docs) {
               if (err) {
@@ -308,22 +310,24 @@ module.exports = {
           );
         });
       }
-      var BussyClass = [];
+
       const classes = await bussyHours();
-      var v = classes.Info;
+      var v = classes.Info[0].busy;
 
       if (!isEmpty(v)) {
-        var b = [];
-        v.forEach((e) => {
-          b.push(e.busy);
-        });
-        b.forEach((e, i) => {
-          BussyClass.push(e[i][1]);
-        });
+        for (let i = 0; i < v.length; i++) {
+          if (v[i][0] == days) {
+
+            let j = parseInt(v[i][1])
+            BussyClass[j] = 0;
+          }
+        }
       }
-      console.log(Hour_teacher[0] + "  " + BussyClass[0]);
-      for (let i = 8, j = 0; j <= 11, i <= 18; j++, i++) {
-        if (Hour_teacher[j] != i && BussyClass[j] != i) AvailableHoure.push(i);
+      for (let i = 8; i <= 18; i++) {
+        if (BussyClass[i] && Hour_teacher[i]) {
+          AvailableHoure.push(i)
+        }
+
       }
 
       obj2 = {
@@ -398,11 +402,11 @@ module.exports = {
     });
 
     app.post("/confCreate", async (req, res) => {
-      
+
       var newSubarray = [days, emptyHour, Class_Num];
-      
+
       var ClassQuery = { number: parseInt(Class_Num) };
-      
+
       collSubject.insert(subj);
       var subClass = [days, emptyHour];
       var myquery = { email: email };
@@ -427,30 +431,30 @@ module.exports = {
             console.log("updete class data", result);
           }
         }
-        );
-        
-        if (
-          subject == "German" ||
-          subject == "Frensh" ||
-          subject == "Russian" ||
-          subject == "Kids"
-          ) {
-            for (let i = 0; i < max; i++) {
-              await collection.update(
-                { selected_subject: subject, price: { $exists: 0 } },
-                {
-                  $set: {
-                    price: parseInt(price),
-                    Paid_amount: 0,
-                    Last_payment: 0,
-                    StartDay: Time,
-                    EndDay: EndTime,
-                    courseNumb: id,
-                  },
-                },
-                function (err, result) {
-                  if (err) {
-                    console.error("ُerror student", err);
+      );
+
+      if (
+        subject == "German" ||
+        subject == "Frensh" ||
+        subject == "Russian" ||
+        subject == "Kids"
+      ) {
+        for (let i = 0; i < max; i++) {
+          await collection.update(
+            { selected_subject: subject, price: { $exists: 0 } },
+            {
+              $set: {
+                price: parseInt(price),
+                Paid_amount: 0,
+                Last_payment: 0,
+                StartDay: Time,
+                EndDay: EndTime,
+                courseNumb: id,
+              },
+            },
+            function (err, result) {
+              if (err) {
+                console.error("ُerror student", err);
               } else {
                 console.log("updete student data", result);
               }
