@@ -7,6 +7,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <title>book</title>
 </head>
+
 <script>
   function updateA() {
     $(document).on("submit", "#show", function (e) {
@@ -23,30 +24,26 @@
             const data = await response.json();
 
             if (data.error) {
-              $("#div").text("Invalid ID")
-              $("option").hide()
+              $("#div").text("Invalid ID");
+              $("#ch").hide();
             } else {
-              // $("option").show()
-              // $("#div").text("")
-              let lengt = data.result[0].books.length;
-              let checkboxesContainer = document.getElementById(
-                "ch"
-              );
+              $("#ch").show();
+              $("#div").text("");
+              console.log(data.result[0].books);
+              let length = data.result[0].books.length;
+              let checkboxesContainer = $("#ch");
+              checkboxesContainer.empty(); 
+              for (let i = 0; i < length; i++) {
+                let checkbox = $("<input>", {
+                  type: "checkbox",
+                  name: "book[]",
+                  value: data.result[0].books[i]
+                });
+                let label = $("<label>").html(data.result[0].books[i]);
 
-            //  checkboxesContainer.innerHTML = "";
-
-              for (let i = 0; i < lengt; i++) {
-                let checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.name = "book[]";
-                checkbox.value = data.result[0].books[i];
-
-                let label = document.createElement("label");
-                label.innerHTML = data.result[0].books[i];
-
-                checkboxesContainer.appendChild(checkbox);
-                checkboxesContainer.appendChild(label);
-                checkboxesContainer.appendChild(document.createElement("br"));
+                checkboxesContainer.append(checkbox);
+                checkboxesContainer.append(label);
+                checkboxesContainer.append($("<br>"));
               }
               $("#conf").show();
             }
@@ -70,12 +67,10 @@
 
     <div id="div"></div>
 
-
     <input type="submit" value="submit" />
   </form>
   <form action="/delConf" method="post" id="option">
-    <div id=" ch">
-    </div>
+    <div id="ch"></div>
     <input type="submit" value="confirm" id="conf" />
   </form>
 </body>

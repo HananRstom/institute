@@ -32,9 +32,9 @@ module.exports = {
         }
         const result = await nn();
         data = result.Info;
-        console.log(data)
+
       }
-      if ((id == "")||data.length==0)
+      if ((id == "") || data.length == 0)
         error = true;
       res.send();
     });
@@ -89,6 +89,7 @@ module.exports = {
       res.send()
     })
     app.get("/showBook", function (req, res) {
+
       obj = {
         result: data,
         error: error
