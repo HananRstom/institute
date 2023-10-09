@@ -15,48 +15,54 @@ module.exports = {
     let error;
     let book;
     let showprice;
+    async function getData(id) {
+      return new Promise((resolve, reject) => {
+        collBook.find(
+          {
+            book_id: id
+          },
+          function (err, docs) {
+            if (err) {
+              console.log(err);
+              reject(err);
+            }
+            resolve({ Info: docs });
+          }
+        );
+      });
+    }
+
     app.post("/editBook", async function (req, res) {
       error = false;
       id = parseInt(req.body.bookId);
       if (id != "") {
-        async function nn() {
-          return new Promise((resolve, reject) => {
-            collBook.find({ book_id: id }, function (err, docs) {
-              if (err) {
-                console.log(err);
-                reject(err);
-              }
-              Info = docs;
-              resolve({ Info });
-            });
-          });
-        }
-        const result = await nn();
+        const result = await getData(id);
         data = result.Info;
       }
       if (id == "" || data.length == 0) error = true;
       res.send();
     });
     let Book, price, totalPrice;
+    let NBook = [], NPrice = [];
     app.post("/price", function (req, res) {
+      NBook = [];
+      NPrice = []
       book = req.body.book;
-
+      totalPrice = 0;
       collBook.findOne({ book_id: id }).then((document) => {
         if (document && document.books && Array.isArray(document.books)) {
           Book = document.books;
           price = document.price;
-          totalPrice = document.totalPrice;
 
           for (let i = 0; i < book.length; i++) {
             for (let j = 0; j < Book.length; j++) {
               let Index = -1;
               if (book[i] === Book[j]) {
                 Index = j;
-                console.log("Index:", Index);
                 if (Index >= 0) {
-                  Book.splice(Index, 1);
-                  totalPrice -= price[Index];
-                  price.splice(Index, 1);
+                  NBook.push(Book[Index])
+                  totalPrice += price[Index];
+                  NPrice.push(price[Index]);
                 } else {
                   console.log("The index is invalid");
                 }
@@ -74,13 +80,13 @@ module.exports = {
     app.get("/showPrice", function (req, res) {
       showprice = {
         totalPrice: totalPrice,
-        Book: Book,
-        price: price,
+        Book: NBook,
+        price: NPrice,
       };
       res.json(showprice);
     });
     app.post("/delConf", function (req, res) {
-    
+
 
       collBook
         .findOne({ book_id: id })
@@ -95,7 +101,6 @@ module.exports = {
                 let Index = -1;
                 if (book[i] === Book[j]) {
                   Index = j;
-                  console.log("Index:", Index);
                   if (Index >= 0) {
                     Book.splice(Index, 1);
                     totalPrice -= price[Index];

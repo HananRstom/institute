@@ -1,4 +1,4 @@
-const { result } = require("lodash");
+const { result, isEmpty } = require("lodash");
 const { emit } = require("nodemon");
 const { parseArgs } = require("util");
 
@@ -14,7 +14,7 @@ module.exports = {
     let course;
     let obj;
     let data1;
-
+    let Error = false;
     app.get("/deleteSubject", async function (req, res) {
       res.sendFile(dic + "/html/delete_subject.html");
       async function nn() {
@@ -31,6 +31,7 @@ module.exports = {
       }
       const result = await nn();
       data = result.Info;
+
       app.get("/data1", (req, res) => {
         res.json(data);
       });
@@ -47,10 +48,30 @@ module.exports = {
         });
       });
     }
+    async function getStudent(subject) {
+      return new Promise((resolve, reject) => {
+        collStudent.findOne({
+          courseNumb: subject,
+          $expr: { $lt: ["$paid_amount", "$price"] }
+        }, function (err, docs) {
+          if (err) {
+            console.log(err);
+            reject(err);
+          }
+          Info = docs;
+          resolve({ Info });
+        });
+      });
+    }
     app.post("/delete1", async function (req, res) {
+      Error = false;
       course = parseInt(req.body.course);
       let data = await getData(course)
       data1 = data.Info;
+      let student = await getStudent(course)
+      console.log(student.Info)
+      if (!isEmpty(student.Info))
+        Error = true;
       res.send();
     });
     app.post("/delConfirm", function (req, res) {
@@ -69,7 +90,7 @@ module.exports = {
       targetTeacher[2] = classNumber;
       if (course != "") {
         collSubject.remove({ courseNumb: course });
-
+        collStudent.remove({ courseNumb: course })
         collclass
           .findOne({ number: parseInt(classNumber) })
           .then((document) => {
@@ -119,7 +140,6 @@ module.exports = {
             if (document && document.work && Array.isArray(document.work)) {
               const workArray = document.work;
 
-              // الحصول على مؤشر السطر
               for (let row = 0; row < workArray.length; row++) {
                 const rowArray = workArray[row];
                 const targetRow = JSON.stringify(targetTeacher);
@@ -132,11 +152,8 @@ module.exports = {
 
               console.log("Row Index:", rowIndex1);
 
-              // حذف السطر بأكمله من المصفوفة
               if (rowIndex1 >= 0) {
                 workArray.splice(rowIndex1, 1);
-
-                // حفظ التغييرات في قاعدة البيانات
                 return collteacher.update(
                   { email: email },
                   { $set: { work: workArray } }
@@ -159,6 +176,7 @@ module.exports = {
     });
     app.get("/delsub", function (req, res) {
       obj = {
+        Error: Error,
         course: course,
         Data: data1,
       };

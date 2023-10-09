@@ -62,9 +62,14 @@
               $("#div").text("You must choose course ");
 
             }
+            else if (data.Error) {
+              $("#div").text("Sorry, you cannot close the course before all students complete their due installments ! ");
+
+
+            }
             else {
-              // $("#div").html("Teacher :" + info.Teacher + "<br>" + "StartDay" + info.StartDay + "<br>"
-              //   + "Number of student" + info.Number_student + "<br>" + "Price" + info.Price)
+              $("#div").html("Teacher :" + info.Teacher + "<br>" + "StartDay" + info.StartDay + "<br>"
+                + "Number of student" + info.Number_student + "<br>" + "Price" + info.Price)
               $("#conf").show();
             }
 
