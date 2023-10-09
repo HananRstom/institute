@@ -14,6 +14,7 @@ module.exports = {
     let obj;
     let error;
     let book;
+    let showprice;
     app.post("/editBook", async function (req, res) {
       error = false;
       id = parseInt(req.body.bookId);
@@ -32,14 +33,54 @@ module.exports = {
         }
         const result = await nn();
         data = result.Info;
-
       }
-      if ((id == "") || data.length == 0)
-        error = true;
+      if (id == "" || data.length == 0) error = true;
       res.send();
     });
-    app.post("/delConf", function (req, res) {
+    let Book, price, totalPrice;
+    app.post("/price", function (req, res) {
       book = req.body.book;
+
+      collBook.findOne({ book_id: id }).then((document) => {
+        if (document && document.books && Array.isArray(document.books)) {
+          Book = document.books;
+          price = document.price;
+          totalPrice = document.totalPrice;
+
+          for (let i = 0; i < book.length; i++) {
+            for (let j = 0; j < Book.length; j++) {
+              let Index = -1;
+              if (book[i] === Book[j]) {
+                Index = j;
+                console.log("Index:", Index);
+                if (Index >= 0) {
+                  Book.splice(Index, 1);
+                  totalPrice -= price[Index];
+                  price.splice(Index, 1);
+                } else {
+                  console.log("The index is invalid");
+                }
+                break;
+              }
+            }
+          }
+        } else {
+          console.log("Document not found or invalid busy array");
+        }
+      });
+
+      res.send();
+    });
+    app.get("/showPrice", function (req, res) {
+      showprice = {
+        totalPrice: totalPrice,
+        Book: Book,
+        price: price,
+      };
+      res.json(showprice);
+    });
+    app.post("/delConf", function (req, res) {
+    
 
       collBook
         .findOne({ book_id: id })
@@ -58,7 +99,7 @@ module.exports = {
                   if (Index >= 0) {
                     Book.splice(Index, 1);
                     totalPrice -= price[Index];
-                    price.splice(Index, 1)
+                    price.splice(Index, 1);
                   } else {
                     console.log("The index is invalid");
                   }
@@ -67,15 +108,13 @@ module.exports = {
               }
             }
             if (Book.length == 0) {
-              return collBook.remove({ book_id: id })
-            }
-            else {
+              return collBook.remove({ book_id: id });
+            } else {
               return collBook.update(
                 { book_id: id },
                 { $set: { books: Book, price: price, totalPrice: totalPrice } }
               );
             }
-
           } else {
             console.log("Document not found or invalid busy array");
           }
@@ -86,13 +125,12 @@ module.exports = {
         .catch((error) => {
           console.error("Error while deleting row:", error);
         });
-      res.send()
-    })
+      res.send();
+    });
     app.get("/showBook", function (req, res) {
-
       obj = {
         result: data,
-        error: error
+        error: error,
       };
       res.json(obj);
     });

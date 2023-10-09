@@ -1,83 +1,124 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>book</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-  <title>book</title>
-</head>
+  <script>
+    function updateA() {
+      $(document).on("submit", "#show", function (e) {
+        e.preventDefault();
 
-<script>
-  function updateA() {
-    $(document).on("submit", "#show", function (e) {
-      e.preventDefault();
+        $.ajax({
+          url: $(this).attr("action"),
+          type: $(this).attr("method"),
+          data: $(this).serialize(),
+          success: async function (html) {
+            let request = async () => {
+              const response = await fetch("http://localhost:8083/showBook");
 
-      $.ajax({
-        url: $(this).attr("action"),
-        type: $(this).attr("method"),
-        data: $(this).serialize(),
-        success: async function (html) {
-          let request = async () => {
-            const response = await fetch("http://localhost:8083/showBook");
+              const data = await response.json();
 
-            const data = await response.json();
+              if (data.error) {
+                $("#div").text("Invalid ID");
+                $("#option").hide();
+              } else {
+                $("#option").show();
+                $("#div").text("");
+                $("#info").html(
+                  "Name : " +
+                    data.result[0].name +
+                    "<br>" +
+                    "Email : " +
+                    data.result[0].email +
+                    "<br>" +
+                    "Total price : " +
+                    data.result[0].totalPrice +
+                    "<br>"
+                );
+                console.log(data.result[0].books);
+                let length = data.result[0].books.length;
+                let checkboxesContainer = $("#ch");
+                checkboxesContainer.empty();
+                for (let i = 0; i < length; i++) {
+                  let checkbox = $("<input>", {
+                    type: "checkbox",
+                    name: "book[]",
+                    value: data.result[0].books[i],
+                  });
+                  let label = $("<label>").html(data.result[0].books[i]);
 
-            if (data.error) {
-              $("#div").text("Invalid ID");
-              $("#option").hide();
-            } else {
-              $("#option").show();
-              $("#div").text("");
-              $("#info").html(
-                "Name : " + data.result[0].name + "<br>" +
-                "Email : " + data.result[0].email + "<br>"
-              )
-              console.log(data.result[0].books);
-              let length = data.result[0].books.length;
-              let checkboxesContainer = $("#ch");
-              checkboxesContainer.empty();
-              for (let i = 0; i < length; i++) {
-                let checkbox = $("<input>", {
-                  type: "checkbox",
-                  name: "book[]",
-                  value: data.result[0].books[i]
-                });
-                let label = $("<label>").html(data.result[0].books[i]);
+                  checkboxesContainer.append(checkbox);
+                  checkboxesContainer.append(label);
+                  checkboxesContainer.append($("<br>"));
+                }
+                $("#sub").show();
 
-                checkboxesContainer.append(checkbox);
-                checkboxesContainer.append(label);
-                checkboxesContainer.append($("<br>"));
+                $("#submit").hide();
               }
-              $("#conf").show();
-            }
-          };
-          await request();
-        },
+            };
+            await request();
+          },
+        });
       });
+    }
+    function updateB() {
+      $(document).on("submit", "#price", function (e) {
+        e.preventDefault();
+
+        $.ajax({
+          url: $(this).attr("action"),
+          type: $(this).attr("method"),
+          data: $(this).serialize(),
+          success: async function (html) {
+            let request = async () => {
+              const response = await fetch("http://localhost:8083/showPrice");
+
+              const data = await response.json();
+              let s = " ";
+              let len = data.Book.length;
+              for (let i = 0; i < len; i++) {
+                s += data.Book[i] + " : " + data.price[i] + "<br>";
+              }
+              s += "total price: " + data.totalPrice;
+              document.getElementById("pric").innerHTML = s;
+              $("#sub").hide();
+              $("#conf").show();
+            };
+            await request();
+          },
+        });
+      });
+    }
+
+    $(document).ready(async function () {
+      await updateA();
+      await updateB();
+      $("#conf").hide();
+      $("#sub").hide();
     });
-  }
+  </script>
 
-  $(document).ready(async function () {
-    await updateA();
-    $("#conf").hide();
-  });
-</script>
+  <body>
+    <form action="/editBook" method="post" id="show">
+      <label for="id">book id: </label>
+      <input type="text" name="bookId" id="id" />
 
-<body>
-  <form action="/editBook" method="post" id="show">
-    <label for="id">book id: </label>
-    <input type="text" name="bookId" id="id" />
+      <div id="div"></div>
 
-    <div id="div"></div>
-
-    <input type="submit" value="submit" />
-  </form>
-  <form action="/delConf" method="post" id="option">
-    <div id="info"></div>
-    <div id="ch"></div>
-    <input type="submit" value="confirm" id="conf" />
-  </form>
-</body>
-
+      <input type="submit" value="submit" id="submit" />
+    </form>
+    <form action="/price" method="post" id="price">
+      <div id="info"></div>
+      <div id="ch"></div>
+      <div id="pric"></div>
+      <input type="submit" value="submit" id="sub" />
+    </form>
+    <form action="/delConf" method="post" id="option">
+      <input type="submit" value="confirm" id="conf" />
+    </form>
+  </body>
 </html>

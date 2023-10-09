@@ -1,181 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <title>Edit</title>
-</head>
-<script>
+  </head>
+  <script>
     async function updateF() {
-        window.addEventListener("pageshow", function (event) {
-            var historyTraversal =
-                event.persisted ||
-                (typeof window.performance != "undefined" &&
-                    window.performance.navigation.type === 2);
-            if (historyTraversal) {
-                // Handle page restore.
-                window.location.reload();
-            }
+      window.addEventListener("pageshow", function (event) {
+        var historyTraversal =
+          event.persisted ||
+          (typeof window.performance != "undefined" &&
+            window.performance.navigation.type === 2);
+        if (historyTraversal) {
+          // Handle page restore.
+          window.location.reload();
+        }
+      });
+      $(document).on("submit", "#ee", function (e) {
+        $.ajax({
+          url: $(this).attr("action"),
+          type: $(this).attr("method"),
+          data: $(this).serialize(),
+          success: async function (html) {
+            let request = async () => {
+              const response = await fetch("http://localhost:8083/linkE");
+
+              const data = await response.json();
+              var s = " ";
+
+              if (data.emp) {
+                alert("There is no information for the entered data. ");
+                document.getElementById("res").innerHTML =
+                  "There is no information for the entered data.";
+              } else {
+                $("#ee").hide();
+                $("#form2").show();
+                for (let i = 0; i < data.result.Info.length; i++) {
+                  s +=
+                    " <div>----------------------</div>" +
+                    "<span class='sign-span'> Name :</span>" +
+                    data.result.Info[i].Fname +
+                    " " +
+                    data.result.Info[i].Mname +
+                    " " +
+                    data.result.Info[i].Lname +
+                    "<br>" +
+                    "<span class='sign-span'> Email :</span>" +
+                    data.result.Info[i].email +
+                    "<br>" +
+                    "<span class='sign-span'> Subject :</span>" +
+                    data.result.Info[i].subject +
+                    "<br>";
+
+                  document.getElementById("res").innerHTML =
+                    " <div class='info-sign'>Your Informaton is :</div>" + s;
+                }
+              }
+            };
+
+            await request();
+          },
         });
-        $(document).on("submit", "#ee", function (e) {
-            $.ajax({
-                url: $(this).attr("action"),
-                type: $(this).attr("method"),
-                data: $(this).serialize(),
-                success: async function (html) {
-                    let request = async () => {
-                        const response = await fetch("http://localhost:8083/linkE");
-
-                        const data = await response.json();
-                        var s = " ";
-
-                        if (data.emp) {
-                            alert(
-                                "There is no information for the entered data. "
-                            );
-                            document.getElementById("res").innerHTML =
-                                "There is no information for the entered data."
-                        }
-                        else {
-                            $("#ee").hide()
-                            $("#form2").show()
-                            for (let i = 0; i < data.result.Info.length; i++) {
-                                s +=
-                                    " <div>----------------------</div>" +
-                                    "<span class='sign-span'> Name :</span>" +
-                                    data.result.Info[i].Fname +
-                                    " " +
-                                    data.result.Info[i].Mname +
-                                    " " +
-                                    data.result.Info[i].Lname +
-                                    "<br>" +
-                                    "<span class='sign-span'> Email :</span>" +
-                                    data.result.Info[i].email +
-                                    "<br>" +
-                                    "<span class='sign-span'> Subject :</span>" +
-                                    data.result.Info[i].subject +
-                                    "<br>";
-
-                                document.getElementById("res").innerHTML =
-                                    " <div class='info-sign'>Your Informaton is :</div>" + s;
-                            }
-                        }
-                    };
-
-                    await request();
-                },
-            });
-            e.preventDefault();
-        });
+        e.preventDefault();
+      });
     }
     async function updateA() {
-        window.addEventListener("pageshow", function (event) {
-            var historyTraversal =
-                event.persisted ||
-                (typeof window.performance != "undefined" &&
-                    window.performance.navigation.type === 2);
-            if (historyTraversal) {
-                // Handle page restore.
-                window.location.reload();
-            }
+      window.addEventListener("pageshow", function (event) {
+        var historyTraversal =
+          event.persisted ||
+          (typeof window.performance != "undefined" &&
+            window.performance.navigation.type === 2);
+        if (historyTraversal) {
+          // Handle page restore.
+          window.location.reload();
+        }
+      });
+      $(document).on("submit", "#form2", function (e) {
+        $.ajax({
+          url: $(this).attr("action"),
+          type: $(this).attr("method"),
+          data: $(this).serialize(),
+          success: async function (html) {
+            let request = async () => {
+              const response = await fetch("http://localhost:8083/linkE");
+
+              const data = await response.json();
+              if (data.check != " ") {
+                document.getElementById("conf").innerHTML = data.check;
+              } else if (data.testEmail) {
+                document.getElementById("conf").innerHTML =
+                  "You are already registered";
+              } else {
+                document.getElementById("conf").innerHTML =
+                  data.obj1.Fname1 +
+                  "<br/>" +
+                  data.obj1.Mname1 +
+                  "<br/>" +
+                  data.obj1.Lname1 +
+                  "<br/>" +
+                  data.obj1.Email1 +
+                  "<br>" +
+                  data.obj1.subject1 +
+                  "<br/>" +
+                  data.obj1.wage1;
+                $("#confirm").show();
+              }
+            };
+
+            await request();
+          },
         });
-        $(document).on("submit", "#form2", function (e) {
-            $.ajax({
-                url: $(this).attr("action"),
-                type: $(this).attr("method"),
-                data: $(this).serialize(),
-                success: async function (html) {
-                    let request = async () => {
-                        const response = await fetch("http://localhost:8083/linkE");
-
-                        const data = await response.json();
-
-                        document.getElementById("conf").innerHTML =
-                            data.obj1.Fname1 +
-                            "<br/>" +
-                            data.obj1.Mname1 +
-                            "<br/>" +
-                            data.obj1.Lname1 +
-                            "<br/>" +
-                            data.obj1.Email1 +
-                            "<br>" +
-                            data.obj1.subject1 +
-                            "<br/>" +
-                            data.obj1.wage1;
-                        $("#confirm").show();
-
-                    };
-
-                    await request();
-                },
-            });
-            e.preventDefault();
-        });
+        e.preventDefault();
+      });
     }
     $(document).ready(async function () {
-        $("#form2").hide()
-        $("#confirm").hide()
-        await updateF();
-        await updateA()
+      $("#form2").hide();
+      $("#confirm").hide();
+      await updateF();
+      await updateA();
     });
-</script>
+  </script>
 
-<body>
+  <body>
     <form action="teacher-inf" method="post" id="ee">
-        <label for="id">ID: </label>
-        <input type="number" name="ID" placeholder="ID.." id="id">
-        <input type="submit" value="Search" />
+      <label for="id">ID: </label>
+      <input type="number" name="ID" placeholder="ID.." id="id" />
+      <input type="submit" value="Search" />
     </form>
     <div id="res"></div>
     <form action="/teachEdit" method="post" id="form2">
-        <label for="name">First name:</label>
-        <input type="text" id="name" name="f_name" placeholder="first name"  />
+      <label for="name">First name:</label>
+      <input type="text" id="name" name="f_name" placeholder="first name" />
 
-        <label for="mid-name">middle name:</label>
-        <input type="text" id="mid-name" name="m_name" placeholder="mid-name" />
+      <label for="mid-name">middle name:</label>
+      <input type="text" id="mid-name" name="m_name" placeholder="mid-name" />
 
-        <label for="l-name">last name:</label>
-        <input type="text" id="l-name" name="l_name" placeholder="last name"  />
-        <br />
-        <label for="Email">Email</label>
-        <input type="text" name="Email" id="Email" placeholder="Email"  />
-        <br />
-        <label for="">The subjects taught :</label>
-        <label for="German">German</label>
-        <input type="checkbox" name="subject[]" id="German" value="German" />
-        <br />
-        <label for="Frensh">Frensh</label>
-        <input type="checkbox" name="subject[]" id="Frensh" value="Frensh" />
-        <br />
-        <label for="Russian">Russian</label>
-        <input type="checkbox" name="subject[]" id="Russian" value="Russian" />
-        <br />
-        <label for="Kids">English for kids</label>
-        <input type="checkbox" name="subject[]" id="Kids" value="Kids" />
-        <br />
-        <label for="Beginner">Beginner level English</label>
-        <input type="checkbox" name="subject[]" id="Beginner" value="Beginner" />
-        <br />
-        <label for="Intermediate">Intermediate level English</label>
-        <input type="checkbox" name="subject[]" id="Intermediate" value="Intermediate" />
-        <br />
-        <label for="Advanced">Advanced level English</label>
-        <input type="checkbox" name="subject[]" id="Advanced" value="Advanced" />
-        <br />
-        <label for="Toefl">TOEFL</label>
-        <input type="checkbox" name="subject[]" id="Toefl" value="TOEFL" />
+      <label for="l-name">last name:</label>
+      <input type="text" id="l-name" name="l_name" placeholder="last name" />
+      <br />
+      <label for="Email">Email</label>
+      <input type="text" name="Email" id="Email" placeholder="Email" />
+      <br />
+      <label for="">The subjects taught :</label>
+      <label for="German">German</label>
+      <input type="checkbox" name="subject[]" id="German" value="German" />
+      <br />
+      <label for="Frensh">Frensh</label>
+      <input type="checkbox" name="subject[]" id="Frensh" value="Frensh" />
+      <br />
+      <label for="Russian">Russian</label>
+      <input type="checkbox" name="subject[]" id="Russian" value="Russian" />
+      <br />
+      <label for="Kids">English for kids</label>
+      <input type="checkbox" name="subject[]" id="Kids" value="Kids" />
+      <br />
+      <label for="Beginner">Beginner level English</label>
+      <input type="checkbox" name="subject[]" id="Beginner" value="Beginner" />
+      <br />
+      <label for="Intermediate">Intermediate level English</label>
+      <input
+        type="checkbox"
+        name="subject[]"
+        id="Intermediate"
+        value="Intermediate"
+      />
+      <br />
+      <label for="Advanced">Advanced level English</label>
+      <input type="checkbox" name="subject[]" id="Advanced" value="Advanced" />
+      <br />
+      <label for="Toefl">TOEFL</label>
+      <input type="checkbox" name="subject[]" id="Toefl" value="TOEFL" />
 
-        <label for="wage">Hourly wage</label>
-        <input type="text" name="wage" id="wage" placeholder="Hourly wage"  />
-        <button type="submit">submit</button>
-        <div id="conf"></div>
+      <label for="wage">Hourly wage</label>
+      <input type="text" name="wage" id="wage" placeholder="Hourly wage" />
+      <button type="submit">submit</button>
+      <div id="conf"></div>
     </form>
     <form action="/confirmE" method="post">
-        <button type="submit" id="confirm">confirm</button>
+      <button type="submit" id="confirm">confirm</button>
     </form>
     <br />
-</body>
-
+  </body>
 </html>
