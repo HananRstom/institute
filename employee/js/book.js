@@ -19,7 +19,7 @@ module.exports = {
       return new Promise((resolve, reject) => {
         collBook.find(
           {
-            book_id: id
+            book_id: id,
           },
           function (err, docs) {
             if (err) {
@@ -43,38 +43,40 @@ module.exports = {
       res.send();
     });
     let Book, price, totalPrice;
-    let NBook = [], NPrice = [];
+    let NBook = [],
+      NPrice = [];
     app.post("/price", function (req, res) {
       NBook = [];
-      NPrice = []
+      NPrice = [];
       book = req.body.book;
       totalPrice = 0;
-      collBook.findOne({ book_id: id }).then((document) => {
-        if (document && document.books && Array.isArray(document.books)) {
-          Book = document.books;
-          price = document.price;
+      if (book != undefined) {
+        collBook.findOne({ book_id: id }).then((document) => {
+          if (document && document.books && Array.isArray(document.books)) {
+            Book = document.books;
+            price = document.price;
 
-          for (let i = 0; i < book.length; i++) {
-            for (let j = 0; j < Book.length; j++) {
-              let Index = -1;
-              if (book[i] === Book[j]) {
-                Index = j;
-                if (Index >= 0) {
-                  NBook.push(Book[Index])
-                  totalPrice += price[Index];
-                  NPrice.push(price[Index]);
-                } else {
-                  console.log("The index is invalid");
+            for (let i = 0; i < book.length; i++) {
+              for (let j = 0; j < Book.length; j++) {
+                let Index = -1;
+                if (book[i] === Book[j]) {
+                  Index = j;
+                  if (Index >= 0) {
+                    NBook.push(Book[Index]);
+                    totalPrice += price[Index];
+                    NPrice.push(price[Index]);
+                  } else {
+                    console.log("The index is invalid");
+                  }
+                  break;
                 }
-                break;
               }
             }
+          } else {
+            console.log("Document not found or invalid busy array");
           }
-        } else {
-          console.log("Document not found or invalid busy array");
-        }
-      });
-
+        });
+      }
       res.send();
     });
     app.get("/showPrice", function (req, res) {
@@ -82,12 +84,11 @@ module.exports = {
         totalPrice: totalPrice,
         Book: NBook,
         price: NPrice,
+        chooseBook:book,
       };
       res.json(showprice);
     });
     app.post("/delConf", function (req, res) {
-
-
       collBook
         .findOne({ book_id: id })
         .then((document) => {

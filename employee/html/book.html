@@ -79,14 +79,23 @@
 
               const data = await response.json();
               let s = " ";
-              let len = data.Book.length;
-              for (let i = 0; i < len; i++) {
-                s += data.Book[i] + " : " + data.price[i] + "<br>";
+              if (data.chooseBook == undefined) {
+                document.getElementById("pric").innerHTML =
+                  "you must choose at least one book";
+              } else {
+                let len = data.Book.length;
+                for (let i = 0; i < len; i++) {
+                  s += data.Book[i] + " : " + data.price[i] + "<br>";
+                }
+                s += "total price: " + data.totalPrice;
+                document.getElementById("pric").innerHTML = s;
+                $("#sub").hide();
+                $("#ch").hide();
+                $("#id").hide();
+                $("#label").hide()
+                $("#conf").show();
+
               }
-              s += "total price: " + data.totalPrice;
-              document.getElementById("pric").innerHTML = s;
-              $("#sub").hide();
-              $("#conf").show();
             };
             await request();
           },
@@ -104,7 +113,7 @@
 
   <body>
     <form action="/editBook" method="post" id="show">
-      <label for="id">book id: </label>
+      <label for="id" id="label">book id: </label>
       <input type="text" name="bookId" id="id" />
 
       <div id="div"></div>
