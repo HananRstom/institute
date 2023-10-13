@@ -18,14 +18,18 @@ module.exports = {
     var email;
     var id;
     var obj1;
+    var error = false;
     var Wrong = false;
     let check = " ";
     var testEmail;
     let accept_email = ["hotmail", "gmail"];
     app.post("/teacher-inf", (req, res) => {
+      emp = false;
+      error = false;
       id = "";
       id = req.body.ID;
-
+      if (id == "") error = true;
+      console.log(error);
       res.send();
     });
     app.post("/teachEdit", (req, res) => {
@@ -52,7 +56,7 @@ module.exports = {
             break;
           }
         }
-      
+
         if (!isValidEmail) {
           check = "Please check the email address entered and try again";
         }
@@ -65,8 +69,7 @@ module.exports = {
         wage1: wage1,
         Email1: Email1,
       };
-      console.log(check);
-      console.log(subject1);
+
       res.send();
     });
     app.post("/confirmE", (req, res) => {
@@ -115,7 +118,6 @@ module.exports = {
       } else {
         emp = true;
       }
-
       testEmail = false;
 
       async function findTeacher() {
@@ -143,6 +145,7 @@ module.exports = {
         emp: emp,
         check: check,
         testEmail: testEmail,
+        error: error,
       };
       res.json(object);
     });

@@ -10,10 +10,14 @@ module.exports = {
         const db = monk(url);
         const collection = db.get("teachers");
         var emp = false
+        var error=false;
         app.post("/delete", function (req, res) {
+            error=false;
             emp = false;
             id = ""
             id = req.body.id;
+            if(id=="")
+            error=true
             res.send();
         })
         app.post("/confirmD", (req, res) => {
@@ -55,7 +59,7 @@ module.exports = {
 
             let object = {
                 result: result,
-
+                error:error,
                 emp: emp
 
             };

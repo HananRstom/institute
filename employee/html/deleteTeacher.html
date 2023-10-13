@@ -30,8 +30,11 @@
 
                         const data = await response.json();
                         var s = " ";
-
-                        if (data.emp) {
+                        if(data.error){
+                            document.getElementById("res").innerHTML =
+                                "you must enter id"
+                        }
+                        else if (data.emp) {
                             alert(
                                 "There is no information for the entered data. "
                             );

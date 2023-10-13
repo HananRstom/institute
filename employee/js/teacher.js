@@ -76,6 +76,7 @@ module.exports = {
         }
       }
       const result = await dd();
+      if(result!=undefined){
       if (!isEmpty(result.Info)) {
         console.log("hi")
         console.log(result.Info);
@@ -83,7 +84,7 @@ module.exports = {
       else {
         emp = true;
       }
-
+    }
       let object = {
         result: result,
         Wrong: Wrong,

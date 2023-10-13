@@ -52,6 +52,7 @@
                 "<br/>" +
                 data.wage
                 + "<br/>" + " ID :" + data.id[0].count
+                $("#sub").hide();
               $("#confirm").show();
             }
           };
@@ -110,7 +111,7 @@
     <br>
     <label for="wage">Hourly wage</label>
     <input type="text" name="wage" id="wage" placeholder="Hourly wage" required />
-    <button type="submit">submit</button>
+    <button type="submit" id="sub">submit</button>
     <div id="res"></div>
   </form>
   <form action="/confirm" method="post">
