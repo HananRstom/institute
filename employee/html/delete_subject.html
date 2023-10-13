@@ -55,7 +55,8 @@
             const response = await fetch("http://localhost:8083/delsub");
 
             const data = await response.json();
-            let info = data.data1;
+            let info = data.Data;
+            console.log(info)
 
             if (data.course == null) {
               alert("You must choose course")
@@ -69,7 +70,7 @@
             }
             else {
               $("#div").html("Teacher :" + info.Teacher + "<br>" + "StartDay" + info.StartDay + "<br>"
-                + "Number of student" + info.Number_student + "<br>" + "Price" + info.Price)
+                + "Number of student :" + info.Number_student + "<br>" + "Price" + info.Price)
               $("#conf").show();
             }
 

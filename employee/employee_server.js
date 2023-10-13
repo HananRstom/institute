@@ -24,7 +24,8 @@ const deleteTeacher = require("./js/deleteTeacher.js");
 const studentSearch = require("./js/studentSearch.js");
 const editSubject = require("./js/edit_subject.js");
 const deleteSubject=require("./js/delete_subject")
-const book=require("./js/book.js")
+const book=require("./js/book.js");
+const editBook = require("./js/editBook.js");
 creat.creat(app, __dirname);
 student.student(app, __dirname);
 teacher.teacher(app, __dirname);
@@ -36,10 +37,14 @@ deleteTeacher.deleteTeacher(app, __dirname);
 studentSearch.studentSearch(app, __dirname);
 editSubject.editSubject(app, __dirname);
 deleteSubject.deleteSubject(app, __dirname);
+editBook.editBook(app,__dirname)
 book.book(app,__dirname)
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/home.html");
 });
+app.get("/homeBook",function(req,res){
+  res.sendFile(__dirname+"/html/homeBook.html")
+})
 app.post("/employee", function (req, res) {
   res.send();
 });

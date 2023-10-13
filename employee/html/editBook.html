@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>edit Book</title>
+</head>
+<body>
+    <form action="/editPrice" method="post">
+        <label for="">English book :</label>
+        <br />
+        <input type="radio" required name="book" value="Beginner" />
+        <label for="Beginner">Beginner</label>
+        <br />
+        <input type="radio" required name="book" value="Intermediate" />
+        <label for="Intermediate">Intermediate</label>
+        <br />
+        <input type="radio" required name="book" value="Advanced" />
+        <label for="Advanced">Advanced</label>
+        <br />
+        <label>TOEFL :</label>
+        <br />
+        <input type="radio" required name="book" value="ibt1" />
+        <label for="ibt1">IBT 1</label>
+        <br />
+        <input type="radio" required name="book" value="ibt2" />
+        <label for="ibt2">IBT 2</label>
+        <br />
+        <input type="radio" required name="book" value="pbt1" />
+        <label for="pbt1">PBT 1</label>
+        <br />
+        <input type="radio" required name="book" value="pbt2" />
+        <label for="pbt2">PBT 2</label>
+     
+        <br />
+        <input type="radio" required name="book" id="kids" value="kids" />
+        <label for="kids">Kids</label>
+        <div>
+        </div>
+        <br />
+        <input type="radio" required name="book" value="German" id="german" />
+        <label for="german">German</label>
+        <p>Book price:12</p>
+        <br />
+  
+        <input type="radio" required name="book" value="Frensh" id="frensh" />
+        <label for="frensh">Frensh</label>
+        <br />
+  
+        <input type="radio" required name="book" value="Russian" id="russian" />
+        <label for="russian">Russian</label>
+        <br />
+        <input type="text" name="price" id="" placeholder="price" required>
+        <input type="submit" value="submit">
+    </form>
+</body>
+</html>

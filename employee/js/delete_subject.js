@@ -50,28 +50,30 @@ module.exports = {
     }
     async function getStudent(subject) {
       return new Promise((resolve, reject) => {
-        collStudent.findOne({
-          courseNumb: subject,
-          $expr: { $lt: ["$paid_amount", "$price"] }
-        }, function (err, docs) {
-          if (err) {
-            console.log(err);
-            reject(err);
+        collStudent.findOne(
+          {
+            courseNumb: subject,
+            paid_amount: { $lt: "$price" },
+          },
+          function (err, docs) {
+            if (err) {
+              console.log(err);
+              reject(err);
+            }
+            Info = docs;
+            resolve({ Info });
           }
-          Info = docs;
-          resolve({ Info });
-        });
+        );
       });
     }
     app.post("/delete1", async function (req, res) {
       Error = false;
       course = parseInt(req.body.course);
-      let data = await getData(course)
+      let data = await getData(course);
       data1 = data.Info;
-      let student = await getStudent(course)
-      console.log(student.Info)
-      if (!isEmpty(student.Info))
-        Error = true;
+      let student = await getStudent(course);
+      console.log(student.Info);
+      if (!isEmpty(student.Info)) Error = true;
       res.send();
     });
     app.post("/delConfirm", function (req, res) {
@@ -90,7 +92,7 @@ module.exports = {
       targetTeacher[2] = classNumber;
       if (course != "") {
         collSubject.remove({ courseNumb: course });
-        collStudent.remove({ courseNumb: course })
+        collStudent.remove({ courseNumb: course });
         collclass
           .findOne({ number: parseInt(classNumber) })
           .then((document) => {
