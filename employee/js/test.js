@@ -100,14 +100,24 @@ module.exports = {
       res.send('')
     });
     app.post('/confTest', (req, res) => {
-      for (let i = 1; i <= 8; i++) {
+      for (let i = 1; i <= 10; i++) {
         if (Q[i] != '') {
           let Answers = []
-          let correctA;
-          for (let j = 0; j < 3; j++) {
+          let correctA = [];
+          for (let j = 0; j < 4; j++) {
             Answers[j] = QA[i][j + 1]
           }
-          correctA = Answers[correct[i]]
+          if (i < 9) {
+            correctA = Answers[correct[i]]
+          }
+          else if (i == 9) {
+            correctA[0] = Answers[correct9[0]]
+            correctA[1] = Answers[correct9[1]]
+          }
+          else if (i == 10) {
+            correctA[0] = Answers[correct10[0]]
+            correctA[1] = Answers[correct10[1]]
+          }
           collection.update({ Question: i }, {
             $set: {
               Content: Q[i],
