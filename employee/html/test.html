@@ -1,133 +1,235 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <title>test</title>
 </head>
+<script>
+    async function updateF() {
+        $(document).on("submit", "#form", function (e) {
+            $.ajax({
+                url: $(this).attr("action"),
+                type: $(this).attr("method"),
+                data: $(this).serialize(),
+                success: async function (html) {
+                    let request = async () => {
+                        let check = true
+                        let response = await fetch("http://localhost:8083/api/test")
+                        const data = await response.json()
+                        $('.Error').remove()
+                        for (let i = 1; i <= 10; i++) {
+                            if (data.Error[i]) {
+                                check = false
+                                let question = $('#' + i)
+                                let Warning = $('<div>').addClass("Error").html("You must fill in all fielde");
+                                question.after(Warning)
+                            }
+                        }
+                        if (data.correct9 != null && data.correct9.length != 2) {
+                            check = false
+                            let Warning = $('<div>').addClass("Error").html("You must choose only two correct answer");
+                            $("#correct9").after(Warning)
+                        }
+                        if (data.correct10 != null && data.correct10.length != 2) {
+                            check = false
+                            let Warning = $('<div>').addClass("Error").html("You must choose only two correct answer");
+                            $("#correct9").after(Warning)
+                        }
+                        if (check) {
+                            $("#Confirm").show()
+                        }
+
+                    }
+
+                    await request();
+                },
+            });
+            e.preventDefault();
+        });
+
+    }
+    $(document).ready(async function () {
+
+        await updateF();
+        $("#Confirm").hide()
+    });
+
+
+</script>
+<style>
+    .Error {
+        color: aliceblue;
+        background-color: red;
+    }
+</style>
+
 <body>
-    <form action="/api/test" method="post">
-        <label for="Q1">Question 1</label>
-        <input type="text" name="Q1" id="Q1">
-       <p >Answers: </p>
-       <input type="text" name="Q1A1" id="" placeholder="answer 1">
-       <input type="text" name="Q1A2" id="" placeholder="answer 2">
-       <input type="text" name="Q1A3" id="" placeholder="answer 3">
-       <label for="correct1">Choose the correct answer</label>
-       <select name="correct1" id="correct1">
-        <option value="0">answer 1</option>
-        <option value="1">answer 2</option>
-        <option value="2">answer 3</option>
-    </select>
-       <br>
-       <label for="Q2">Question 2</label>
-        <input type="text" name="Q2" id="Q2">
-       <p >Answers: </p>
-       <input type="text" name="Q2A1" id="" placeholder="answer 1">
-       <input type="text" name="Q2A2" id="" placeholder="answer 2">
-       <input type="text" name="Q2A3" id="" placeholder="answer 3">
-       <label for="correct2">Choose the correct answer</label>
-       <select name="correct2" id="correct2">
-        <option value="0">answer 1</option>
-        <option value="1">answer 2</option>
-        <option value="2">answer 3</option>
-    </select>
-       <br>
-       <label for="Q3">Question 3</label>
-       <input type="text" name="Q3" id="Q3">
-      <p >Answers: </p>
-      <input type="text" name="Q3A1" id="" placeholder="answer 1">
-      <input type="text" name="Q3A2" id="" placeholder="answer 2">
-      <input type="text" name="Q3A3" id="" placeholder="answer 3">
-      <label for="correct3">Choose the correct answer</label>
-      <select name="correct3" id="correct3">
-       <option value="0">answer 1</option>
-       <option value="1">answer 2</option>
-       <option value="2">answer 3</option>
-      </select>
-      <br>
-      <label for="Q4">Question 4</label>
-        <input type="text" name="Q4" id="Q4">
-       <p >Answers: </p>
-       <input type="text" name="Q4A1" id="" placeholder="answer 1">
-       <input type="text" name="Q4A2" id="" placeholder="answer 2">
-       <input type="text" name="Q4A3" id="" placeholder="answer 3">
-       <label for="correct4">Choose the correct answer</label>
-       <select name="correct4" id="correct4">
-        <option value="0">answer 1</option>
-        <option value="1">answer 2</option>
-        <option value="2">answer 3</option>
-       </select>
-       <br>
-       <label for="Q5">Question 5</label>
-        <input type="text" name="Q5" id="Q5">
-       <p >Answers: </p>
-       <input type="text" name="Q5A1" id="" placeholder="answer 1">
-       <input type="text" name="Q5A2" id="" placeholder="answer 2">
-       <input type="text" name="Q5A3" id="" placeholder="answer 3">
-       <label for="correct5">Choose the correct answer</label>
-       <select name="correct5" id="correct5">
-        <option value="0">answer 1</option>
-        <option value="1">answer 2</option>
-        <option value="2">answer 3</option>
-       </select>
-       <br>
-       <label for="Q6">Question 6</label>
-        <input type="text" name="Q6" id="Q6">
-       <p >Answers: </p>
-       <input type="text" name="Q6A1" id="" placeholder="answer 1">
-       <input type="text" name="Q6A2" id="" placeholder="answer 2">
-       <input type="text" name="Q6A3" id="" placeholder="answer 3">
-       <label for="correct6">Choose the correct answer</label>
-       <select name="correct6" id="correct6">
-        <option value="0">answer 1</option>
-        <option value="1">answer 2</option>
-        <option value="2">answer 3</option>
-       </select>
-       <br>
-       <label for="Q7">Question 7</label>
-        <input type="text" name="Q7" id="Q7">
-       <p >Answers: </p>
-       <input type="text" name="Q7A1" id="" placeholder="answer 1">
-       <input type="text" name="Q7A2" id="" placeholder="answer 2">
-       <input type="text" name="Q7A3" id="" placeholder="answer 3">
-       <label for="correct7">Choose the correct answer</label>
-       <select name="correct7" id="correct7">
-        <option value="0">answer 1</option>
-        <option value="1">answer 2</option>
-        <option value="2">answer 3</option>
-       </select>
-       <br>
-       <label for="Q8">Question 8</label>
-        <input type="text" name="Q8" id="Q8">
-       <p >Answers: </p>
-       <input type="text" name="Q8A1" id="" placeholder="answer 1">
-       <input type="text" name="Q8A2" id="" placeholder="answer 2">
-       <input type="text" name="Q8A3" id="" placeholder="answer 3">
-       <label for="correct8">Choose the correct answer</label>
-       <select name="correct8" id="correct8">
-        <option value="0">answer 1</option>
-        <option value="1">answer 2</option>
-        <option value="2">answer 3</option>
-       </select>
-       <div>there are two correct answer </div>
-       <label for="Q9">Question 1</label>
-       <input type="text" name="Q9" id="Q9">
-      <p >Answers: </p>
-      <input type="text" name="Q9A1" id="" placeholder="answer 1">
-      <input type="text" name="Q9A2" id="" placeholder="answer 2">
-      <input type="text" name="Q9A3" id="" placeholder="answer 3">
-      <input type="text" name="Q9A4" id="" placeholder="answer 4">
-      <br>
-      <label for="Q10">Question 2</label>
-      <input type="text" name="Q10" id="Q10">
-     <p >Answers: </p>
-     <input type="text" name="Q10A1" id="" placeholder="answer 1">
-     <input type="text" name="Q10A2" id="" placeholder="answer 2">
-     <input type="text" name="Q10A3" id="" placeholder="answer 3">
-     <input type="text" name="Q10A4" id="" placeholder="answer 4">
+    <form action="/api/test" method="post" id="form">
+        <label for="1">Question 1</label>
+        <input type="text" autocomplete="off" name="Q1" id="1">
+        <p>Answers: </p>
+        <input type="text" autocomplete="off" name="Q1A1" id="" placeholder="answer 1">
+        <input type="text" autocomplete="off" name="Q1A2" id="" placeholder="answer 2">
+        <input type="text" autocomplete="off" name="Q1A3" id="" placeholder="answer 3">
+        <br>
+        <label for="correct1">Choose the correct answer</label>
+        <select name="correct1" id="correct1">
+            <option value="">-- Select the correct answer --</option>
+            <option value="0">answer 1</option>
+            <option value="1">answer 2</option>
+            <option value="2">answer 3</option>
+        </select>
+        <br>
+        <label for="2">Question 2</label>
+        <input type="text" autocomplete="off" name="Q2" id="2">
+        <p>Answers: </p>
+        <input type="text" autocomplete="off" name="Q2A1" id="" placeholder="answer 1">
+        <input type="text" autocomplete="off" name="Q2A2" id="" placeholder="answer 2">
+        <input type="text" autocomplete="off" name="Q2A3" id="" placeholder="answer 3">
+        <br>
+        <label for="correct2">Choose the correct answer</label>
+        <select name="correct2" id="correct2">
+            <option value="">-- Select the correct answer --</option>
+            <option value="0">answer 1</option>
+            <option value="1">answer 2</option>
+            <option value="2">answer 3</option>
+        </select>
+        <br>
+        <label for="3">Question 3</label>
+        <input type="text" autocomplete="off" name="Q3" id="3">
+        <p>Answers: </p>
+        <input type="text" autocomplete="off" name="Q3A1" id="" placeholder="answer 1">
+        <input type="text" autocomplete="off" name="Q3A2" id="" placeholder="answer 2">
+        <input type="text" autocomplete="off" name="Q3A3" id="" placeholder="answer 3">
+        <br>
+        <label for="correct3">Choose the correct answer</label>
+        <select name="correct3" id="correct3">
+            <option value="">-- Select the correct answer --</option>
+            <option value="0">answer 1</option>
+            <option value="1">answer 2</option>
+            <option value="2">answer 3</option>
+        </select>
+        <br>
+        <label for="4">Question 4</label>
+        <input type="text" autocomplete="off" name="Q4" id="4">
+        <p>Answers: </p>
+        <input type="text" autocomplete="off" name="Q4A1" id="" placeholder="answer 1">
+        <input type="text" autocomplete="off" name="Q4A2" id="" placeholder="answer 2">
+        <input type="text" autocomplete="off" name="Q4A3" id="" placeholder="answer 3">
+        <br>
+        <label for="correct4">Choose the correct answer</label>
+        <select name="correct4" id="correct4">
+            <option value="">-- Select the correct answer --</option>
+            <option value="0">answer 1</option>
+            <option value="1">answer 2</option>
+            <option value="2">answer 3</option>
+        </select>
+        <br>
+        <label for="5">Question 5</label>
+        <input type="text" autocomplete="off" name="Q5" id="5">
+        <p>Answers: </p>
+        <input type="text" autocomplete="off" name="Q5A1" id="" placeholder="answer 1">
+        <input type="text" autocomplete="off" name="Q5A2" id="" placeholder="answer 2">
+        <input type="text" autocomplete="off" name="Q5A3" id="" placeholder="answer 3">
+        <br>
+        <label for="correct5">Choose the correct answer</label>
+        <select name="correct5" id="correct5">
+            <option value="">-- Select the correct answer --</option>
+            <option value="0">answer 1</option>
+            <option value="1">answer 2</option>
+            <option value="2">answer 3</option>
+        </select>
+        <br>
+        <label for="6">Question 6</label>
+        <input type="text" autocomplete="off" name="Q6" id="6">
+        <p>Answers: </p>
+        <input type="text" autocomplete="off" name="Q6A1" id="" placeholder="answer 1">
+        <input type="text" autocomplete="off" name="Q6A2" id="" placeholder="answer 2">
+        <input type="text" autocomplete="off" name="Q6A3" id="" placeholder="answer 3">
+        <br>
+        <label for="correct6">Choose the correct answer</label>
+        <select name="correct6" id="correct6">
+            <option value="">-- Select the correct answer --</option>
+            <option value="0">answer 1</option>
+            <option value="1">answer 2</option>
+            <option value="2">answer 3</option>
+        </select>
+        <br>
+        <label for="7">Question 7</label>
+        <input type="text" autocomplete="off" name="Q7" id="7">
+        <p>Answers: </p>
+        <input type="text" autocomplete="off" name="Q7A1" id="" placeholder="answer 1">
+        <input type="text" autocomplete="off" name="Q7A2" id="" placeholder="answer 2">
+        <input type="text" autocomplete="off" name="Q7A3" id="" placeholder="answer 3">
+        <br>
+        <label for="correct7">Choose the correct answer</label>
+        <select name="correct7" id="correct7">
+            <option value="">-- Select the correct answer --</option>
+            <option value="0">answer 1</option>
+            <option value="1">answer 2</option>
+            <option value="2">answer 3</option>
+        </select>
+        <br>
+        <label for="8">Question 8</label>
+        <input type="text" autocomplete="off" name="Q8" id="8">
+        <p>Answers: </p>
+        <input type="text" autocomplete="off" name="Q8A1" id="" placeholder="answer 1">
+        <input type="text" autocomplete="off" name="Q8A2" id="" placeholder="answer 2">
+        <input type="text" autocomplete="off" name="Q8A3" id="" placeholder="answer 3">
+        <br>
+        <label for="correct8">Choose the correct answer</label>
+        <select name="correct8" id="correct8">
+            <option value="">-- Select the correct answer --</option>
+            <option value="0">answer 1</option>
+            <option value="1">answer 2</option>
+            <option value="2">answer 3</option>
+        </select>
+        <div>there are two correct answer </div>
+        <label for="9">Question 1</label>
+        <input type="text" autocomplete="off" name="Q9" id="9">
+        <p>Answers: </p>
+        <input type="text" autocomplete="off" name="Q9A1" id="" placeholder="answer 1">
+        <input type="text" autocomplete="off" name="Q9A2" id="" placeholder="answer 2">
+        <input type="text" autocomplete="off" name="Q9A3" id="" placeholder="answer 3">
+        <input type="text" autocomplete="off" name="Q9A4" id="" placeholder="answer 4">
 
+        <div id="correct9">
+            <label for="100">Answer 1</label>
+            <input type="checkbox" value="1" name="correct9" id="100">
+            <label for="200">Answer 2</label>
+            <input type="checkbox" value="2" name="correct9" id="200">
+            <label for="300">Answer 3</label>
+            <input type="checkbox" value="3" name="correct9" id="300">
+            <label for="400">Answer 4</label>
+            <input type="checkbox" value="4" name="correct9" id="400">
+        </div>
+        <br>
+        <label for="10">Question 2</label>
+        <input type="text" autocomplete="off" name="Q10" id="10">
+        <p>Answers: </p>
+        <input type="text" autocomplete="off" name="Q10A1" id="" placeholder="answer 1">
+        <input type="text" autocomplete="off" name="Q10A2" id="" placeholder="answer 2">
+        <input type="text" autocomplete="off" name="Q10A3" id="" placeholder="answer 3">
+        <input type="text" autocomplete="off" name="Q10A4" id="" placeholder="answer 4">
 
+        <div id="correct10">
+            <label for="01">Answer 1</label>
+            <input type="checkbox" value="1" name="correct10" id="01">
+            <label for="20">Answer 2</label>
+            <input type="checkbox" value="2" name="correct10" id="20">
+            <label for="30">Answer 3</label>
+            <input type="checkbox" value="3" name="correct10" id="30">
+            <label for="40">Answer 4</label>
+            <input type="checkbox" value="4" name="correct10" id="40">
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+    <form action="/confTest" method="post" id="Confirm">
+        <input type="submit" value="Confirm">
     </form>
 </body>
+
 </html>

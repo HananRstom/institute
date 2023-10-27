@@ -137,14 +137,13 @@ module.exports = {
           { $set: { Class: editClass } }
         );
         let Row = -1;
-        // استرجاع المصفوفة من قاعدة البيانات
+
         collteacher
           .findOne({ email: Email })
           .then((document) => {
             if (document && document.work && Array.isArray(document.work)) {
               const busyArray = document.work;
 
-              // الحصول على مؤشر السطر
               for (let row = 0; row < busyArray.length; row++) {
                 const rowArray = busyArray[row];
                 const targetRow = JSON.stringify(targetTeacher);
@@ -157,11 +156,10 @@ module.exports = {
 
               console.log("Row Index T:", Row);
 
-              // حذف السطر بأكمله من المصفوفة
+
               if (Row >= 0) {
                 busyArray[Row].splice(2, 1, editClass);
 
-                // حفظ التغييرات في قاعدة البيانات
                 return collteacher.update(
                   { email: Email },
                   { $set: { work: busyArray } }
@@ -186,8 +184,6 @@ module.exports = {
           .then((document) => {
             if (document && document.busy && Array.isArray(document.busy)) {
               const busyArray = document.busy;
-
-              // الحصول على مؤشر السطر
               for (let row = 0; row < busyArray.length; row++) {
                 const rowArray = busyArray[row];
                 const targetRow = JSON.stringify(targetValue);
@@ -200,12 +196,10 @@ module.exports = {
 
               console.log("Row Index:", rowIndex);
 
-              // حذف السطر بأكمله من المصفوفة
               if (rowIndex >= 0) {
                 busyArray.splice(rowIndex, 1);
 
-                // حفظ التغييرات في قاعدة البيانات
-                return collclass.update(
+                  return collclass.update(
                   { number: Class },
                   { $set: { busy: busyArray } }
                 );

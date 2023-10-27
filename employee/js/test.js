@@ -6,91 +6,131 @@ module.exports = {
     const monk = require("monk");
     const url = "mongodb://0.0.0.0:27017/languages";
     const db = monk(url);
-    const collection = db.get("");
-    let Q1, Q2, Q3, Q4, Q5, Q6, Q7, Q8, Q9, Q10;
-    let Q1A1,
-      Q1A2,
-      Q1A3,
-      Q2A1,
-      Q2A2,
-      Q2A3,
-      Q3A1,
-      Q3A2,
-      Q3A3,
-      Q4A1,
-      Q4A2,
-      Q4A3,
-      Q5A1,
-      Q5A2,
-      Q5A3,
-      Q6A1,
-      Q6A2,
-      Q6A3,
-      Q7A1,
-      Q7A2,
-      Q7A3,
-      Q8A1,
-      Q8A2,
-      Q8A3,
-      Q9A1,
-      Q9A2,
-      Q9A3,
-      Q9A4,
-      Q10A1,
-      Q10A2,
-      Q10A3,
-      Q10A4;
+    const collection = db.get("test");
+
+    let Q = [];
+    let QA = [];
+    let Error = [];
+    let correct = [];
+    let correct9 = [];
+    let correct10 = [];
     app.post("/api/test", (req, res) => {
-        Q1=req.body.Q1;
-        Q2=req.body.Q2;
-        Q3=req.body.Q3;
-        Q4=req.body.Q4;
-        Q5=req.body.Q5;
-        Q6=req.body.Q6;
-        Q7=req.body.Q7;
-        Q8=req.body.Q8;
-        Q9=req.body.Q9;
-        Q10=req.body.Q10;
-        Q1A1=req.body.Q1A1;
-        Q1A2=req.body.Q1A2;
-        Q1A3=req.body.Q1A3;
-        Q2A1=req.body.Q2A1;
-        Q2A2=req.body.Q2A2;
-        Q2A3=req.body.Q2A3;
-        Q3A1=req.body.Q3A1;
-        Q3A2=req.body.Q3A2;
-        Q3A3=req.body.Q3A3;
-        Q4A1=req.body.Q4A1;
-        Q4A2=req.body.Q4A2;
-        Q4A3=req.body.Q4A3;
-        Q5A1=req.body.Q5A1;
-        Q5A2=req.body.Q5A2;
-        Q5A3=req.body.Q5A3;
-        Q6A1=req.body.Q6A1;
-        Q6A2=req.body.Q6A2;
-        Q6A3=req.body.Q6A3;
-        Q7A1=req.body.Q7A1;
-        Q7A2=req.body.Q7A2;
-        Q7A3=req.body.Q7A3;
-        Q8A1=req.body.Q8A1;
-        Q8A2=req.body.Q8A2;
-        Q8A3=req.body.Q8A3;
-        Q9A1=req.body.Q9A1;
-        Q9A2=req.body.Q9A2;
-        Q9A3=req.body.Q9A3;
-        Q9A4=req.body.Q9A4;
-        Q10A1=req.body.Q10A1;
-        Q10A2=req.body.Q10A2;
-        Q10A3=req.body.Q10A3;
-        Q10A4=req.body.Q10A4;
+      for (let i = 1; i <= 10; i++) {
+        Error[i] = 0;
+        QA[i] = ['', '', '', '', '']
+      }
 
+      Q[1] = req.body.Q1;
+      Q[2] = req.body.Q2;
+      Q[3] = req.body.Q3;
+      Q[4] = req.body.Q4;
+      Q[5] = req.body.Q5;
+      Q[6] = req.body.Q6;
+      Q[7] = req.body.Q7;
+      Q[8] = req.body.Q8;
+      Q[9] = req.body.Q9;
+      Q[10] = req.body.Q10;
+      QA[1][1] = req.body.Q1A1;
+      QA[1][2] = req.body.Q1A2;
+      QA[1][3] = req.body.Q1A3;
+      QA[2][1] = req.body.Q2A1;
+      QA[2][2] = req.body.Q2A2;
+      QA[2][3] = req.body.Q2A3;
+      QA[3][1] = req.body.Q3A1;
+      QA[3][2] = req.body.Q3A2;
+      QA[3][3] = req.body.Q3A3;
+      QA[4][1] = req.body.Q4A1;
+      QA[4][2] = req.body.Q4A2;
+      QA[4][3] = req.body.Q4A3;
+      QA[5][1] = req.body.Q5A1;
+      QA[5][2] = req.body.Q5A2;
+      QA[5][3] = req.body.Q5A3;
+      QA[6][1] = req.body.Q6A1;
+      QA[6][2] = req.body.Q6A2;
+      QA[6][3] = req.body.Q6A3;
+      QA[7][1] = req.body.Q7A1;
+      QA[7][2] = req.body.Q7A2;
+      QA[7][3] = req.body.Q7A3;
+      QA[8][1] = req.body.Q8A1;
+      QA[8][2] = req.body.Q8A2;
+      QA[8][3] = req.body.Q8A3;
+      QA[9][1] = req.body.Q9A1;
+      QA[9][2] = req.body.Q9A2;
+      QA[9][3] = req.body.Q9A3;
+      QA[9][4] = req.body.Q9A4;
+      QA[10][1] = req.body.Q10A1;
+      QA[10][2] = req.body.Q10A2;
+      QA[10][3] = req.body.Q10A3;
+      QA[10][4] = req.body.Q10A4;
+      correct[1] = req.body.correct1;
+      correct[2] = req.body.correct2;
+      correct[3] = req.body.correct3;
+      correct[4] = req.body.correct4;
+      correct[5] = req.body.correct5;
+      correct[6] = req.body.correct6;
+      correct[7] = req.body.correct7;
+      correct[8] = req.body.correct8;
+      correct9 = req.body.correct9;
+      correct10 = req.body.correct10;
+      for (let i = 1; i <= 8; i++) {
+        if (Q[i] != '') {
+          if (QA[i][1] == '' || QA[i][2] == '' || QA[i][3] == '' || correct[i] == '') {
+            Error[i] = 1
+          }
+        }
+        else if (Q[i] == '') {
+          if (QA[i][1] != '' || QA[i][2] != '' || QA[i][3] != '' || correct[i] != '') {
+            Error[i] = 1
+          }
+        }
+      }
+      for (let i = 9; i <= 10; i++) {
+        if (Q[i] != '') {
+          if (QA[i][1] == '' || QA[i][2] == '' || QA[i][3] == '' || QA[i][4] == '') {
+            Error[i] = 1
+          }
+        }
+        else if (Q[i] == '') {
+          if (QA[i][1] != '' || QA[i][2] != '' || QA[i][3] != '' || QA[i][4] != '') {
+            Error[i] = 1
+          }
+        }
+      }
 
-
-
-
-
-
-
+      res.send('')
     });
+    app.post('/confTest', (req, res) => {
+      for (let i = 1; i <= 8; i++) {
+        if (Q[i] != '') {
+          let Answers = []
+          let correctA;
+          for (let j = 0; j < 3; j++) {
+            Answers[j] = QA[i][j + 1]
+          }
+          correctA = Answers[correct[i]]
+          collection.update({ Question: i }, {
+            $set: {
+              Content: Q[i],
+              Answers: Answers,
+              Correct: correctA
+            }
+          })
+        }
+      }
+      res.send("confirm")
+    })
+
+    let obj = {}
+    app.get("/api/test", (req, res) => {
+
+      obj = {
+        Error: Error,
+        correct9: correct9,
+        correct10: correct10
+      }
+
+      res.json(obj)
+    })
+
   },
 };
