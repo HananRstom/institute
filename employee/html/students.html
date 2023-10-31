@@ -27,6 +27,7 @@
               document.getElementById("res").innerHTML =
                 "cannot find data for the entered email or id";
             } else {
+              $("#payment").show()
               s = "student name: " +
                 data.data[0].name +
                 "<br>" +
@@ -107,6 +108,7 @@
   $(document).ready(async function () {
     await updateA();
     await updateB();
+    $("#payment").hide()
   });
 </script>
 
@@ -122,7 +124,7 @@
     <div id="res"></div>
   </form>
   <form action="/payment" method="post" id="payment">
-    <input type="number" name="payment" id="pay" />
+    <input type="number" name="payment" placeholder="The amount to be paid" id="pay" />
     <input type="submit" value="Submit" />
     <div id="res1"></div>
   </form>

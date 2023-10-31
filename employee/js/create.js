@@ -349,7 +349,7 @@ module.exports = {
       else if (parseInt(SMonth) == 12)
         EndTime = parseInt(Year) + 1 + "-2-" + Sday;
       //for Course ID
-      count.update({ I: 4 }, { $inc: { count: 1 } });
+       count.update({ I: 4 }, { $inc: { count: 1 } });
       //create ID for each course
       async function ID() {
         return new Promise((resolve, reject) => {

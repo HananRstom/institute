@@ -55,19 +55,25 @@
                     let request = async () => {
                         let response = await fetch("http://localhost:8083/StudentSInfo");
                         let data = await response.json();
-
+                        let check = true;
                         let s = '';
                         data.forEach((info) => {
-                            if ((info.price - info.Paid_amount) > 0)
+                            if ((info.price - info.Paid_amount) > 0) {
+                                check = false
                                 s += "<br>" + "Name: " + info.name +
                                     "<br>" + "Email: " + info.email +
                                     "<br> ID: " + info.student_id +
                                     (info?.paymentDate ? "<br> Last payment date: " + info.paymentDate : "<br> No payments have been made yet") +
                                     "<br>" + "Rest of money: " + (info.price - info.Paid_amount) + "<br>" +
                                     "--------------------------";
+                            }
                         });
-
-                        $("#data").html(s);
+                        if (check) {
+                            $("#data").html("All students in this course have paid the full fees")
+                        } else {
+                            $("#Delete").show()
+                            $("#data").html(s);
+                        }
                     };
                     await request();
                 }
@@ -79,6 +85,7 @@
 
     $(document).ready(async function () {
         await updateA();
+        $("#Delete").hide()
     });
 </script>
 
@@ -88,6 +95,9 @@
         </div>
         <input type="submit" value="Search">
         <div id="data"></div>
+    </form>
+    <form action="/deleteAll" method="post" id="Delete">
+        <input type="submit"> Delete All</input>
     </form>
 </body>
 

@@ -30,6 +30,7 @@ module.exports = {
 
             data = result.Info;
         })
+
         let course;
         app.post("/NumCourse", (req, res) => {
             course = req.body.course;
@@ -53,6 +54,10 @@ module.exports = {
             const result = await Info()
             let dataS = result.Info;
             res.json(dataS)
+        })
+        app.post("/deleteAll", (req, res) => {
+            collection.remove({ courseNumb: parseInt(course) }, { multi: 'true' })
+            res.send('Delete all student')
         })
         app.get("/CourseOptions", (req, res) => {
             res.json(data);
