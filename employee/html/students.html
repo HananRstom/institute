@@ -6,6 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <link rel="stylesheet" href="/css/style.css" />
   <title>Students</title>
 </head>
 <script>
@@ -112,29 +113,31 @@
   });
 </script>
 
-<body>
-  <form action="/student" method="post" id="S">
-    <label for="email">Email:</label>
-    <input type="text" id="email" name="email" placeholder="Enter Email" />
-    <label for="StudentID">Sutdent ID:</label>
-    <input type="text" id="StudentID" name="StudentID" placeholder="Enter ID" />
+<body class="img">
+  <div class="container">
+    <form action="/student" method="post" id="S">
+      <label for="email">Email:</label>
+      <input type="text" id="email" name="email" placeholder="Enter Email" />
+      <label for="StudentID">Student ID:</label>
+      <input type="text" id="StudentID" name="StudentID" placeholder="Enter ID" />
 
-    <button type="submit" id="search">Search</button>
+      <button class="btn" type="submit" id="search">Search</button>
 
-    <div id="res"></div>
-  </form>
-  <form action="/payment" method="post" id="payment">
-    <input type="number" name="payment" placeholder="The amount to be paid" id="pay" />
-    <input type="submit" value="Submit" />
-    <div id="res1"></div>
-  </form>
-  <form action="/confStudent" method="post" id="">
-    <input type="submit" value="Confirm" />
-  </form>
-  <button onclick="window.location='/SearchS'">Search about many student</button>
-  <button onclick="window.location.href='http://localhost:8080'">Add</button>
-  <button onclick="window.location.href='http://localhost:8080/edit'">Edit</button>
-  <button onclick="window.location.href='http://localhost:8080/delete1'">Delete</button>
+      <div id="res"></div>
+    </form>
+    <form action="/payment" method="post" id="payment">
+      <input type="number" name="payment" placeholder="The amount to be paid" id="pay" />
+      <input class="btn" type="submit" value="Submit" />
+      <div id="res1"></div>
+    </form>
+    <form action="/confStudent" method="post" id="confStudent">
+      <input class="btn" type="submit" value="Confirm" />
+    </form>
+    <button class="btn" onclick="window.location='/SearchS'">Search about many students</button>
+    <button class="btn" onclick="window.location.href='http://localhost:8080'">Add</button>
+    <button class="btn" onclick="window.location.href='http://localhost:8080/edit'">Edit</button>
+    <button class="btn" onclick="window.location.href='http://localhost:8080/delete1'">Delete</button>
+  </div>
 </body>
 
 </html>
