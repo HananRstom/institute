@@ -1,0 +1,62 @@
+.frm_radio {
+    margin-left: 0px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 30px;
+}
+
+.frm_radio label {
+    display: inline-block;
+    height: 25px;
+    position: relative;
+    left: -3%;
+    font-weight: bold;
+    padding: 0 30px;
+    margin-bottom: 0;
+    cursor: pointer;
+    vertical-align: bottom;
+    color: #efebe3;
+}
+
+.frm_radio input[type=radio]+span {
+    width: 35px;
+    height: 25px;
+    vertical-align: middle;
+}
+
+.frm_radio input[type=radio]+span {
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    outline: none;
+    user-select: none;
+}
+
+*,
+*::before,
+*::after {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.frm_checkbox input[type=checkbox]+span:before, .frm_radio input[type=radio]+span:before {
+    left: 0;
+    top: 0;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.54);
+}
+.frm_checkbox input[type=checkbox]+span:before, .frm_checkbox input[type=checkbox]+span:after, .frm_radio input[type=radio]+span:before, .frm_radio input[type=radio]+span:after {
+    position: absolute;
+    content: '';
+    border-radius: 50%;
+    transition: all .3s ease;
+    transition-property: transform, border-color;
+}

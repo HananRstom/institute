@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="/css/style.css" />
     <title>book</title>
   </head>
 
@@ -121,23 +122,26 @@
     });
   </script>
 
-  <body>
+  <body class="img">
+    <div class="container">
+      <h1>To pay for the books you registered , enter the book id</h1>
     <form action="/editBook" method="post" id="show">
-      <label for="id" id="label">book id: </label>
-      <input type="text" name="bookId" id="id" />
+      <label for="id" id="label" class="info-sign">Book ID: </label>
+      <input type="text" name="bookId" class="form-control" id="id" />
 
       <div id="div"></div>
 
-      <input type="submit" value="submit" id="submit" />
+      <input type="submit" value="submit" class="btn" id="submit" />
     </form>
     <form action="/price" method="post" id="price">
       <div id="info"></div>
       <div id="ch"></div>
       <div id="pric"></div>
-      <input type="submit" value="submit" id="sub" />
+      <input type="submit" value="submit" class="btn" id="sub" />
     </form>
     <form action="/delConf" method="post" id="option">
-      <input type="submit" value="confirm" id="conf" />
+      <input type="submit" value="confirm" class="btn" id="conf" />
     </form>
+    </div>
   </body>
 </html>
