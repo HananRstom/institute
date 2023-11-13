@@ -40,13 +40,13 @@
                 $("#option").show();
                 $("#div").text("");
                 $("#info").html(
-                  "Name : " +
+                  "<strong>Name :</strong> " +
                     data.result[0].name +
                     "<br>" +
-                    "Email : " +
+                    "<strong>Email :</strong> " +
                     data.result[0].email +
                     "<br>" +
-                    "Total price : " +
+                    "<strong>Total price : </strong>" +
                     data.result[0].totalPrice +
                     "<br>"
                 );
@@ -92,13 +92,14 @@
               let s = " ";
               if (data.chooseBook == undefined) {
                 document.getElementById("pric").innerHTML =
-                  "you must choose at least one book";
+                  "You must choose at least one book";
               } else {
                 let len = data.Book.length;
+                s+="<strong> The books you chose </strong><br>"
                 for (let i = 0; i < len; i++) {
                   s += data.Book[i] + " : " + data.price[i] + "<br>";
                 }
-                s += "total price: " + data.totalPrice;
+                s += "<strong>The total amount to be paid :</strong> " + data.totalPrice;
                 document.getElementById("pric").innerHTML = s;
                 $("#sub").hide();
                 $("#ch").hide();
@@ -134,14 +135,15 @@
       <input type="submit" value="submit" class="btn" id="submit" />
     </form>
     <form action="/price" method="post" id="price">
-      <div id="info"></div>
+      <div id="info" class="show"></div>
       <div id="ch"></div>
-      <div id="pric"></div>
+      <div id="pric" class="show"></div>
       <input type="submit" value="submit" class="btn" id="sub" />
     </form>
     <form action="/delConf" method="post" id="option">
       <input type="submit" value="confirm" class="btn" id="conf" />
     </form>
+    
     </div>
   </body>
 </html>

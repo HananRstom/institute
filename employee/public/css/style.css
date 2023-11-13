@@ -89,3 +89,8 @@ label {
     padding-right: 20px;
     outline: none;
 }
+.show {
+    color: black;
+    text-align: left;
+    font-size: 20px;
+}
